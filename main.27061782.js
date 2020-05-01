@@ -2714,4 +2714,4 @@ var e=arguments[3];require("./polyfills");var r=require("./const"),i=require("./
 },{"phaser":"g7IM"}],"ZCfc":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=r(require("phaser")),t=r(require("./scenes/GameScene"));function r(e){return e&&e.__esModule?e:{default:e}}var a={type:e.default.AUTO,width:800,height:600,physics:{default:"arcade"},scene:[t.default]},u=new e.default.Game(a);exports.default=u;
 },{"phaser":"g7IM","./scenes/GameScene":"HuEe"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.27061782.js.map
+//# sourceMappingURL=/jfarm/main.27061782.js.map
