@@ -22,25 +22,32 @@ class GameScene extends Phaser.Scene
 			'assets/jack.png', 
 			{ frameWidth: 16, frameHeight: 24 }
     );
-    this.load.image('empty_dry_plot', 'assets/empty_dry_plot.png')
+    this.load.image('empty_dry_plot', 'assets/empty_dry_plot.png');
+
+    this.load.image("outdoor_summer", "assets/outdoor_summer.png");
+    this.load.tilemapTiledJSON("map", "assets/example_level.json");
 	}
 
 	public create()
 	{
+
+    const map = this.make.tilemap({ key: "map" });
+    
+    const tileset = map.addTilesetImage("outdoor_summer", "outdoor_summer");
+
+    const baseLayer = map.createStaticLayer("base", tileset, 0, 0);
+    const objectLayer = map.createStaticLayer("object", tileset, 0, 0);
+
+    this.physics.world.bounds.width = baseLayer.width;
+    this.physics.world.bounds.height = baseLayer.height;
+  
     this.createAnimations();
     this.cursor = this.input.keyboard.createCursorKeys();
 
-    for (let i = 0; i < 5; i++) 
-    {
-      for (let j = 0; j < 5; j++)
-      {
-        this.add.image(400 + 16 * i * 1.5, 300 + 16 * j * 1.5, 'empty_dry_plot').setScale(1.5);
-      }
-    }
+    this.player = new Player(this, this.cursor, 200, baseLayer.height - 200);
     
-    this.player = new Player(this, this.cursor, 100, 450);
-
     this.cameras.main.startFollow(this.player);
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     var FKey = this.input.keyboard.addKey('F');
 
