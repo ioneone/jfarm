@@ -1,155 +1,104 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
+import Player from "../sprites/Player";
 
 class GameScene extends Phaser.Scene
 {
 
   public static KEY = "GameScene";
-  public static JACK_WALK_KEY = "jack-walk";
-  
-  private player: Phaser.Physics.Arcade.Sprite | null;
-  private cursor;
-  private currentPlayerDirection = 0;
+
+  private player: Player | null;
+  private cursor: Phaser.Types.Input.Keyboard.CursorKeys | null;
   
 	constructor()
 	{
     super(GameScene.KEY);
     this.player = null;
+    this.cursor = null;
 	}
 
-	preload()
+	public preload()
 	{
-    this.load.spritesheet(GameScene.JACK_WALK_KEY, 
-			'assets/jack-walk.png', 
+    this.load.spritesheet(Player.TEXTURE_KEY, 
+			'assets/jack.png', 
 			{ frameWidth: 16, frameHeight: 24 }
-		);
+    );
+    this.load.image('empty_dry_plot', 'assets/empty_dry_plot.png')
 	}
 
-	create()
+	public create()
 	{
-    this.player = this.createPlayer();
+    this.createAnimations();
     this.cursor = this.input.keyboard.createCursorKeys();
+
+    for (let i = 0; i < 5; i++) 
+    {
+      for (let j = 0; j < 5; j++)
+      {
+        this.add.image(400 + 16 * i * 1.5, 300 + 16 * j * 1.5, 'empty_dry_plot').setScale(1.5);
+      }
+    }
+    
+    this.player = new Player(this, this.cursor, 100, 450);
+
+    this.cameras.main.startFollow(this.player);
+
+    var FKey = this.input.keyboard.addKey('F');
+
+    FKey.on('down', () => {
+      if (this.scale.isFullscreen)
+        this.scale.stopFullscreen();
+      else
+        this.scale.startFullscreen();
+    }, this);
   }
   
-  update()
+  public update()
 	{
+    this.player?.update();
+  }
 
-    this.player.setVelocity(0, 0);
-
-    if (this.cursor.up.isDown)
-    {
-      this.player.setVelocityY(-160);
-      this.player.anims.play('up', true);
-      this.currentPlayerDirection = 0;
-    }
-    else if (this.cursor.left.isDown)
-    {
-      this.player.setVelocityX(-160);
-      this.player.anims.play('left', true);
-      this.currentPlayerDirection = 1;
-      this.player.flipX = false;
-    }
-    else if (this.cursor.down.isDown)
-    {
-      this.player.setVelocityY(160);
-      this.player.anims.play('down', true);
-      this.currentPlayerDirection = 2;
-    }
-    else if (this.cursor.right.isDown)
-    {
-      this.player.setVelocityX(160);
-      this.player.anims.play('right', true);
-      this.currentPlayerDirection = 3;
-      this.player.flipX = true;
-    }
-    else 
-    {
-
-      if (this.currentPlayerDirection === 0) 
-      {
-        this.player.anims.play('up-still', true);
-      }
-      else if (this.currentPlayerDirection === 1)
-      {
-        this.player.anims.play('left-still', true);
-      }
-      else if (this.currentPlayerDirection === 2) 
-      {
-        this.player.anims.play('down-still', true);
-      }
-      else
-      {
-        this.player.anims.play('right-still', true);
-      }
-
-    }
-
-	}
-
-  private createPlayer()
-	{
-		const player = this.physics.add.sprite(100, 450, GameScene.JACK_WALK_KEY)
-    
-    player.setCollideWorldBounds(true)
-
+  private createAnimations()
+  {
     this.anims.create({
-        key: 'up-still',
-        frames: [ { key: GameScene.JACK_WALK_KEY, frame: 6 } ],
+        key: 'up',
+        frames: [ { key: Player.TEXTURE_KEY, frame: 6 } ],
         frameRate: 20
     });
 
     this.anims.create({
-			key: 'up',
-			frames: this.anims.generateFrameNumbers(GameScene.JACK_WALK_KEY, { start: 7, end: 8 }),
+			key: 'walk_up',
+			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 7, end: 8 }),
 			frameRate: 5,
 			repeat: -1
-    })
-    
+    });
     
     this.anims.create({
-        key: 'left-still',
-        frames: [ { key: GameScene.JACK_WALK_KEY, frame: 3 } ],
+        key: 'left',
+        frames: [ { key: Player.TEXTURE_KEY, frame: 3 } ],
         frameRate: 20
     });
 
 		this.anims.create({
-			key: 'left',
-			frames: this.anims.generateFrameNumbers(GameScene.JACK_WALK_KEY, { start: 4, end: 5 }),
+			key: 'walk_left',
+			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 4, end: 5 }),
 			frameRate: 5,
 			repeat: -1
-    })
+    });
     
-
-
     this.anims.create({
-        key: 'down-still',
-        frames: [ { key: GameScene.JACK_WALK_KEY, frame: 0 } ],
+        key: 'down',
+        frames: [ { key: Player.TEXTURE_KEY, frame: 0 } ],
         frameRate: 20
     });
 		
 		this.anims.create({
-			key: 'down',
-			frames: this.anims.generateFrameNumbers(GameScene.JACK_WALK_KEY, { start: 0, end: 2 }),
+			key: 'walk_down',
+			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 1, end: 2 }),
 			frameRate: 5,
 			repeat: -1
-    })
-    
-
-    this.anims.create({
-        key: 'right-still',
-        frames: [ { key: GameScene.JACK_WALK_KEY, frame: 3 } ],
-        frameRate: 20
     });
-		
-		this.anims.create({
-			key: 'right',
-			frames: this.anims.generateFrameNumbers(GameScene.JACK_WALK_KEY, { start: 4, end: 5 }),
-			frameRate: 5,
-			repeat: -1
-		})
-
-		return player
     
-	}
+  }
   
 }
 
