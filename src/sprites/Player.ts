@@ -19,74 +19,128 @@ class Player extends Phaser.Physics.Arcade.Sprite
 
   private static SPEED = 60;
 
-  private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
   private direction: Direction;
+  private isAnimating: boolean;
 
-  constructor(
-    scene: Phaser.Scene, 
-    cursor: Phaser.Types.Input.Keyboard.CursorKeys, 
-    x: number, y: number)
+  private keyW: Phaser.Input.Keyboard.Key;
+  private keyA: Phaser.Input.Keyboard.Key;
+  private keyS: Phaser.Input.Keyboard.Key;
+  private keyD: Phaser.Input.Keyboard.Key;
+  private keySpace: Phaser.Input.Keyboard.Key;
+
+  constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y, Player.TEXTURE_KEY);
-    this.cursor = cursor;
     this.direction = Direction.Down;
+    this.isAnimating = false;
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     this.setCollideWorldBounds(true);
+
+    this.keyW = this.scene.input.keyboard.addKey('W');
+    this.keyA = this.scene.input.keyboard.addKey('A');
+    this.keyS = this.scene.input.keyboard.addKey('S');
+    this.keyD = this.scene.input.keyboard.addKey('d');
+    this.keySpace = this.scene.input.keyboard.addKey('SPACE');
+
+    this.on('animationcomplete', () => {
+      this.isAnimating = false;
+    });
+
   }
 
   public update()
   {
-    if (this.cursor.up?.isDown && this.cursor.left?.isDown)
+
+    if (this.isAnimating) return;
+
+    this.body.setSize(0, 0);
+
+    if (this.keySpace.isDown)
+    {
+
+      this.isAnimating = true;
+
+      this.setVelocity(0, 0);
+
+      switch (this.direction)
+      {
+        case Direction.Up:
+          this.anims.play('turn_soil_up', true);
+          this.setFlipX(false);
+          break;  
+        case Direction.UpLeft:
+        case Direction.DownLeft:
+        case Direction.Left:
+          this.anims.play('turn_soil_left', true);
+          this.setFlipX(false);
+          break;
+        case Direction.UpRight:
+        case Direction.DownRight:
+        case Direction.Right:
+          this.anims.play('turn_soil_left', true);
+          this.setFlipX(true);
+          break;
+        default:
+          this.anims.play('turn_soil_down', true);
+          this.setFlipX(false);
+          break;
+      }
+
+      return;
+
+    }
+
+    if (this.keyW.isDown && this.keyA.isDown)
     {
       this.setVelocity(-Player.SPEED, -Player.SPEED);
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.UpLeft;
     }
-    else if (this.cursor.up?.isDown && this.cursor.right?.isDown)
+    else if (this.keyW.isDown && this.keyD.isDown)
     {
       this.setVelocity(Player.SPEED, -Player.SPEED);
       this.anims.play('walk_left', true);
       this.setFlipX(true);
       this.direction = Direction.UpRight;
     }
-    else if (this.cursor.down?.isDown && this.cursor.left?.isDown)
+    else if (this.keyS.isDown && this.keyA.isDown)
     {
       this.setVelocity(-Player.SPEED, Player.SPEED);
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.DownLeft;
     }
-    else if (this.cursor.down?.isDown && this.cursor.right?.isDown)
+    else if (this.keyS.isDown && this.keyD.isDown)
     {
       this.setVelocity(Player.SPEED, Player.SPEED);
       this.anims.play('walk_left', true);
       this.setFlipX(true);
       this.direction = Direction.DownRight;
     }
-    else if (this.cursor.up?.isDown)
+    else if (this.keyW.isDown)
     {
       this.setVelocity(0, -Player.SPEED);
       this.anims.play('walk_up', true);
       this.setFlipX(false);
       this.direction = Direction.Up;
     }
-    else if (this.cursor.down?.isDown)
+    else if (this.keyS.isDown)
     {
       this.setVelocity(0, Player.SPEED);
       this.anims.play('walk_down', true);
       this.setFlipX(false);
       this.direction = Direction.Down;
     }
-    else if (this.cursor.left?.isDown)
+    else if (this.keyA.isDown)
     {
       this.setVelocity(-Player.SPEED, 0);
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.Left;
     }
-    else if (this.cursor.right?.isDown)
+    else if (this.keyD.isDown)
     {
       this.setVelocity(Player.SPEED, 0);
       this.anims.play('walk_left', true);
@@ -95,6 +149,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
     }
     else
     {
+
       this.setVelocity(0, 0);
 
       switch (this.direction)
@@ -122,6 +177,8 @@ class Player extends Phaser.Physics.Arcade.Sprite
       }
 
     }
+
+    this.body.velocity.normalize().scale(Player.SPEED);
   }
 
 }

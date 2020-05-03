@@ -4,11 +4,17 @@ import GameScene from './scenes/GameScene'
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	width: 800,
-  height: 600,
+	width: 512,
+  height: 380,
   zoom: 1.5,
+  scale: {
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
 	physics: {
-		default: 'arcade'
+    default: 'arcade',
+    arcade: {
+      debug: true
+    }
 	},
 	scene: [GameScene]
 }

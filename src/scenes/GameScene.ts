@@ -22,10 +22,10 @@ class GameScene extends Phaser.Scene
 			'assets/jack.png', 
 			{ frameWidth: 16, frameHeight: 24 }
     );
-    this.load.image('empty_dry_plot', 'assets/empty_dry_plot.png');
-
     this.load.image("outdoor_summer", "assets/outdoor_summer.png");
-    this.load.tilemapTiledJSON("map", "assets/example_level.json");
+    this.load.image("crops", "assets/crops.png");
+    this.load.tilemapTiledJSON("map", "assets/outdoor_summer.json");
+    this.load.atlas("player", "assets/player/player.png", "assets/player/player.json");
 	}
 
 	public create()
@@ -34,29 +34,36 @@ class GameScene extends Phaser.Scene
     const map = this.make.tilemap({ key: "map" });
     
     const tileset = map.addTilesetImage("outdoor_summer", "outdoor_summer");
+    const cropsTileset = map.addTilesetImage("crops", "crops");
 
-    const baseLayer = map.createStaticLayer("base", tileset, 0, 0);
+    const baseLayer = map.createStaticLayer("base", [tileset, cropsTileset], 0, 0);
+
     const objectLayer = map.createStaticLayer("object", tileset, 0, 0);
+    objectLayer.setCollisionByProperty({ collides: true });
+
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    objectLayer.renderDebug(debugGraphics, {
+      tileColor: null, // Color of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+    });
 
     this.physics.world.bounds.width = baseLayer.width;
     this.physics.world.bounds.height = baseLayer.height;
   
     this.createAnimations();
-    this.cursor = this.input.keyboard.createCursorKeys();
 
-    this.player = new Player(this, this.cursor, 200, baseLayer.height - 200);
+    this.player = new Player(this, 300, baseLayer.height - 300);
+    
+    this.physics.add.collider(this.player, objectLayer);
+
+    const topLayer = map.createStaticLayer("top", tileset, 0, 0);
     
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-    var FKey = this.input.keyboard.addKey('F');
+    // this.player.play("turn_soil_up");
 
-    FKey.on('down', () => {
-      if (this.scale.isFullscreen)
-        this.scale.stopFullscreen();
-      else
-        this.scale.startFullscreen();
-    }, this);
   }
   
   public update()
@@ -66,43 +73,65 @@ class GameScene extends Phaser.Scene
 
   private createAnimations()
   {
+
     this.anims.create({
-        key: 'up',
-        frames: [ { key: Player.TEXTURE_KEY, frame: 6 } ],
-        frameRate: 20
+      key: 'up',
+      frames: this.anims.generateFrameNames('player', { prefix: 'up_', suffix: '.png', end: 0 }),
+      frameRate: 20
     });
 
     this.anims.create({
 			key: 'walk_up',
-			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 7, end: 8 }),
+			frames: this.anims.generateFrameNames('player', { prefix: 'walk_up_', suffix: '.png', end: 1 }),
 			frameRate: 5,
 			repeat: -1
     });
     
     this.anims.create({
         key: 'left',
-        frames: [ { key: Player.TEXTURE_KEY, frame: 3 } ],
+        frames: this.anims.generateFrameNames('player', { prefix: 'left_', suffix: '.png', end: 0 }),
         frameRate: 20
     });
 
 		this.anims.create({
 			key: 'walk_left',
-			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 4, end: 5 }),
+			frames: this.anims.generateFrameNames('player', { prefix: 'walk_left_', suffix: '.png', end: 1 }),
 			frameRate: 5,
 			repeat: -1
     });
     
     this.anims.create({
         key: 'down',
-        frames: [ { key: Player.TEXTURE_KEY, frame: 0 } ],
+        frames: this.anims.generateFrameNames('player', { prefix: 'down_', suffix: '.png', end: 0 }),
         frameRate: 20
     });
 		
 		this.anims.create({
 			key: 'walk_down',
-			frames: this.anims.generateFrameNumbers(Player.TEXTURE_KEY, { start: 1, end: 2 }),
+			frames: this.anims.generateFrameNames('player', { prefix: 'walk_down_', suffix: '.png', end: 1 }),
 			frameRate: 5,
 			repeat: -1
+    });
+
+    this.anims.create({
+      key: 'turn_soil_up',
+      frames: this.anims.generateFrameNames('player', { prefix: 'turn_soil_up_', suffix: '.png', end: 3 }),
+      frameRate: 5,
+      repeat: 0
+    });
+
+    this.anims.create({
+      key: 'turn_soil_down',
+      frames: this.anims.generateFrameNames('player', { prefix: 'turn_soil_down_', suffix: '.png', end: 3 }),
+      frameRate: 5,
+      repeat: 0
+    });
+
+    this.anims.create({
+      key: 'turn_soil_left',
+      frames: this.anims.generateFrameNames('player', { prefix: 'turn_soil_left_', suffix: '.png', end: 3 }),
+      frameRate: 5,
+      repeat: 0
     });
     
   }
