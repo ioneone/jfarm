@@ -17,7 +17,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
 
   public static TEXTURE_KEY = "jack";
 
-  private static SPEED = 70;
+  private static SPEED = 60;
 
   private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
   private direction: Direction;
