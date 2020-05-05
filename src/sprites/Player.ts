@@ -28,6 +28,12 @@ class Player extends Phaser.Physics.Arcade.Sprite
   private keyD: Phaser.Input.Keyboard.Key;
   private keySpace: Phaser.Input.Keyboard.Key;
 
+  private step;
+  private hoe;
+  private hoeHit;
+  
+  private currentAnim;
+
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y, Player.TEXTURE_KEY);
@@ -47,12 +53,22 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.isAnimating = false;
     });
 
+    this.step = this.scene.sound.add('sandstep1');
+    this.hoe = this.scene.sound.add('hoe');
+    this.hoeHit = this.scene.sound.add('hoeHit');
   }
 
   public update()
   {
 
-    if (this.isAnimating) return;
+    if (this.isAnimating) {
+
+      if (this.anims.currentAnim.getFrameByProgress(this.anims.getProgress()).index === 2) {
+        if (!this.hoeHit.isPlaying) this.hoeHit.play();
+      }
+
+      return;
+    }
 
     this.body.setSize(0, 0);
 
@@ -60,6 +76,10 @@ class Player extends Phaser.Physics.Arcade.Sprite
     {
 
       this.isAnimating = true;
+
+      this.hoe.play();
+
+      
 
       this.setVelocity(0, 0);
 
@@ -80,6 +100,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
         case Direction.Right:
           this.anims.play('turn_soil_left', true);
           this.setFlipX(true);
+          // this.setScale(-1 ,1);
           break;
         default:
           this.anims.play('turn_soil_down', true);
@@ -97,6 +118,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.UpLeft;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyW.isDown && this.keyD.isDown)
     {
@@ -104,6 +126,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(true);
       this.direction = Direction.UpRight;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyS.isDown && this.keyA.isDown)
     {
@@ -111,6 +134,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.DownLeft;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyS.isDown && this.keyD.isDown)
     {
@@ -118,6 +142,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(true);
       this.direction = Direction.DownRight;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyW.isDown)
     {
@@ -125,6 +150,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_up', true);
       this.setFlipX(false);
       this.direction = Direction.Up;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyS.isDown)
     {
@@ -132,6 +158,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_down', true);
       this.setFlipX(false);
       this.direction = Direction.Down;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyA.isDown)
     {
@@ -139,6 +166,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(false);
       this.direction = Direction.Left;
+      if (!this.step.isPlaying) this.step.play();
     }
     else if (this.keyD.isDown)
     {
@@ -146,6 +174,7 @@ class Player extends Phaser.Physics.Arcade.Sprite
       this.anims.play('walk_left', true);
       this.setFlipX(true);
       this.direction = Direction.Right;
+      if (!this.step.isPlaying) this.step.play();
     }
     else
     {
