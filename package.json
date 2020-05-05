@@ -1,14 +1,14 @@
 {
 	"name": "Jfarm",
-  "version": "1.0.0",
-  "private": true,
-  "homepage": "https://ioneone.github.io/jfarm",
+	"version": "1.0.0",
+	"private": true,
+	"homepage": "https://ioneone.github.io/jfarm",
 	"description": "",
 	"scripts": {
 		"start": "parcel src/index.html -p 8000",
 		"build": "parcel build src/index.html --out-dir build --public-url /jfarm/",
 		"predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build"
+		"deploy": "gh-pages -b master -d build"
 	},
 	"author": "Junhong Wang",
 	"license": "MIT",
@@ -24,6 +24,7 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
+		"gui": "^0.7.1",
 		"phaser": "^3.22.0"
 	},
 	"parcelCleanPaths": [

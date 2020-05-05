@@ -4,15 +4,13 @@ import Player from "../sprites/Player";
 class GameScene extends Phaser.Scene
 {
 
-  public static KEY = "GameScene";
-
   private player: Player | null;
   private marker;
   private baseLayer;
   
 	constructor()
 	{
-    super(GameScene.KEY);
+    super("game");
     this.player = null;
 	}
 
