@@ -5,7 +5,7 @@
 			"format": "RGBA8888",
 			"size": {
 				"w": 64,
-				"h": 254
+				"h": 377
 			},
 			"scale": 1,
 			"frames": [
@@ -56,7 +56,7 @@
 					},
 					"anchor": {
 						"x": 0.62,
-						"y": 0.53846154
+						"y": 0.5
 					}
 				},
 				{
@@ -81,7 +81,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.53225806
+						"y": 0.56451613
 					}
 				},
 				{
@@ -156,7 +156,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.46551724
+						"y": 0.5
 					}
 				},
 				{
@@ -210,53 +210,53 @@
 					}
 				},
 				{
-					"filename": "turn_soil_left_0.png",
+					"filename": "mow_down_1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 19,
-						"h": 28
+						"w": 23,
+						"h": 24
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 19,
-						"h": 28
+						"w": 23,
+						"h": 24
 					},
 					"frame": {
 						"x": 40,
 						"y": 65,
-						"w": 19,
-						"h": 28
+						"w": 23,
+						"h": 24
 					},
 					"anchor": {
-						"x": 0.39473684,
-						"y": 0.60714286
+						"x": 0.54347826,
+						"y": 0.58333333
 					}
 				},
 				{
-					"filename": "water_down_1.png",
+					"filename": "mow_up_1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 19,
-						"h": 25
+						"w": 27,
+						"h": 22
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 19,
-						"h": 25
+						"w": 27,
+						"h": 22
 					},
 					"frame": {
 						"x": 19,
 						"y": 91,
-						"w": 19,
-						"h": 25
+						"w": 27,
+						"h": 22
 					},
 					"anchor": {
-						"x": 0.44736842,
-						"y": 0.58
+						"x": 0.57407407,
+						"y": 0.59090909
 					}
 				},
 				{
@@ -285,53 +285,28 @@
 					}
 				},
 				{
-					"filename": "turn_soil_left_3.png",
+					"filename": "turn_soil_left_2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 20,
-						"h": 25
+						"w": 24,
+						"h": 24
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 20,
-						"h": 25
-					},
-					"frame": {
-						"x": 40,
-						"y": 95,
-						"w": 20,
-						"h": 25
-					},
-					"anchor": {
-						"x": 0.55,
-						"y": 0.54
-					}
-				},
-				{
-					"filename": "water_up_1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 19,
-						"h": 23
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 19,
-						"h": 23
+						"w": 24,
+						"h": 24
 					},
 					"frame": {
 						"x": 19,
-						"y": 118,
-						"w": 19,
-						"h": 23
+						"y": 115,
+						"w": 24,
+						"h": 24
 					},
 					"anchor": {
-						"x": 0.44736842,
-						"y": 0.58695652
+						"x": 0.625,
+						"y": 0.54166667
 					}
 				},
 				{
@@ -360,31 +335,6 @@
 					}
 				},
 				{
-					"filename": "water_left_0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 22,
-						"h": 22
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 22,
-						"h": 22
-					},
-					"frame": {
-						"x": 40,
-						"y": 122,
-						"w": 22,
-						"h": 22
-					},
-					"anchor": {
-						"x": 0.59090909,
-						"y": 0.63636364
-					}
-				},
-				{
 					"filename": "walk_left_0.png",
 					"rotated": false,
 					"trimmed": false,
@@ -399,14 +349,39 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 19,
-						"y": 143,
+						"x": 45,
+						"y": 115,
 						"w": 16,
 						"h": 24
 					},
 					"anchor": {
-						"x": 0.5,
+						"x": 0.4375,
 						"y": 0.54166667
+					}
+				},
+				{
+					"filename": "mow_left_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 25,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 25,
+						"h": 22
+					},
+					"frame": {
+						"x": 19,
+						"y": 141,
+						"w": 25,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.34,
+						"y": 0.63636364
 					}
 				},
 				{
@@ -430,32 +405,7 @@
 						"h": 24
 					},
 					"anchor": {
-						"x": 0.5,
-						"y": 0.54166667
-					}
-				},
-				{
-					"filename": "turn_soil_left_2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 24,
-						"h": 24
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 24,
-						"h": 24
-					},
-					"frame": {
-						"x": 37,
-						"y": 146,
-						"w": 24,
-						"h": 24
-					},
-					"anchor": {
-						"x": 0.625,
+						"x": 0.4375,
 						"y": 0.54166667
 					}
 				},
@@ -474,14 +424,39 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 19,
-						"y": 169,
+						"x": 46,
+						"y": 141,
 						"w": 16,
 						"h": 24
 					},
 					"anchor": {
 						"x": 0.5,
 						"y": 0.54166667
+					}
+				},
+				{
+					"filename": "mow_up_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 25,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 25,
+						"h": 22
+					},
+					"frame": {
+						"x": 19,
+						"y": 165,
+						"w": 25,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.62,
+						"y": 0.59090909
 					}
 				},
 				{
@@ -510,31 +485,6 @@
 					}
 				},
 				{
-					"filename": "water_up_0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 18,
-						"h": 21
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 18,
-						"h": 21
-					},
-					"frame": {
-						"x": 37,
-						"y": 172,
-						"w": 18,
-						"h": 21
-					},
-					"anchor": {
-						"x": 0.44444444,
-						"y": 0.64285714
-					}
-				},
-				{
 					"filename": "down_0.png",
 					"rotated": false,
 					"trimmed": false,
@@ -549,14 +499,39 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 19,
-						"y": 195,
+						"x": 46,
+						"y": 167,
 						"w": 16,
 						"h": 23
 					},
 					"anchor": {
 						"x": 0.5,
 						"y": 0.56521739
+					}
+				},
+				{
+					"filename": "turn_soil_left_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 28
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 28
+					},
+					"frame": {
+						"x": 19,
+						"y": 189,
+						"w": 19,
+						"h": 28
+					},
+					"anchor": {
+						"x": 0.39473684,
+						"y": 0.57142857
 					}
 				},
 				{
@@ -581,36 +556,86 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.54347826
-					}
-				},
-				{
-					"filename": "turn_soil_up_2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 16,
-						"h": 23
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 16,
-						"h": 23
-					},
-					"frame": {
-						"x": 19,
-						"y": 220,
-						"w": 16,
-						"h": 23
-					},
-					"anchor": {
-						"x": 0.5,
 						"y": 0.58695652
 					}
 				},
 				{
-					"filename": "turn_soil_up_3.png",
+					"filename": "mow_left_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 23,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 40,
+						"y": 192,
+						"w": 23,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.45652174,
+						"y": 0.63636364
+					}
+				},
+				{
+					"filename": "mow_up_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 23,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 40,
+						"y": 216,
+						"w": 23,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.32608696,
+						"y": 0.59090909
+					}
+				},
+				{
+					"filename": "water_down_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 25
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 25
+					},
+					"frame": {
+						"x": 19,
+						"y": 219,
+						"w": 19,
+						"h": 25
+					},
+					"anchor": {
+						"x": 0.44736842,
+						"y": 0.58
+					}
+				},
+				{
+					"filename": "turn_soil_up_2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -631,7 +656,132 @@
 					},
 					"anchor": {
 						"x": 0.5,
+						"y": 0.58695652
+					}
+				},
+				{
+					"filename": "turn_soil_left_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 25
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 25
+					},
+					"frame": {
+						"x": 40,
+						"y": 240,
+						"w": 20,
+						"h": 25
+					},
+					"anchor": {
+						"x": 0.55,
+						"y": 0.54
+					}
+				},
+				{
+					"filename": "mow_left_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 23
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 23
+					},
+					"frame": {
+						"x": 19,
+						"y": 246,
+						"w": 19,
+						"h": 23
+					},
+					"anchor": {
+						"x": 0.39473684,
+						"y": 0.58695652
+					}
+				},
+				{
+					"filename": "turn_soil_up_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 16,
+						"h": 23
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 16,
+						"h": 23
+					},
+					"frame": {
+						"x": 1,
+						"y": 255,
+						"w": 16,
+						"h": 23
+					},
+					"anchor": {
+						"x": 0.5,
 						"y": 0.63043478
+					}
+				},
+				{
+					"filename": "water_left_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 22
+					},
+					"frame": {
+						"x": 40,
+						"y": 267,
+						"w": 22,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.59090909,
+						"y": 0.63636364
+					}
+				},
+				{
+					"filename": "water_up_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 23
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 23
+					},
+					"frame": {
+						"x": 19,
+						"y": 271,
+						"w": 19,
+						"h": 23
+					},
+					"anchor": {
+						"x": 0.4473684210526316,
+						"y": 0.5869565217391305
 					}
 				},
 				{
@@ -649,14 +799,64 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 37,
-						"y": 195,
+						"x": 1,
+						"y": 280,
 						"w": 16,
 						"h": 23
 					},
 					"anchor": {
 						"x": 0.5,
 						"y": 0.54347826
+					}
+				},
+				{
+					"filename": "mow_down_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 24
+					},
+					"frame": {
+						"x": 40,
+						"y": 291,
+						"w": 20,
+						"h": 24
+					},
+					"anchor": {
+						"x": 0.4,
+						"y": 0.58333333
+					}
+				},
+				{
+					"filename": "water_up_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 18,
+						"h": 21
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 19,
+						"y": 296,
+						"w": 18,
+						"h": 21
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.64285714
 					}
 				},
 				{
@@ -674,14 +874,114 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 37,
-						"y": 220,
+						"x": 1,
+						"y": 305,
 						"w": 16,
 						"h": 23
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.58695652
+						"y": 0.63043478
+					}
+				},
+				{
+					"filename": "mow_left_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 39,
+						"y": 317,
+						"w": 24,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.63636364
+					}
+				},
+				{
+					"filename": "mow_up_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 1,
+						"y": 330,
+						"w": 24,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.625,
+						"y": 0.59090909
+					}
+				},
+				{
+					"filename": "mow_down_0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 21
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 27,
+						"y": 341,
+						"w": 24,
+						"h": 21
+					},
+					"anchor": {
+						"x": 0.625,
+						"y": 0.64285714
+					}
+				},
+				{
+					"filename": "mow_down_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 21,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 1,
+						"y": 354,
+						"w": 21,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.4047619,
+						"y": 0.63636364
 					}
 				}
 			]
@@ -690,6 +990,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:1d93097fb00e2140aece7041b39df301:dab8cc99bd76660303858a942e3b37c4:86d5339b780aedd87b35e2b7c0a7e11b$"
+		"smartupdate": "$TexturePacker:SmartUpdate:d8d819378fecc5d1cd85e846269df99b:e19bebc7a85779d2e63b881e71e4e968:86d5339b780aedd87b35e2b7c0a7e11b$"
 	}
 }
