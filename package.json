@@ -24,7 +24,6 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
-		"gui": "^0.7.1",
 		"phaser": "^3.22.0"
 	},
 	"parcelCleanPaths": [
