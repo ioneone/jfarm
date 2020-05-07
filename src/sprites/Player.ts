@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import AnimationFactory from '~/factory/AnimationFactory';
+import CharacterConfig from '../configs/CharacterConfig';
 
 enum Direction
 {
@@ -16,12 +16,10 @@ enum Direction
 class Player extends Phaser.GameObjects.Container
 {
 
-  public static TEXTURE_KEY = "light";
 
   private static SPEED = 60;
 
   private direction: Direction;
-  private isAnimating: boolean;
 
   private keyW: Phaser.Input.Keyboard.Key;
   private keyA: Phaser.Input.Keyboard.Key;
@@ -29,213 +27,72 @@ class Player extends Phaser.GameObjects.Container
   private keyD: Phaser.Input.Keyboard.Key;
   private keySpace: Phaser.Input.Keyboard.Key;
 
-  private body_: Phaser.GameObjects.Sprite;
-  private hair: Phaser.GameObjects.Sprite;
-  private legs: Phaser.GameObjects.Sprite;
-  private torso: Phaser.GameObjects.Sprite;
-  private shoes: Phaser.GameObjects.Sprite;
+  private bodySprite: Phaser.GameObjects.Sprite;
+  private hairSprite: Phaser.GameObjects.Sprite;
+  private legsSprite: Phaser.GameObjects.Sprite;
+  private torsoSprite: Phaser.GameObjects.Sprite;
+  private feetSprite: Phaser.GameObjects.Sprite;
+  private shadowSprite: Phaser.GameObjects.Sprite;
+
+  private config: CharacterConfig;
   
-  constructor(scene: Phaser.Scene, x: number, y: number)
+  constructor(scene: Phaser.Scene, x: number, y: number, config: CharacterConfig)
   {
     super(scene, x, y);
 
-    this.direction = Direction.Down;
-    this.isAnimating = false;
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
-    this.body.setCollideWorldBounds(true);   
-    
+    this.body.setCollideWorldBounds(true);  
+
+    this.config = config;
+    this.direction = Direction.Down;
+
     this.keyW = this.scene.input.keyboard.addKey('W');
     this.keyA = this.scene.input.keyboard.addKey('A');
     this.keyS = this.scene.input.keyboard.addKey('S');
-    this.keyD = this.scene.input.keyboard.addKey('d');
+    this.keyD = this.scene.input.keyboard.addKey('D');
     this.keySpace = this.scene.input.keyboard.addKey('SPACE');
 
-    // this.step = this.scene.sound.add('sandstep1');
-    // this.hoe = this.scene.sound.add('hoe');
-    // this.hoeHit = this.scene.sound.add('hoeHit');
+    this.shadowSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.shadow.spritesheetId);
+    scene.add.existing(this.shadowSprite);
+    this.shadowSprite.setOrigin(0, 0);
+    this.add(this.shadowSprite);
 
-    this.body_ = new Phaser.GameObjects.Sprite(scene, 0, 0, AnimationFactory.BODY);
-    scene.add.existing(this.body_);
-    this.body_.setOrigin(0, 0);
-    this.add(this.body_);
+    this.bodySprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.body.spritesheetId);
+    scene.add.existing(this.bodySprite);
+    this.bodySprite.setOrigin(0, 0);
+    this.add(this.bodySprite);
 
-    this.hair = new Phaser.GameObjects.Sprite(scene, 0, 0, AnimationFactory.HAIR);
-    scene.add.existing(this.hair);
-    this.hair.setOrigin(0, 0);
-    this.add(this.hair);
+    this.hairSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.hair.spritesheetId);
+    scene.add.existing(this.hairSprite);
+    this.hairSprite.setOrigin(0, 0);
+    this.add(this.hairSprite);
 
-    this.legs = new Phaser.GameObjects.Sprite(scene, 0, 0, AnimationFactory.PANTS);
-    scene.add.existing(this.legs);
-    this.legs.setOrigin(0, 0);
-    this.add(this.legs);
+    this.legsSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.legs.spritesheetId);
+    scene.add.existing(this.legsSprite);
+    this.legsSprite.setOrigin(0, 0);
+    this.add(this.legsSprite);
 
-    this.torso = new Phaser.GameObjects.Sprite(scene, 0, 0, AnimationFactory.LONG_SLEEVE);
-    scene.add.existing(this.torso);
-    this.torso.setOrigin(0, 0);
-    this.add(this.torso);
+    this.torsoSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.torso.spritesheetId);
+    scene.add.existing(this.torsoSprite);
+    this.torsoSprite.setOrigin(0, 0);
+    this.add(this.torsoSprite);
 
-    this.shoes = new Phaser.GameObjects.Sprite(scene, 0, 0, AnimationFactory.SHOES);
-    scene.add.existing(this.shoes);
-    this.shoes.setOrigin(0, 0);
-    this.add(this.shoes);
+    this.feetSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.feet.spritesheetId);
+    scene.add.existing(this.feetSprite);
+    this.feetSprite.setOrigin(0, 0);
+    this.add(this.feetSprite);
 
-    this.body.setSize(18, 8);
-    this.body.setOffset((64 - 18) / 2, 64 - 8);
+    const collisionBodyWidth = 18;
+    const collisionBodyHeight = 8;
+    this.body.setSize(collisionBodyWidth, collisionBodyHeight);
+    this.body.setOffset((64 - collisionBodyWidth) / 2, 64 - collisionBodyHeight);
     
   }
 
   public update()
   {
 
-    // if (this.isAnimating) {
-
-    //   if (this.anims.currentAnim.getFrameByProgress(this.anims.getProgress()).index === 2) {
-    //     if (!this.hoeHit.isPlaying) this.hoeHit.play();
-    //   }
-
-    //   return;
-    // }
-
-    // this.body.setSize(0, 0);
-
-    // if (this.keySpace.isDown)
-    // {
-
-    //   this.isAnimating = true;
-
-    //   this.hoe.play();
-
-      
-
-    //   this.setVelocity(0, 0);
-
-    //   switch (this.direction)
-    //   {
-    //     case Direction.Up:
-    //       this.anims.play('turn_soil_up', true);
-    //       this.setFlipX(false);
-    //       break;  
-    //     case Direction.UpLeft:
-    //     case Direction.DownLeft:
-    //     case Direction.Left:
-    //       this.anims.play('turn_soil_left', true);
-    //       this.setFlipX(false);
-    //       break;
-    //     case Direction.UpRight:
-    //     case Direction.DownRight:
-    //     case Direction.Right:
-    //       this.anims.play('turn_soil_left', true);
-    //       this.setFlipX(true);
-    //       // this.setScale(-1 ,1);
-    //       break;
-    //     default:
-    //       this.anims.play('turn_soil_down', true);
-    //       this.setFlipX(false);
-    //       break;
-    //   }
-
-    //   return;
-
-    // }
-
-    // if (this.keyW.isDown && this.keyA.isDown)
-    // {
-    //   this.setVelocity(-Player.SPEED, -Player.SPEED);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(false);
-    //   this.direction = Direction.UpLeft;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyW.isDown && this.keyD.isDown)
-    // {
-    //   this.setVelocity(Player.SPEED, -Player.SPEED);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(true);
-    //   this.direction = Direction.UpRight;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyS.isDown && this.keyA.isDown)
-    // {
-    //   this.setVelocity(-Player.SPEED, Player.SPEED);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(false);
-    //   this.direction = Direction.DownLeft;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyS.isDown && this.keyD.isDown)
-    // {
-    //   this.setVelocity(Player.SPEED, Player.SPEED);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(true);
-    //   this.direction = Direction.DownRight;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyW.isDown)
-    // {
-    //   this.setVelocity(0, -Player.SPEED);
-    //   this.anims.play('walk_up', true);
-    //   this.setFlipX(false);
-    //   this.direction = Direction.Up;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyS.isDown)
-    // {
-    //   this.setVelocity(0, Player.SPEED);
-    //   this.anims.play('walk_down', true);
-    //   this.setFlipX(false);
-    //   this.direction = Direction.Down;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyA.isDown)
-    // {
-    //   this.setVelocity(-Player.SPEED, 0);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(false);
-    //   this.direction = Direction.Left;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else if (this.keyD.isDown)
-    // {
-    //   this.setVelocity(Player.SPEED, 0);
-    //   this.anims.play('walk_left', true);
-    //   this.setFlipX(true);
-    //   this.direction = Direction.Right;
-    //   if (!this.step.isPlaying) this.step.play();
-    // }
-    // else
-    // {
-
-    //   this.setVelocity(0, 0);
-
-    //   switch (this.direction)
-    //   {
-    //     case Direction.Up:
-    //       this.anims.play('up', true);
-    //       this.setFlipX(false);
-    //       break;
-    //     case Direction.UpLeft:
-    //     case Direction.DownLeft:
-    //     case Direction.Left:
-    //       this.anims.play('left', true);
-    //       this.setFlipX(false);
-    //       break;
-    //     case Direction.UpRight:
-    //     case Direction.DownRight:
-    //     case Direction.Right:
-    //       this.anims.play('left', true);
-    //       this.setFlipX(true);
-    //       break;
-    //     default:
-    //       this.anims.play('down', true);
-    //       this.setFlipX(false);
-    //       break;
-    //   }
-
-    // }
-
-    // this.body.velocity.normalize().scale(Player.SPEED);
-   
     if (this.keyW.isDown)
     {
       this.body.setVelocity(0, -Player.SPEED);
@@ -263,69 +120,77 @@ class Player extends Phaser.GameObjects.Container
 
     if (this.body.velocity.x > 0) 
     {
-      this.body_.anims.play(AnimationFactory.BODY_WALK_RIGHT, true);
-      this.hair.anims.play(AnimationFactory.HAIR_WALK_RIGHT, true);
-      this.legs.anims.play(AnimationFactory.PANTS_WALK_RIGHT, true);
-      this.torso.anims.play(AnimationFactory.LONG_SLEEVE_WALK_RIGHT, true);
-      this.shoes.anims.play(AnimationFactory.SHOES_WALK_RIGHT, true);
+      this.bodySprite.anims.play(this.config.body.walkRightAnimationId, true);
+      this.hairSprite.anims.play(this.config.hair.walkRightAnimationId, true);
+      this.legsSprite.anims.play(this.config.legs.walkRightAnimationId, true);
+      this.torsoSprite.anims.play(this.config.torso.walkRightAnimationId, true);
+      this.feetSprite.anims.play(this.config.feet.walkRightAnimationId, true);
+      this.shadowSprite.anims.play(this.config.shadow.walkRightAnimationId, true);
     }
     else if (this.body.velocity.x < 0) 
     {
-      this.body_.anims.play(AnimationFactory.BODY_WALK_LEFT, true);
-      this.hair.anims.play(AnimationFactory.HAIR_WALK_LEFT, true);
-      this.legs.anims.play(AnimationFactory.PANTS_WALK_LEFT, true);
-      this.torso.anims.play(AnimationFactory.LONG_SLEEVE_WALK_LEFT, true);
-      this.shoes.anims.play(AnimationFactory.SHOES_WALK_LEFT, true);
+      this.bodySprite.anims.play(this.config.body.walkLeftAnimationId, true);
+      this.hairSprite.anims.play(this.config.hair.walkLeftAnimationId, true);
+      this.legsSprite.anims.play(this.config.legs.walkLeftAnimationId, true);
+      this.torsoSprite.anims.play(this.config.torso.walkLeftAnimationId, true);
+      this.feetSprite.anims.play(this.config.feet.walkLeftAnimationId, true);
+      this.shadowSprite.anims.play(this.config.shadow.walkLeftAnimationId, true);
     }
     else if (this.body.velocity.y > 0)
     {
-      this.body_.anims.play(AnimationFactory.BODY_WALK_DOWN, true);
-      this.hair.anims.play(AnimationFactory.HAIR_WALK_DOWN, true);
-      this.legs.anims.play(AnimationFactory.PANTS_WALK_DOWN, true);
-      this.torso.anims.play(AnimationFactory.LONG_SLEEVE_WALK_DOWN, true);
-      this.shoes.anims.play(AnimationFactory.SHOES_WALK_DOWN, true);
+      this.bodySprite.anims.play(this.config.body.walkDownAnimationId, true);
+      this.hairSprite.anims.play(this.config.hair.walkDownAnimationId, true);
+      this.legsSprite.anims.play(this.config.legs.walkDownAnimationId, true);
+      this.torsoSprite.anims.play(this.config.torso.walkDownAnimationId, true);
+      this.feetSprite.anims.play(this.config.feet.walkDownAnimationId, true);
+      this.shadowSprite.anims.play(this.config.shadow.walkDownAnimationId, true);
     }
     else if (this.body.velocity.y < 0)
     {
-      this.body_.anims.play(AnimationFactory.BODY_WALK_UP, true);
-      this.hair.anims.play(AnimationFactory.HAIR_WALK_UP, true);
-      this.legs.anims.play(AnimationFactory.PANTS_WALK_UP, true);
-      this.torso.anims.play(AnimationFactory.LONG_SLEEVE_WALK_UP, true);
-      this.shoes.anims.play(AnimationFactory.SHOES_WALK_UP, true);
+      this.bodySprite.anims.play(this.config.body.walkUpAnimationId, true);
+      this.hairSprite.anims.play(this.config.hair.walkUpAnimationId, true);
+      this.legsSprite.anims.play(this.config.legs.walkUpAnimationId, true);
+      this.torsoSprite.anims.play(this.config.torso.walkUpAnimationId, true);
+      this.feetSprite.anims.play(this.config.feet.walkUpAnimationId, true);
+      this.shadowSprite.anims.play(this.config.shadow.walkUpAnimationId, true);
     }
     else
     {
       if (this.direction === Direction.Up)
       {
-        this.body_.anims.play(AnimationFactory.BODY_UP, true);
-        this.hair.anims.play(AnimationFactory.HAIR_UP, true);
-        this.legs.anims.play(AnimationFactory.PANTS_UP, true);
-        this.torso.anims.play(AnimationFactory.LONG_SLEEVE_UP, true);
-        this.shoes.anims.play(AnimationFactory.SHOES_UP, true);
+        this.bodySprite.setFrame(this.config.faceUpFrameNumber);
+        this.hairSprite.setFrame(this.config.faceUpFrameNumber);
+        this.legsSprite.setFrame(this.config.faceUpFrameNumber);
+        this.torsoSprite.setFrame(this.config.faceUpFrameNumber);
+        this.feetSprite.setFrame(this.config.faceUpFrameNumber);
+        this.shadowSprite.setFrame(this.config.faceUpFrameNumber);
       }
       else if (this.direction === Direction.Down)
       {
-        this.body_.anims.play(AnimationFactory.BODY_DOWN, true);
-        this.hair.anims.play(AnimationFactory.HAIR_DOWN, true);
-        this.legs.anims.play(AnimationFactory.PANTS_DOWN, true);
-        this.torso.anims.play(AnimationFactory.LONG_SLEEVE_DOWN, true);
-        this.shoes.anims.play(AnimationFactory.SHOES_DOWN, true);
+        this.bodySprite.setFrame(this.config.faceDownFrameNumber);
+        this.hairSprite.setFrame(this.config.faceDownFrameNumber);
+        this.legsSprite.setFrame(this.config.faceDownFrameNumber);
+        this.torsoSprite.setFrame(this.config.faceDownFrameNumber);
+        this.feetSprite.setFrame(this.config.faceDownFrameNumber);
+        this.shadowSprite.setFrame(this.config.faceDownFrameNumber);
       }
       else if (this.direction === Direction.Left)
       {
-        this.body_.anims.play(AnimationFactory.BODY_LEFT, true);
-        this.hair.anims.play(AnimationFactory.HAIR_LEFT, true);
-        this.legs.anims.play(AnimationFactory.PANTS_LEFT, true);
-        this.torso.anims.play(AnimationFactory.LONG_SLEEVE_LEFT, true);
-        this.shoes.anims.play(AnimationFactory.SHOES_LEFT, true);
+        this.bodySprite.setFrame(this.config.faceLeftFrameNumber);
+        this.hairSprite.setFrame(this.config.faceLeftFrameNumber);
+        this.legsSprite.setFrame(this.config.faceLeftFrameNumber);
+        this.torsoSprite.setFrame(this.config.faceLeftFrameNumber);
+        this.feetSprite.setFrame(this.config.faceLeftFrameNumber);
+        this.shadowSprite.setFrame(this.config.faceLeftFrameNumber);
       }
       else if (this.direction === Direction.Right)
       {
-        this.body_.anims.play(AnimationFactory.BODY_RIGHT, true);
-        this.hair.anims.play(AnimationFactory.HAIR_RIGHT, true);
-        this.legs.anims.play(AnimationFactory.PANTS_RIGHT, true);
-        this.torso.anims.play(AnimationFactory.LONG_SLEEVE_RIGHT, true);
-        this.shoes.anims.play(AnimationFactory.SHOES_RIGHT, true);
+        this.bodySprite.setFrame(this.config.faceRightFrameNumber);
+        this.hairSprite.setFrame(this.config.faceRightFrameNumber);
+        this.legsSprite.setFrame(this.config.faceRightFrameNumber);
+        this.torsoSprite.setFrame(this.config.faceRightFrameNumber);
+        this.feetSprite.setFrame(this.config.faceRightFrameNumber);
+        this.shadowSprite.setFrame(this.config.faceRightFrameNumber);
       }
     }
 
