@@ -3,9 +3,13 @@ import ItemBoxes from "../gui/ItemBoxes";
 
 class GuiScene extends Phaser.Scene
 {
+
+  private itemBoxes: ItemBoxes | null;
+
   constructor()
 	{
     super({ key: 'gui', active: true });
+    this.itemBoxes = null;
 	}
 
   public preload()
@@ -16,26 +20,15 @@ class GuiScene extends Phaser.Scene
 
   public update()
   {
-
+    this.itemBoxes?.update();
   }
 
   public create()
   {
 
-    this.input.setDefaultCursor('url(assets/cursor.png), pointer');
+    // this.input.setDefaultCursor('url(assets/cursor.png), pointer');
     
-    new ItemBoxes(this, 512 / 2, 340);
-
-    // const marker = this.add.graphics();
-    // marker.lineStyle(5, 0xffffff, 1);
-    // marker.strokeRect(0, 0, box.width, box.height);
-    // marker.lineStyle(3, 0xff4f78, 1);
-    // marker.strokeRect(0, 0, box.width, box.height);
-
-    // marker.setPosition(box.getBounds().x, box.getBounds().y);
-
-    // const text = this.add.text(box.getBounds().x + 2, box.getBounds().y + 2, '1', { fontSize: 12, color: '#000000' });
-
+    // this.itemBoxes = new ItemBoxes(this, 512 / 2, 340);
 
   }
 
