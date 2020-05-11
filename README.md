@@ -20,4 +20,6 @@ npm install && npm start
 
 ## Development Logs
 
-Dev logs are available here. The logs also serve as the documentation of the code base as well as references for people who want to develop games with Phaser 3 as there are not enough tutorials avaialble online. 
+Dev logs are available [here](https://github.com/ioneone/jfarm/tree/develop/logs). The logs also serve as the documentation of the code base as well as references for people who want to develop games with Phaser 3 as there are not enough tutorials avaialble online. 
+
+1. [Getting Started with Phaser 3](https://github.com/ioneone/jfarm/blob/develop/logs/1-Getting-Started-with-Phaser-3.md)
