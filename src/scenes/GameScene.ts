@@ -11,10 +11,14 @@ class GameScene extends Phaser.Scene
   private marker;
   private bottomLayer;
   private npcs: Phaser.GameObjects.Group;
+
+  private keyZero;
+  private debugGraphics;
   
 	constructor()
 	{
     super(GameScene.ID);
+    
 	}
 
 	public preload()
@@ -41,6 +45,7 @@ class GameScene extends Phaser.Scene
     this.load.image("terrain", "assets/tiles/terrain.png");
     this.load.image("house", "assets/tiles/house.png");
     this.load.tilemapTiledJSON("map", "assets/tiles/map.json");
+
 	}
 
 	public create()
@@ -50,7 +55,6 @@ class GameScene extends Phaser.Scene
     const tileset = map.addTilesetImage("tiles", "tiles");
     const terrainset = map.addTilesetImage("terrain", "terrain");
     const houseset = map.addTilesetImage("house", "house");
-    
     this.bottomLayer = map.createDynamicLayer("BottomLayer", [tileset, terrainset], 0, 0);
     this.bottomLayer.setCollisionByProperty({ collision: true });
     // const middleLayer1 = map.createDynamicLayer("MiddleLayer/Level1", [tileset, houseset], 0, 0);
@@ -64,6 +68,8 @@ class GameScene extends Phaser.Scene
 
     // const middleLayer4 = map.createDynamicLayer("MiddleLayer/Level4", [tileset, houseset], 0, 0);
     // middleLayer4.setCollisionByProperty({ collision: true });
+
+    this.keyZero = this.input.keyboard.addKey('ZERO');
 
     const npc1 = 
       new NonPlayer(this, 400, 400, CharacterFactory.getSingletonInstance()
@@ -120,18 +126,21 @@ class GameScene extends Phaser.Scene
     // // this.marker.lineStyle(3, 0xff4f78, 1);
     // // this.marker.strokeRect(0, 0, map.tileWidth, map.tileHeight);
 
-    // const debugGraphics = this.add.graphics().setAlpha(0.5);
+    this.debugGraphics = this.add.graphics().setAlpha(0.5);
     // // middleLayer2.renderDebug(debugGraphics, {
     // //   tileColor: null, // Color of non-colliding tiles
     // //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
     // //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
     // // });
 
-    // this.bottomLayer.renderDebug(debugGraphics, {
-    //   tileColor: null, // Color of non-colliding tiles
-    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-    // });
+
+    this.bottomLayer.renderDebug(this.debugGraphics, {
+      tileColor: null, // Color of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+    });
+
+
 
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = map.heightInPixels;
@@ -164,7 +173,16 @@ class GameScene extends Phaser.Scene
   
   public update()
 	{
+
+    // toggle debug mode
+    if (Phaser.Input.Keyboard.JustDown(this.keyZero)) 
+    {
+      this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
+      this.debugGraphics.setVisible(!this.debugGraphics.visible);
+    }
+
     this.player?.update();
+    
 
     Phaser.Actions.Call(this.npcs.getChildren(), function(npc) { npc.update(); }, this);
 
