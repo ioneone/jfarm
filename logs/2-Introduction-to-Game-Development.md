@@ -1,3 +1,5 @@
+
+
 Tilesets I used
 
 https://www.spriters-resource.com/pc_computer/stardewvalley/
@@ -28,3 +30,5 @@ https://github.com/photonstorm/phaser3-typescript-project-template
 
 https://github.com/jdotrjs/phaser-guides/blob/master/Basics/Part1.md
 
+
+https://github.com/samme/phaser3-faq/wiki#how-do-i-extend-a-game-object
