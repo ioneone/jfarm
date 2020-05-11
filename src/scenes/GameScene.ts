@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import Player from "../sprites/Player";
-import NonPlayer from "../sprites/NonPlayer";
+import Player from "../objects/Player";
+import NonPlayer from "../objects/NonPlayer";
 import CharacterFactory from '../factory/CharacterFactory';
 
 class GameScene extends Phaser.Scene

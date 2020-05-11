@@ -6,9 +6,9 @@
 	"description": "",
 	"scripts": {
 		"start": "parcel src/index.html -p 8000",
-		"build": "parcel build src/index.html --out-dir build --public-url /jfarm/",
+		"build": "parcel build src/index.html --out-dir dist --public-url /jfarm/",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -b master -d build"
+		"deploy": "gh-pages -b master -d dist"
 	},
 	"author": "Junhong Wang",
 	"license": "MIT",
@@ -28,7 +28,7 @@
 		"uniqid": "^5.2.0"
 	},
 	"parcelCleanPaths": [
-		"build"
+		"dist"
 	],
 	"staticFiles": {
 		"staticPath": "public",
