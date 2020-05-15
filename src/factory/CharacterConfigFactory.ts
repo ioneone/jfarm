@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import uniqid from 'uniqid';
 import CharacterConfig from "../configs/CharacterConfig";
+import CharacterAsset from '../assets/CharacterAsset';
 
 /**
  * The character spritesheet must follow the 
  * Liberated Pixel Cup (LPC) standard.
  */
-class CharacterFactory
+class CharacterConfigFactory
 {
 
   // LPC standard
@@ -18,14 +19,14 @@ class CharacterFactory
   public static readonly FRAME_WIDTH = 64;
   public static readonly FRAME_HEIGHT = 64;
 
-  private static singleton: CharacterFactory;
+  private static singleton: CharacterConfigFactory;
   private spritesheetFilePathToSpritesheetIdMap: {[filePath: string]: string};
   private spritesheetFilePathToWalkUpAnimationIdMap: {[filePath: string]: string};
   private spritesheetFilePathToWalkLeftAnimationIdMap: {[filePath: string]: string};
   private spritesheetFilePathToWalkDownAnimationIdMap: {[filePath: string]: string};
   private spritesheetFilePathToWalkRightAnimationIdMap: {[filePath: string]: string};
 
-  private constructor() 
+  private constructor()
   {
     this.spritesheetFilePathToSpritesheetIdMap = {};
     this.spritesheetFilePathToWalkUpAnimationIdMap = {};
@@ -34,13 +35,13 @@ class CharacterFactory
     this.spritesheetFilePathToWalkRightAnimationIdMap = {};
   }
 
-  public static getSingletonInstance(): CharacterFactory
+  public static getSingletonInstance(): CharacterConfigFactory
   {
-    if (!CharacterFactory.singleton)
+    if (!CharacterConfigFactory.singleton)
     {
-      CharacterFactory.singleton = new CharacterFactory();
+      CharacterConfigFactory.singleton = new CharacterConfigFactory();
     }
-    return CharacterFactory.singleton;
+    return CharacterConfigFactory.singleton;
   }
   
   /**
@@ -49,9 +50,9 @@ class CharacterFactory
    * @param {Phaser.Loader.LoaderPlugin} loader - loader to load a file
    * @param {string[]} spritesheetFilePaths - the file paths to spritesheets to load
    */
-  public preloadCharacterSpritesheets(loader: Phaser.Loader.LoaderPlugin, spritesheetFilePaths: string[])
+  public preloadCharacterSpritesheets(loader: Phaser.Loader.LoaderPlugin, spritesheetFilePaths: CharacterAsset[]): void
   {
-    const option = { frameWidth: CharacterFactory.FRAME_WIDTH, frameHeight: CharacterFactory.FRAME_HEIGHT };
+    const option = { frameWidth: CharacterConfigFactory.FRAME_WIDTH, frameHeight: CharacterConfigFactory.FRAME_HEIGHT };
     spritesheetFilePaths.forEach(spritesheetFilePath => 
       {
         // already loaded
@@ -65,30 +66,29 @@ class CharacterFactory
       });
   }
 
+  public createCharacterAnimations(animationManager: Phaser.Animations.AnimationManager, spritesheetFilePaths: CharacterAsset[]): void
+  {
+    spritesheetFilePaths.forEach(spritesheetFilePath => {
+      this.createCharacterAnimation(animationManager, spritesheetFilePath);
+    });
+  }
+
   public createCharacterConfig(
-    animationManager: Phaser.Animations.AnimationManager, 
-    bodySpritesheetFilePath: string,
-    hairSpritesheetFilePath: string,
-    legsSpritesheetFilePath: string,
-    torsoSpritesheetFilePath: string,
-    feetSpritesheetFilePath: string,
-    shadowSpritesheetFilePath: string
+    hairSpritesheetFilePath: CharacterAsset,
+    bodySpritesheetFilePath: CharacterAsset,
+    torsoSpritesheetFilePath: CharacterAsset,
+    legsSpritesheetFilePath: CharacterAsset,
+    feetSpritesheetFilePath: CharacterAsset,
+    shadowSpritesheetFilePath: CharacterAsset
     ) : CharacterConfig
   {
 
-    this.registerCharacterAnimations(animationManager, bodySpritesheetFilePath);
-    this.registerCharacterAnimations(animationManager, hairSpritesheetFilePath);
-    this.registerCharacterAnimations(animationManager, legsSpritesheetFilePath);
-    this.registerCharacterAnimations(animationManager, torsoSpritesheetFilePath);
-    this.registerCharacterAnimations(animationManager, feetSpritesheetFilePath);
-    this.registerCharacterAnimations(animationManager, shadowSpritesheetFilePath);
-
     return {
 
-      faceUpFrameNumber: CharacterFactory.ROW_UP * CharacterFactory.NUM_COL,
-      faceLeftFrameNumber: CharacterFactory.ROW_LEFT * CharacterFactory.NUM_COL,
-      faceDownFrameNumber: CharacterFactory.ROW_DOWN * CharacterFactory.NUM_COL,
-      faceRightFrameNumber: CharacterFactory.ROW_RIGHT * CharacterFactory.NUM_COL,
+      faceUpFrameNumber: CharacterConfigFactory.ROW_UP * CharacterConfigFactory.NUM_COL,
+      faceLeftFrameNumber: CharacterConfigFactory.ROW_LEFT * CharacterConfigFactory.NUM_COL,
+      faceDownFrameNumber: CharacterConfigFactory.ROW_DOWN * CharacterConfigFactory.NUM_COL,
+      faceRightFrameNumber: CharacterConfigFactory.ROW_RIGHT * CharacterConfigFactory.NUM_COL,
 
       body: {
         spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[bodySpritesheetFilePath],
@@ -141,7 +141,7 @@ class CharacterFactory
     };
   }
 
-  private registerCharacterAnimations(animationManager: Phaser.Animations.AnimationManager, spritesheetFilePath: string)
+  private createCharacterAnimation(animationManager: Phaser.Animations.AnimationManager, spritesheetFilePath: CharacterAsset)
   {
     const spritesheetId = this.spritesheetFilePathToSpritesheetIdMap[spritesheetFilePath];
 
@@ -151,8 +151,8 @@ class CharacterFactory
       animationManager.create({
         key: walkUpAnimationId,
         frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterFactory.NUM_COL * CharacterFactory.ROW_UP + 1, 
-            end: CharacterFactory.NUM_COL * CharacterFactory.ROW_UP + 8 }),
+          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 1, 
+            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 8 }),
         frameRate: 12,
         repeat: -1
       });
@@ -165,8 +165,8 @@ class CharacterFactory
       animationManager.create({
         key: walkLeftAnimationId,
         frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterFactory.NUM_COL * CharacterFactory.ROW_LEFT + 1, 
-            end: CharacterFactory.NUM_COL * CharacterFactory.ROW_LEFT + 8 }),
+          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 1, 
+            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 8 }),
         frameRate: 12,
         repeat: -1
       });
@@ -179,8 +179,8 @@ class CharacterFactory
       animationManager.create({
         key: walkDownAnimationId,
         frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterFactory.NUM_COL * CharacterFactory.ROW_DOWN + 1, 
-            end: CharacterFactory.NUM_COL * CharacterFactory.ROW_DOWN + 8 }),
+          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 1, 
+            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 8 }),
         frameRate: 12,
         repeat: -1
       });
@@ -193,8 +193,8 @@ class CharacterFactory
       animationManager.create({
         key: walkRightAnimationId,
         frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterFactory.NUM_COL * CharacterFactory.ROW_RIGHT + 1, 
-            end: CharacterFactory.NUM_COL * CharacterFactory.ROW_RIGHT + 8 }),
+          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 1, 
+            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 8 }),
         frameRate: 12,
         repeat: -1
       });
@@ -205,4 +205,4 @@ class CharacterFactory
 
 }
 
-export default CharacterFactory;
+export default CharacterConfigFactory;

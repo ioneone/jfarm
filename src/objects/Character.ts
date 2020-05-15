@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import CharacterConfig from '../configs/CharacterConfig';
-import CharacterFactory from '~/factory/CharacterFactory';
+import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 
 enum Direction
 {
@@ -70,8 +70,8 @@ class Character extends Phaser.GameObjects.Container
     this.add(this.feetSprite);
 
     this.getBody().setSize(Character.COLLISION_BODY_WIDTH, Character.COLLISION_BODY_HEIGHT);
-    this.getBody().setOffset((CharacterFactory.FRAME_WIDTH - Character.COLLISION_BODY_WIDTH) / 2, 
-      CharacterFactory.FRAME_HEIGHT - Character.COLLISION_BODY_HEIGHT);
+    this.getBody().setOffset((CharacterConfigFactory.FRAME_WIDTH - Character.COLLISION_BODY_WIDTH) / 2, 
+      CharacterConfigFactory.FRAME_HEIGHT - Character.COLLISION_BODY_HEIGHT);
   }
 
   protected move(direction: Direction)

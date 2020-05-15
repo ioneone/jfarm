@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import CharacterConfig from '../configs/CharacterConfig';
 import Character, { Direction } from './Character';
-import CharacterFactory from '~/factory/CharacterFactory';
+import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 
 class Player extends Character
 {
@@ -24,8 +24,8 @@ class Player extends Character
     this.keyD = this.scene.input.keyboard.addKey('D');
 
     this.getBody().setSize(Player.COLLISON_BODY_WIDTH, Player.COLLISON_BODY_HEIGHT);
-    this.getBody().setOffset((CharacterFactory.FRAME_WIDTH - Player.COLLISON_BODY_WIDTH) / 2, 
-      CharacterFactory.FRAME_HEIGHT - Player.COLLISON_BODY_HEIGHT);
+    this.getBody().setOffset((CharacterConfigFactory.FRAME_WIDTH - Player.COLLISON_BODY_WIDTH) / 2, 
+    CharacterConfigFactory.FRAME_HEIGHT - Player.COLLISON_BODY_HEIGHT);
   }
 
   public update()
