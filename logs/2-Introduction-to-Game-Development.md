@@ -43,3 +43,4 @@ Check out these guides for Phaser 3 beginners.
 - [Phaser 3 FAQ](https://github.com/samme/phaser3-faq/wiki#how-do-i-extend-a-game-object)
 - [How to Structure Your Project in Phaser 3](https://github.com/jdotrjs/phaser-guides/blob/master/Basics/Part1.md)
 - [Modular Game Worlds in Phaser 3](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
+- [Phaser 3 Tilemap Pack](https://github.com/B3L7/phaser3-tilemap-pack)

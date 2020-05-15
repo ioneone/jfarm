@@ -4,10 +4,10 @@ import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 
 enum Direction
 {
-  Up,
-  Left,
-  Down,
-  Right
+  Up = "Up",
+  Left = "Left",
+  Down = "Down",
+  Right = "Right"
 }
 
 class Character extends Phaser.GameObjects.Container
@@ -72,6 +72,11 @@ class Character extends Phaser.GameObjects.Container
     this.getBody().setSize(Character.COLLISION_BODY_WIDTH, Character.COLLISION_BODY_HEIGHT);
     this.getBody().setOffset((CharacterConfigFactory.FRAME_WIDTH - Character.COLLISION_BODY_WIDTH) / 2, 
       CharacterConfigFactory.FRAME_HEIGHT - Character.COLLISION_BODY_HEIGHT);
+  }
+
+  public getConfig()
+  {
+    return this.config;
   }
 
   protected move(direction: Direction)
@@ -224,15 +229,22 @@ class Character extends Phaser.GameObjects.Container
     }
   }
 
-  protected setDirection(direction: Direction)
+  public setDirection(direction: Direction)
   {
     this.direction = direction;
+  }
+
+  public getDirection()
+  {
+    return this.direction;
   }
 
   protected getBody(): Phaser.Physics.Arcade.Body
   {
     return this.body as Phaser.Physics.Arcade.Body;
   }
+
+
 
 }
 
