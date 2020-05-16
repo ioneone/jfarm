@@ -2,17 +2,17 @@ import Phaser from 'phaser';
 import Player from '../objects/Player';
 import CharacterConfig from '../configs/CharacterConfig';
 import { Direction } from '../objects/Character';
+import GameScene from './GameScene';
+import CharacterAsset from '../assets/CharacterAsset';
+import CharacterConfigBuilder from '../builder/CharacterConfigBuilder';
 
 class RoomScene extends Phaser.Scene
 {
 
   private player?: Player;
-  private playerConfig?: CharacterConfig;
   private targetX?: number;
   private targetY?: number;
   private direction?: Direction;
-
-  private isTransitioning?: boolean;
 
 	constructor()
 	{
@@ -21,12 +21,9 @@ class RoomScene extends Phaser.Scene
   
   public init(data)
   {
-    console.log("init is called");
-    this.playerConfig = data.playerConfig;
     this.targetX = data.targetX;
     this.targetY = data.targetY;
     this.direction = data.direction;
-    this.isTransitioning = false;
   }
 
 	public preload()
@@ -44,8 +41,6 @@ class RoomScene extends Phaser.Scene
     const buildingInteriorTileset = tilemap.addTilesetImage("building-interior", "building-interior");
     const backgroundTileset = tilemap.addTilesetImage("background", "background");
 
-
-
     const transitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
     const transitionObjectGroup = this.physics.add.staticGroup();
     transitionObjects.forEach(object => {
@@ -62,8 +57,6 @@ class RoomScene extends Phaser.Scene
 
 
 
-
-    
     const bottomLayer1 = tilemap.createDynamicLayer("BottomLayer/Level1", [buildingInteriorTileset, backgroundTileset], 0, 0);
     const bottomLayer2 = tilemap.createDynamicLayer("BottomLayer/Level2", [buildingInteriorTileset, backgroundTileset], 0, 0);
     const bottomLayer3 = tilemap.createDynamicLayer("BottomLayer/Level3", [buildingInteriorTileset, backgroundTileset], 0, 0);
@@ -79,7 +72,16 @@ class RoomScene extends Phaser.Scene
     middleLayer3.setCollisionByProperty({ collision: true });
     middleLayer4.setCollisionByProperty({ collision: true });
 
-    this.player = new Player(this, this.targetX - 32, this.targetY - 32, this.playerConfig!);
+    const playerConfig = new CharacterConfigBuilder()
+      .setHairCharacterAsset(CharacterAsset.WhiteBedheadMaleHair)
+      .setBodyCharacterAsset(CharacterAsset.LightMaleBody)
+      .setTorsoCharacterAsset(CharacterAsset.WhiteMaleLongSleeve)
+      .setLegsCharacterAsset(CharacterAsset.MagentaMalePants)
+      .setFeetCharacterAsset(CharacterAsset.BlackMaleShoes)
+      .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .build();
+
+    this.player = new Player(this, this.targetX! - 32, this.targetY! - 32, playerConfig);
     this.player.setDirection(this.direction);
 
     const middleLayers = this.add.group([middleLayer1, middleLayer2, middleLayer3, middleLayer4]);
@@ -91,17 +93,9 @@ class RoomScene extends Phaser.Scene
 
     this.physics.add.collider(this.player, middleLayers);
 
-    
 
     this.physics.add.overlap(this.player, transitionObjectGroup, (object1, object2) => {
-      console.log("object: ", object2);
-      if (this.isTransitioning || this.player?.getDirection() !== object2.direction) return;
-      this.isTransitioning = true;
-      this.cameras.main.fadeOut(200);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start(object2.destination, { playerConfig: this.player?.getConfig(), targetX: object2.targetX, targetY: object2.targetY, direction: object2.direction });
-      })
-      
+      this.scene.start(GameScene.name, { targetX: object2.targetX, targetY: object2.targetY, direction: object2.direction });
     });
 
     this.physics.world.bounds.width = tilemap.widthInPixels;

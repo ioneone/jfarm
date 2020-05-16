@@ -5,6 +5,7 @@ import NonPlayer from "../objects/NonPlayer";
 import CharacterConfigBuilder from '../builder/CharacterConfigBuilder';
 import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 import RoomScene from './RoomScene';
+import { Direction } from '~/objects/Character';
 
 class GameScene extends Phaser.Scene
 {
@@ -13,7 +14,10 @@ class GameScene extends Phaser.Scene
   private npcs?: Phaser.GameObjects.Group;
   private keyZero?: Phaser.Input.Keyboard.Key;
   private debugGraphics?: Phaser.GameObjects.Graphics;
-  private isTransitioning?: boolean;
+
+  private targetX?: number;
+  private targetY?: number;
+  private direction?: Direction;
 
 	constructor()
 	{
@@ -22,12 +26,10 @@ class GameScene extends Phaser.Scene
 
   public init(data)
   {
-    this.isTransitioning = false;
+    console.log(data);
     this.targetX = data.targetX;
     this.targetY = data.targetY;
     this.direction = data.direction;
-
-    console.log("targetX", this.targetX);
   }
   
 	public preload()
@@ -54,16 +56,13 @@ class GameScene extends Phaser.Scene
     const outdoorTileset = tilemap.addTilesetImage("outdoor", "outdoor");
     const houseTileset = tilemap.addTilesetImage("house", "house");
 
-
-
-      const transitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
+    const transitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
     const transitionObjectGroup = this.physics.add.staticGroup();
     transitionObjects.forEach(object => {
       const obj = transitionObjectGroup.create(object.x, object.y);
       obj.setOrigin(0);
       obj.body.setSize(object.width, object.height);
       obj.destination = object.name;
-      console.log(object);
       obj.targetX = parseFloat(object.properties[1].value);
       obj.targetY = parseFloat(object.properties[2].value);
       obj.direction = object.properties[0].value;
@@ -132,9 +131,9 @@ class GameScene extends Phaser.Scene
       .setShadowCharacterAsset(CharacterAsset.Shadow)
       .build();
           
-    this.player = new Player(this, this.targetX - 32 || 400, this.targetY - 32 || 300, this.playerConfig || playerConfig);
-    this.player.setDirection(this.direction);
-
+    this.player = new Player(this, this.targetX ? this.targetX - 32 : 400, this.targetY ? this.targetY - 32 : 300, playerConfig);
+    this.player.setDirection(this.direction || Direction.Down);
+  
     const topLayer1 = tilemap.createDynamicLayer("TopLayer/Level1", [outdoorTileset, houseTileset], 0, 0);
     const topLayer2 = tilemap.createDynamicLayer("TopLayer/Level2", [outdoorTileset, houseTileset], 0, 0);
     const topLayer3 = tilemap.createDynamicLayer("TopLayer/Level3", [outdoorTileset, houseTileset], 0, 0);
@@ -191,14 +190,7 @@ class GameScene extends Phaser.Scene
     
 
     this.physics.add.overlap(this.player, transitionObjectGroup, (object1, object2) => {
-      console.log("overlapping");
-      if (this.isTransitioning || this.player?.getDirection() !== object2.direction) return;
-      this.isTransitioning = true;
-      console.log("object: ", object2);
-      this.cameras.main.fadeOut(200);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start(object2.destination, { playerConfig: this.player?.getConfig(), targetX: object2.targetX, targetY: object2.targetY, direction: object2.direction });
-      })
+      this.scene.start(RoomScene.name, { targetX: object2.targetX, targetY: object2.targetY, direction: object2.direction });
     });
 
   }
@@ -211,7 +203,6 @@ class GameScene extends Phaser.Scene
     {
       this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
       this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
-      // this.scene.start(RoomScene.name, { playerConfig: this.player?.getConfig() });
     }
 
     this.player!.update();
