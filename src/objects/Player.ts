@@ -14,9 +14,9 @@ class Player extends Character
   private keyS: Phaser.Input.Keyboard.Key;
   private keyD: Phaser.Input.Keyboard.Key;
     
-  constructor(scene: Phaser.Scene, x: number, y: number, config: CharacterConfig)
+  constructor(config: CharacterConfig, x?: number, y?: number)
   {
-    super(scene, x, y, config);
+    super(config, x, y);
 
     this.keyW = this.scene.input.keyboard.addKey('W');
     this.keyA = this.scene.input.keyboard.addKey('A');

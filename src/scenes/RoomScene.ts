@@ -86,10 +86,12 @@ class RoomScene extends Phaser.Scene
       .setLegsCharacterAsset(CharacterAsset.MagentaMalePants)
       .setFeetCharacterAsset(CharacterAsset.BlackMaleShoes)
       .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .setScene(this)
       .build();
 
-    this.player = new Player(this, this.targetX! - 32, this.targetY! - 32, playerConfig);
-    this.player.setDirection(this.direction);
+    this.player = new Player(playerConfig)
+      .setPosition(this.targetX! - 32, this.targetY! - 32)
+      .setDirection(this.direction);
 
     const middleLayers = this.add.group([middleLayer1, middleLayer2, middleLayer3, middleLayer4]);
 

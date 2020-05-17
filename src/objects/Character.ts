@@ -28,9 +28,9 @@ class Character extends Phaser.GameObjects.Container
   private feetSprite: Phaser.GameObjects.Sprite;
   private shadowSprite: Phaser.GameObjects.Sprite;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, config: CharacterConfig)
+  constructor(config: CharacterConfig, x?: number, y?: number)
   {
-    super(scene, x, y);
+    super(config.scene, x, y);
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
@@ -39,33 +39,33 @@ class Character extends Phaser.GameObjects.Container
     this.direction = Direction.Down;
     this.config = config;
 
-    this.shadowSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.shadow.spritesheetId);
-    scene.add.existing(this.shadowSprite);
+    this.shadowSprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.shadow.spritesheetId);
+    this.scene.add.existing(this.shadowSprite);
     this.shadowSprite.setOrigin(0, 0);
     this.add(this.shadowSprite);
 
-    this.bodySprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.body.spritesheetId);
-    scene.add.existing(this.bodySprite);
+    this.bodySprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.body.spritesheetId);
+    this.scene.add.existing(this.bodySprite);
     this.bodySprite.setOrigin(0, 0);
     this.add(this.bodySprite);
 
-    this.hairSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.hair.spritesheetId);
-    scene.add.existing(this.hairSprite);
+    this.hairSprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.hair.spritesheetId);
+    this.scene.add.existing(this.hairSprite);
     this.hairSprite.setOrigin(0, 0);
     this.add(this.hairSprite);
 
-    this.legsSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.legs.spritesheetId);
-    scene.add.existing(this.legsSprite);
+    this.legsSprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.legs.spritesheetId);
+    this.scene.add.existing(this.legsSprite);
     this.legsSprite.setOrigin(0, 0);
     this.add(this.legsSprite);
 
-    this.torsoSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.torso.spritesheetId);
-    scene.add.existing(this.torsoSprite);
+    this.torsoSprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.torso.spritesheetId);
+    this.scene.add.existing(this.torsoSprite);
     this.torsoSprite.setOrigin(0, 0);
     this.add(this.torsoSprite);
 
-    this.feetSprite = new Phaser.GameObjects.Sprite(scene, 0, 0, config.feet.spritesheetId);
-    scene.add.existing(this.feetSprite);
+    this.feetSprite = new Phaser.GameObjects.Sprite(this.scene, 0, 0, config.feet.spritesheetId);
+    this.scene.add.existing(this.feetSprite);
     this.feetSprite.setOrigin(0, 0);
     this.add(this.feetSprite);
 
@@ -232,6 +232,7 @@ class Character extends Phaser.GameObjects.Container
   public setDirection(direction: Direction)
   {
     this.direction = direction;
+    return this;
   }
 
   public getDirection()
@@ -243,8 +244,6 @@ class Character extends Phaser.GameObjects.Container
   {
     return this.body as Phaser.Physics.Arcade.Body;
   }
-
-
 
 }
 

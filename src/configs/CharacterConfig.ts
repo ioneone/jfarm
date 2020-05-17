@@ -1,5 +1,9 @@
+import Phaser from 'phaser';
+
 interface CharacterConfig
 {
+
+  scene: Phaser.Scene;
 
   faceUpFrameNumber: number;
   faceLeftFrameNumber: number;

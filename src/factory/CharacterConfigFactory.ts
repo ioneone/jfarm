@@ -20,21 +20,7 @@ class CharacterConfigFactory
   public static readonly FRAME_HEIGHT = 64;
 
   private static singleton: CharacterConfigFactory;
-  private spritesheetFilePathToSpritesheetIdMap: {[filePath: string]: string};
-  private spritesheetFilePathToWalkUpAnimationIdMap: {[filePath: string]: string};
-  private spritesheetFilePathToWalkLeftAnimationIdMap: {[filePath: string]: string};
-  private spritesheetFilePathToWalkDownAnimationIdMap: {[filePath: string]: string};
-  private spritesheetFilePathToWalkRightAnimationIdMap: {[filePath: string]: string};
-
-  private constructor()
-  {
-    this.spritesheetFilePathToSpritesheetIdMap = {};
-    this.spritesheetFilePathToWalkUpAnimationIdMap = {};
-    this.spritesheetFilePathToWalkLeftAnimationIdMap = {};
-    this.spritesheetFilePathToWalkDownAnimationIdMap = {};
-    this.spritesheetFilePathToWalkRightAnimationIdMap = {};
-  }
-
+  
   public static getSingletonInstance(): CharacterConfigFactory
   {
     if (!CharacterConfigFactory.singleton)
@@ -55,14 +41,9 @@ class CharacterConfigFactory
     const option = { frameWidth: CharacterConfigFactory.FRAME_WIDTH, frameHeight: CharacterConfigFactory.FRAME_HEIGHT };
     spritesheetFilePaths.forEach(spritesheetFilePath => 
       {
-        // already loaded
-        if (this.spritesheetFilePathToSpritesheetIdMap[spritesheetFilePath]) return;
-
-        const spritesheetId = uniqid();
-
-        // the textures are accessible from all scenes
-        loader.spritesheet(spritesheetId, spritesheetFilePath, option);
-        this.spritesheetFilePathToSpritesheetIdMap[spritesheetFilePath] = spritesheetId;
+        // The textures are accessible from all scenes.
+        // If already loaded, Phaser will just ignore this call.
+        loader.spritesheet(spritesheetFilePath, spritesheetFilePath, option);
       });
   }
 
@@ -74,6 +55,7 @@ class CharacterConfigFactory
   }
 
   public createCharacterConfig(
+    scene: Phaser.Scene,
     hairSpritesheetFilePath: CharacterAsset,
     bodySpritesheetFilePath: CharacterAsset,
     torsoSpritesheetFilePath: CharacterAsset,
@@ -85,57 +67,59 @@ class CharacterConfigFactory
 
     return {
 
+      scene,
+      
       faceUpFrameNumber: CharacterConfigFactory.ROW_UP * CharacterConfigFactory.NUM_COL,
       faceLeftFrameNumber: CharacterConfigFactory.ROW_LEFT * CharacterConfigFactory.NUM_COL,
       faceDownFrameNumber: CharacterConfigFactory.ROW_DOWN * CharacterConfigFactory.NUM_COL,
       faceRightFrameNumber: CharacterConfigFactory.ROW_RIGHT * CharacterConfigFactory.NUM_COL,
 
       body: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[bodySpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[bodySpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[bodySpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[bodySpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[bodySpritesheetFilePath]
+        spritesheetId: bodySpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(bodySpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(bodySpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(bodySpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(bodySpritesheetFilePath)
       },
     
       hair: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[hairSpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[hairSpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[hairSpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[hairSpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[hairSpritesheetFilePath]
+        spritesheetId: hairSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(hairSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(hairSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(hairSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(hairSpritesheetFilePath)
       },
     
       legs: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[legsSpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[legsSpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[legsSpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[legsSpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[legsSpritesheetFilePath]
+        spritesheetId: legsSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(legsSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(legsSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(legsSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(legsSpritesheetFilePath)
       },
     
       torso: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[torsoSpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[torsoSpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[torsoSpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[torsoSpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[torsoSpritesheetFilePath]
+        spritesheetId: torsoSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(torsoSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(torsoSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(torsoSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(torsoSpritesheetFilePath)
       },
     
       feet: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[feetSpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[feetSpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[feetSpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[feetSpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[feetSpritesheetFilePath]
+        spritesheetId: feetSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(feetSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(feetSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(feetSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(feetSpritesheetFilePath)
       },
     
       shadow: {
-        spritesheetId: this.spritesheetFilePathToSpritesheetIdMap[shadowSpritesheetFilePath],
-        walkUpAnimationId: this.spritesheetFilePathToWalkUpAnimationIdMap[shadowSpritesheetFilePath],
-        walkLeftAnimationId: this.spritesheetFilePathToWalkLeftAnimationIdMap[shadowSpritesheetFilePath],
-        walkDownAnimationId: this.spritesheetFilePathToWalkDownAnimationIdMap[shadowSpritesheetFilePath],
-        walkRightAnimationId: this.spritesheetFilePathToWalkRightAnimationIdMap[shadowSpritesheetFilePath]
+        spritesheetId: shadowSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(shadowSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(shadowSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(shadowSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(shadowSpritesheetFilePath)
       }
 
     };
@@ -143,64 +127,69 @@ class CharacterConfigFactory
 
   private createCharacterAnimation(animationManager: Phaser.Animations.AnimationManager, spritesheetFilePath: CharacterAsset)
   {
-    const spritesheetId = this.spritesheetFilePathToSpritesheetIdMap[spritesheetFilePath];
 
-    if (!this.spritesheetFilePathToWalkUpAnimationIdMap[spritesheetFilePath])
-    {
-      const walkUpAnimationId = uniqid();
-      animationManager.create({
-        key: walkUpAnimationId,
-        frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 1, 
-            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 8 }),
-        frameRate: 12,
-        repeat: -1
-      });
-      this.spritesheetFilePathToWalkUpAnimationIdMap[spritesheetFilePath] = walkUpAnimationId;
-    }
+    // animation is global
+    // If the existing key is provided, then it just returns the corresponding animation.
+    // walk up animation
+    animationManager.create({
+      key: this.getWalkUpAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 8 }),
+      frameRate: 12,
+      repeat: -1
+    });
 
-    if (!this.spritesheetFilePathToWalkLeftAnimationIdMap[spritesheetFilePath])
-    {
-      const walkLeftAnimationId = uniqid();
-      animationManager.create({
-        key: walkLeftAnimationId,
-        frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 1, 
-            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 8 }),
-        frameRate: 12,
-        repeat: -1
-      });
-      this.spritesheetFilePathToWalkLeftAnimationIdMap[spritesheetFilePath] = walkLeftAnimationId;
-    }
+    // walk left animation
+    animationManager.create({
+      key: this.getWalkLeftAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 8 }),
+      frameRate: 12,
+      repeat: -1
+    });
 
-    if (!this.spritesheetFilePathToWalkDownAnimationIdMap[spritesheetFilePath])
-    {
-      const walkDownAnimationId = uniqid();
-      animationManager.create({
-        key: walkDownAnimationId,
-        frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 1, 
-            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 8 }),
-        frameRate: 12,
-        repeat: -1
-      });
-      this.spritesheetFilePathToWalkDownAnimationIdMap[spritesheetFilePath] = walkDownAnimationId;
-    }
+    // walk down animation
+    animationManager.create({
+      key: this.getWalkDownAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 8 }),
+      frameRate: 12,
+      repeat: -1
+    });
 
-    if (!this.spritesheetFilePathToWalkRightAnimationIdMap[spritesheetFilePath])
-    {
-      const walkRightAnimationId = uniqid();
-      animationManager.create({
-        key: walkRightAnimationId,
-        frames: animationManager.generateFrameNumbers(spritesheetId, 
-          { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 1, 
-            end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 8 }),
-        frameRate: 12,
-        repeat: -1
-      });
-      this.spritesheetFilePathToWalkRightAnimationIdMap[spritesheetFilePath] = walkRightAnimationId;
-    }
+    // walk right animation
+    animationManager.create({
+      key: this.getWalkRightAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 8 }),
+      frameRate: 12,
+      repeat: -1
+    });
     
+  }
+
+  private getWalkUpAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":walk_up";
+  }
+
+  private getWalkLeftAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":walk_left";
+  }
+
+  private getWalkDownAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":walk_down";
+  }
+
+  private getWalkRightAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":walk_right";
   }
 
 }

@@ -4,6 +4,7 @@ import CharacterConfig from '../configs/CharacterConfig';
 
 class CharacterConfigBuilder {
 
+  private scene?: Phaser.Scene;
   private hairCharacterAsset?: CharacterAsset;
   private bodyCharacterAsset?: CharacterAsset;
   private torsoCharacterAsset?: CharacterAsset;
@@ -47,9 +48,16 @@ class CharacterConfigBuilder {
     return this;
   }
 
+  public setScene(scene: Phaser.Scene)
+  {
+    this.scene = scene;
+    return this;
+  }
+
   public build(): CharacterConfig
   {
     return CharacterConfigFactory.getSingletonInstance().createCharacterConfig(
+      this.scene!,
       this.hairCharacterAsset!,
       this.bodyCharacterAsset!,
       this.torsoCharacterAsset!,

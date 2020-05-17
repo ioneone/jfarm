@@ -7,7 +7,7 @@ class Crop extends Phaser.GameObjects.Sprite
   {
     super(scene, x, y, "assets/tileset/farming/plants.png", frameNumber);
     this.scene.add.existing(this);
-    this.setOrigin(0.5, 0.75);
+    this.setOrigin(0.5, 0.9);
   }
 
 }

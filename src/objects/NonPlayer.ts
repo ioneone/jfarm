@@ -5,9 +5,9 @@ import Character, { Direction } from './Character';
 class NonPlayer extends Character
 {
   
-  constructor(scene: Phaser.Scene, x: number, y: number, config: CharacterConfig)
+  constructor(config: CharacterConfig, x?: number, y?: number)
   {
-    super(scene, x, y, config);
+    super(config, x, y);
 
     // prevent it from being pushed 
     this.getBody().setImmovable();
