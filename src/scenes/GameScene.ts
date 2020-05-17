@@ -6,6 +6,7 @@ import CharacterConfigBuilder from '../builder/CharacterConfigBuilder';
 import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 import RoomScene from './RoomScene';
 import { Direction } from '~/objects/Character';
+import Crop from '~/objects/Crop';
 
 class GameScene extends Phaser.Scene
 {
@@ -19,14 +20,20 @@ class GameScene extends Phaser.Scene
   private targetY?: number;
   private direction?: Direction;
 
+  private marker?: Phaser.GameObjects.Sprite;
+  private bottomLayer1?: Phaser.Tilemaps.DynamicTilemapLayer;
+
+  private cropMode: boolean;
+  private keyP?: Phaser.Input.Keyboard.Key;
+
 	constructor()
 	{
     super(GameScene.name); 
+    this.cropMode = true;
   }
 
   public init(data)
   {
-    console.log(data);
     this.targetX = data.targetX;
     this.targetY = data.targetY;
     this.direction = data.direction;
@@ -34,16 +41,17 @@ class GameScene extends Phaser.Scene
   
 	public preload()
 	{
-
-    console.log("calling preload of GameScene")
-    
+  
     CharacterConfigFactory.getSingletonInstance().preloadCharacterSpritesheets(
       this.load, Object.keys(CharacterAsset).map(key => CharacterAsset[key]));
+
+
+    const option = { frameWidth: 32, frameHeight: 64 };
 
     this.load.image("outdoor", "assets/tileset/outdoor/outdoor.png");
     this.load.image("house", "assets/tileset/building-exterior/house.png");
     this.load.tilemapTiledJSON("simple", "assets/map/simple.json");
-
+    this.load.spritesheet("assets/tileset/farming/plants.png", "assets/tileset/farming/plants.png", option);
 	}
 
 	public create()
@@ -56,23 +64,31 @@ class GameScene extends Phaser.Scene
     const outdoorTileset = tilemap.addTilesetImage("outdoor", "outdoor");
     const houseTileset = tilemap.addTilesetImage("house", "house");
 
-    const transitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
+    const tiledTransitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
     const transitionObjectGroup = this.physics.add.staticGroup();
-    transitionObjects.forEach(object => {
-      const obj = transitionObjectGroup.create(object.x, object.y);
-      obj.setOrigin(0);
-      obj.body.setSize(object.width, object.height);
-      obj.destination = object.name;
-      obj.targetX = parseFloat(object.properties[1].value);
-      obj.targetY = parseFloat(object.properties[2].value);
-      obj.direction = object.properties[0].value;
+    tiledTransitionObjects.forEach(tiledTransitionObject => {
+      const transitionObject = transitionObjectGroup.create(tiledTransitionObject.x, tiledTransitionObject.y);
+      transitionObject.setOrigin(0);
+      transitionObject.body.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
+      transitionObject.destination = tiledTransitionObject.name;
+      tiledTransitionObject.properties.forEach((property: { name: string, type: string, value: string }) => {
+        if (property.type.localeCompare("string") === 0)
+        {
+          transitionObject[property.name] = property.value;
+        }
+        else if (property.type.localeCompare("float") === 0)
+        {
+          transitionObject[property.name] = parseFloat(property.value);
+        }
+        else
+        {
+          console.error("Cannot parse property");
+        }
+      });
     });
     transitionObjectGroup.refresh();
 
-
-
-
-    const bottomLayer1 = tilemap.createDynamicLayer("BottomLayer/Level1", [outdoorTileset, houseTileset], 0, 0);
+    this.bottomLayer1 = tilemap.createDynamicLayer("BottomLayer/Level1", [outdoorTileset, houseTileset], 0, 0);
     const bottomLayer2 = tilemap.createDynamicLayer("BottomLayer/Level2", [outdoorTileset, houseTileset], 0, 0);
     const bottomLayer3 = tilemap.createDynamicLayer("BottomLayer/Level3", [outdoorTileset, houseTileset], 0, 0);
     const bottomLayer4 = tilemap.createDynamicLayer("BottomLayer/Level4", [outdoorTileset, houseTileset], 0, 0);
@@ -88,6 +104,16 @@ class GameScene extends Phaser.Scene
     middleLayer4.setCollisionByProperty({ collision: true });
 
     const middleLayers = this.add.group([middleLayer1, middleLayer2, middleLayer3, middleLayer4]);
+
+    
+
+    // crop layer
+    const crop1 = new Crop(this, 400, 500, 0);
+    const crop2 = new Crop(this, 450, 500, 1);
+    const crop3 = new Crop(this, 400, 550, 2);
+    const crop4 = new Crop(this, 500, 500, 3);
+    const crop5 = new Crop(this, 600, 500, 4);
+    const crop6 = new Crop(this, 600, 550, 5);
 
     const npcConfig1 = new CharacterConfigBuilder()
       .setHairCharacterAsset(CharacterAsset.BlueBangsMaleHair)
@@ -133,22 +159,22 @@ class GameScene extends Phaser.Scene
           
     this.player = new Player(this, this.targetX ? this.targetX - 32 : 400, this.targetY ? this.targetY - 32 : 300, playerConfig);
     this.player.setDirection(this.direction || Direction.Down);
-  
+
     const topLayer1 = tilemap.createDynamicLayer("TopLayer/Level1", [outdoorTileset, houseTileset], 0, 0);
     const topLayer2 = tilemap.createDynamicLayer("TopLayer/Level2", [outdoorTileset, houseTileset], 0, 0);
     const topLayer3 = tilemap.createDynamicLayer("TopLayer/Level3", [outdoorTileset, houseTileset], 0, 0);
     const topLayer4 = tilemap.createDynamicLayer("TopLayer/Level4", [outdoorTileset, houseTileset], 0, 0);
 
     this.keyZero = this.input.keyboard.addKey('ZERO');
+    this.keyP = this.input.keyboard.addKey('P');
 
     this.npcs = this.add.group([npc1, npc2, npc3]);
 
     // Create a simple graphic that can be used to show which tile the mouse is over
-    // this.marker = this.add.graphics();
-    // this.marker.lineStyle(5, 0xffffff, 1);
-    // this.marker.strokeRect(0, 0, map.tileWidth, map.tileHeight);
-    // this.marker.lineStyle(3, 0xff4f78, 1);
-    // this.marker.strokeRect(0, 0, map.tileWidth, map.tileHeight);
+    this.marker = this.add.sprite(0, 0, "assets/tileset/farming/plants.png", 4);
+    this.marker.setOrigin(0.5, 0.75);
+    this.marker.setAlpha(0.5);
+    
 
     this.debugGraphics = this.add.graphics().setAlpha(0.5);
     middleLayer1.renderDebug(this.debugGraphics, {
@@ -193,6 +219,19 @@ class GameScene extends Phaser.Scene
       this.scene.start(RoomScene.name, { targetX: object2.targetX, targetY: object2.targetY, direction: object2.direction });
     });
 
+    this.input.on('pointerdown', () => {
+
+      if (!this.cropMode) return;
+      
+      const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+
+      const pointerTileXY = this.bottomLayer1!.worldToTileXY(worldPoint.x, worldPoint.y);
+      const snappedWorldPoint = this.bottomLayer1!.tileToWorldXY(pointerTileXY.x, pointerTileXY.y);
+
+      const crop = new Crop(this, snappedWorldPoint.x + 16, snappedWorldPoint.y + 16, 4);
+
+    });
+
   }
   
   public update()
@@ -205,20 +244,33 @@ class GameScene extends Phaser.Scene
       this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
     }
 
+    // toggle crop mode
+    if (Phaser.Input.Keyboard.JustDown(this.keyP!))
+    {
+      this.cropMode = !this.cropMode;
+      this.marker?.setVisible(!this.marker.visible);
+    }
+
     this.player!.update();
+
+    
     
 
     Phaser.Actions.Call(this.npcs!.getChildren(), function(npc) { npc.update(); }, this);
 
+    if (this.cropMode)
+    {
+      
+      // Convert the mouse position to world position within the camera
+      const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
 
-    // Convert the mouse position to world position within the camera
-    // const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
-
-    // // Place the marker in world space, but snap it to the tile grid. If we convert world -> tile and
-    // // then tile -> world, we end up with the position of the tile under the pointer
-    // const pointerTileXY = this.baseLayer.worldToTileXY(worldPoint.x, worldPoint.y);
-    // const snappedWorldPoint = this.baseLayer.tileToWorldXY(pointerTileXY.x, pointerTileXY.y);
-    // this.marker.setPosition(snappedWorldPoint.x, snappedWorldPoint.y);
+      // Place the marker in world space, but snap it to the tile grid. If we convert world -> tile and
+      // then tile -> world, we end up with the position of the tile under the pointer
+      const pointerTileXY = this.bottomLayer1!.worldToTileXY(worldPoint.x, worldPoint.y);
+      const snappedWorldPoint = this.bottomLayer1!.tileToWorldXY(pointerTileXY.x, pointerTileXY.y);
+      this.marker!.setPosition(snappedWorldPoint.x + 16, snappedWorldPoint.y + 16);
+    }
+    
   }
   
 }

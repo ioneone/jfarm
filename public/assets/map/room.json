@@ -21,17 +21,17 @@
                  "name":"GameScene",
                  "properties":[
                         {
-                         "name":"Direction",
+                         "name":"direction",
                          "type":"string",
                          "value":"Down"
                         }, 
                         {
-                         "name":"TargetX",
+                         "name":"targetX",
                          "type":"float",
                          "value":270
                         }, 
                         {
-                         "name":"TargetY",
+                         "name":"targetY",
                          "type":"float",
                          "value":370
                         }],

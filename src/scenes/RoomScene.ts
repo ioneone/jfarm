@@ -28,7 +28,6 @@ class RoomScene extends Phaser.Scene
 
 	public preload()
 	{
-    console.log("preload is called");
     this.load.image("building-interior", "assets/tileset/building-interior/building-interior.png");
     this.load.image("background", "assets/tileset/background/background.png");
     this.load.tilemapTiledJSON("room", "assets/map/room.json");
@@ -41,21 +40,29 @@ class RoomScene extends Phaser.Scene
     const buildingInteriorTileset = tilemap.addTilesetImage("building-interior", "building-interior");
     const backgroundTileset = tilemap.addTilesetImage("background", "background");
 
-    const transitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
+    const tiledTransitionObjects = tilemap.getObjectLayer("TransitionLayer").objects;
     const transitionObjectGroup = this.physics.add.staticGroup();
-    transitionObjects.forEach(object => {
-      const obj = transitionObjectGroup.create(object.x, object.y);
-      obj.setOrigin(0);
-      obj.body.setSize(object.width, object.height);
-      obj.destination = object.name;
-      obj.targetX = parseFloat(object.properties[1].value);
-      obj.targetY = parseFloat(object.properties[2].value);
-      obj.direction = object.properties[0].value;
+    tiledTransitionObjects.forEach(tiledTransitionObject => {
+      const transitionObject = transitionObjectGroup.create(tiledTransitionObject.x, tiledTransitionObject.y);
+      transitionObject.setOrigin(0);
+      transitionObject.body.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
+      transitionObject.destination = tiledTransitionObject.name;
+      tiledTransitionObject.properties.forEach((property: { name: string, type: string, value: string }) => {
+        if (property.type.localeCompare("string"))
+        {
+          transitionObject[property.name] = property.value;
+        }
+        else if (property.type.localeCompare("float"))
+        {
+          transitionObject[property.name] = parseFloat(property.value);
+        }
+        else
+        {
+          console.error("Cannot parse property");
+        }
+      });
     });
     transitionObjectGroup.refresh();
-
-
-
 
     const bottomLayer1 = tilemap.createDynamicLayer("BottomLayer/Level1", [buildingInteriorTileset, backgroundTileset], 0, 0);
     const bottomLayer2 = tilemap.createDynamicLayer("BottomLayer/Level2", [buildingInteriorTileset, backgroundTileset], 0, 0);
