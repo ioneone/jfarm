@@ -3695,9 +3695,9 @@
  <objectgroup id="17" name="TransitionLayer">
   <object id="1" name="RoomScene" x="256.005" y="328" width="32" height="32">
    <properties>
-    <property name="Direction" value="Up"/>
-    <property name="TargetX" type="float" value="257"/>
-    <property name="TargetY" type="float" value="333"/>
+    <property name="direction" value="Up"/>
+    <property name="targetX" type="float" value="257"/>
+    <property name="targetY" type="float" value="333"/>
    </properties>
   </object>
  </objectgroup>

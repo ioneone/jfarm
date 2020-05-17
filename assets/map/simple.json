@@ -21,17 +21,17 @@
                  "name":"RoomScene",
                  "properties":[
                         {
-                         "name":"Direction",
+                         "name":"direction",
                          "type":"string",
                          "value":"Up"
                         }, 
                         {
-                         "name":"TargetX",
+                         "name":"targetX",
                          "type":"float",
                          "value":257
                         }, 
                         {
-                         "name":"TargetY",
+                         "name":"targetY",
                          "type":"float",
                          "value":333
                         }],
