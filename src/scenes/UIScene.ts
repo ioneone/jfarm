@@ -1,15 +1,14 @@
 // https://labs.phaser.io/edit.html?src=src%5Cscenes%5Cui%20scene%20es6.js
 
 import Phaser from 'phaser';
-import Item from '~/ui/Item';
-import Items from '~/ui/Items';
+import Items from '../ui/Items';
 
 class UIScene extends Phaser.Scene
 {
   constructor()
   {
     // overlay UIScene on top of current scene
-    super({ key: UIScene.name, active: true });
+    super({ key: "UIScene", active: true });
   }
 
   public preload()

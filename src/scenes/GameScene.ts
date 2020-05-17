@@ -50,7 +50,7 @@ class GameScene extends Phaser.Scene
 
 	constructor()
 	{
-    super(GameScene.name); 
+    super("GameScene"); 
     this.cropMode = true;
   }
 

@@ -16,7 +16,7 @@ class RoomScene extends Phaser.Scene
 
 	constructor()
 	{
-    super(RoomScene.name);
+    super("RoomScene");
   }
   
   public init(data)
