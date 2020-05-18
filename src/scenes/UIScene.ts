@@ -1,5 +1,3 @@
-// https://labs.phaser.io/edit.html?src=src%5Cscenes%5Cui%20scene%20es6.js
-// https://www.joshmorony.com/adding-custom-fonts-to-your-phaser-game/
 import Phaser from 'phaser';
 import Items from '../ui/Items';
 
@@ -13,6 +11,8 @@ class UIScene extends Phaser.Scene
 
   public preload()
   {
+    const option = { frameWidth: 32, frameHeight: 64 };
+    this.load.spritesheet("assets/tileset/farming/plants.png", "assets/tileset/farming/plants.png", option);
     this.load.image("assets/ui/item.png", "assets/ui/item.png");
   }
 

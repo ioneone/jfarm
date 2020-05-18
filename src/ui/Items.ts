@@ -13,8 +13,9 @@ class Items extends Phaser.GameObjects.Container
 
     for (let i = 0; i < 10; i++)
     {
-      new Item(scene, centerX - 160 + 16 + 32 * i, centerY, (i + 1).toString());
+      new Item(scene, centerX - 160 + 16 + 32 * i, centerY, (i + 1).toString(), i < 7 ? i : undefined);
     }
+    
   }
 
 

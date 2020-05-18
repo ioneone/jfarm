@@ -96,8 +96,8 @@ class GameScene extends Phaser.Scene
     this.createDebugGraphics();    
 
     // Create a simple graphic that can be used to show which tile the mouse is over
-    this.marker = this.add.sprite(0, 0, "assets/tileset/farming/plants.png", 4);
-    this.marker.setOrigin(0.5, 0.9);
+    this.marker = this.add.sprite(0, 0, "assets/tileset/farming/plants.png", 0);
+    this.marker.setOrigin(0.5, 0.85);
     this.marker.setAlpha(0.5);
     this.marker2 = this.add.rectangle(0, 0, 32, 32);
     
@@ -342,7 +342,7 @@ class GameScene extends Phaser.Scene
       if (isSoil && !this.crops![pointerTileXY.y][pointerTileXY.x])
       {
         const snappedWorldPoint = this.soilLayer!.tileToWorldXY(pointerTileXY.x, pointerTileXY.y);
-        this.crops![pointerTileXY.y][pointerTileXY.x] = new Crop(this, snappedWorldPoint.x + 16, snappedWorldPoint.y + 16, 4);  
+        this.crops![pointerTileXY.y][pointerTileXY.x] = new Crop(this, snappedWorldPoint.x + 16, snappedWorldPoint.y + 16, 0);  
       }
       else
       {
