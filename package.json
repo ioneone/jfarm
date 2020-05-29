@@ -1,12 +1,12 @@
 {
-	"name": "Jfarm",
+	"name": "Jvalley",
 	"version": "1.0.0",
 	"private": true,
-	"homepage": "https://ioneone.github.io/jfarm",
+	"homepage": "https://ioneone.github.io/jvalley",
 	"description": "",
 	"scripts": {
 		"start": "parcel src/index.html -p 8000",
-		"build": "parcel build src/index.html --out-dir dist --public-url /jfarm/",
+		"build": "parcel build src/index.html --out-dir dist --public-url /jvalley/",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -b master -d dist"
 	},
