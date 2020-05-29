@@ -18,7 +18,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: true
     }
 	},
-	scene: [OutdoorScene, RoomScene]
+	scene: [OutdoorScene, RoomScene, UIScene]
 }
 
 export default new Phaser.Game(config)

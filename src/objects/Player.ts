@@ -6,9 +6,6 @@ import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 class Player extends Character
 {
 
-  private static readonly COLLISON_BODY_WIDTH = 24;
-  private static readonly COLLISON_BODY_HEIGHT = 8;
-
   private keyW: Phaser.Input.Keyboard.Key;
   private keyA: Phaser.Input.Keyboard.Key;
   private keyS: Phaser.Input.Keyboard.Key;
@@ -23,9 +20,6 @@ class Player extends Character
     this.keyS = this.scene.input.keyboard.addKey('S');
     this.keyD = this.scene.input.keyboard.addKey('D');
 
-    this.getBody().setSize(Player.COLLISON_BODY_WIDTH, Player.COLLISON_BODY_HEIGHT);
-    this.getBody().setOffset((CharacterConfigFactory.FRAME_WIDTH - Player.COLLISON_BODY_WIDTH) / 2, 
-    CharacterConfigFactory.FRAME_HEIGHT - Player.COLLISON_BODY_HEIGHT);
   }
 
   public update()

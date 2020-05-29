@@ -10,12 +10,12 @@ class Item extends Phaser.GameObjects.Sprite
     this.scene.add.existing(this);
     
 
-    if (cropId != null)
-    {
-      const crop = new Crop(this.scene, x, y, cropId);
-      crop.setGrowthStage(6);
-      crop.setOrigin(0.5, 0.8);
-    }
+    // if (cropId != null)
+    // {
+    //   const crop = new Crop(this.scene, x, y, cropId);
+    //   crop.setGrowthStage(6);
+    //   crop.setOrigin(0.5, 0.8);
+    // }
 
     this.scene.add.text(x - 16 + 4, y - 16 + 4, key).setFontSize(8);
     

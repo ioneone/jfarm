@@ -3,14 +3,37 @@
  <tileset firstgid="1" name="plowed_soil" tilewidth="32" tileheight="32" tilecount="18" columns="3">
   <image source="../tileset/farming/plowed_soil.png" width="96" height="192"/>
  </tileset>
- <tileset firstgid="19" name="soil" tilewidth="32" tileheight="32" tilecount="3" columns="3">
-  <image source="../tileset/farming/soil.png" width="96" height="32"/>
+ <tileset firstgid="19" name="soil" tilewidth="32" tileheight="32" tilecount="17" columns="16">
+  <image source="../tileset/farming/soil.png" width="512" height="512"/>
+  <terraintypes>
+   <terrain name="soil" tile="0"/>
+  </terraintypes>
+  <tile id="5" terrain="0,0,0,"/>
+  <tile id="6" terrain="0,0,,"/>
+  <tile id="7" terrain="0,0,,0"/>
+  <tile id="16" terrain=",,,0"/>
+  <tile id="17" terrain=",,0,0"/>
+  <tile id="18" terrain=",,0,"/>
+  <tile id="21" terrain="0,,0,"/>
+  <tile id="23" terrain=",0,,0"/>
+  <tile id="32" terrain=",0,,0"/>
+  <tile id="33" terrain="0,0,0,0"/>
+  <tile id="34" terrain="0,,0,"/>
+  <tile id="37" terrain="0,,0,0"/>
+  <tile id="38" terrain=",,0,0"/>
+  <tile id="39" terrain=",0,0,0"/>
+  <tile id="48" terrain=",0,,"/>
+  <tile id="49" terrain="0,0,,"/>
+  <tile id="50" terrain="0,,,"/>
+ </tileset>
+ <tileset firstgid="70" name="outdoor" tilewidth="32" tileheight="32" tilecount="672" columns="32">
+  <image source="../tileset/outdoor/outdoor.png" width="1024" height="672"/>
  </tileset>
  <layer id="1" name="Tile Layer 1" width="16" height="16">
   <data encoding="csv">
-19,20,21,1,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+7,8,9,2,14,3,0,0,0,0,0,0,0,0,0,0,
+10,11,12,12,179,10,0,0,0,0,0,0,0,0,0,0,
+13,14,15,5,8,6,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

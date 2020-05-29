@@ -1,5 +1,5 @@
 import SceneTransitionObject from '../objects/SceneTransitionObject';
-import { Direction } from '../objects/Character';
+import Character, { Direction } from '../objects/Character';
 import TilemapScene from "./TilemapScene";
 import Player from '../objects/Player';
 import CharacterConfigBuilder from '../builder/CharacterConfigBuilder';
@@ -8,11 +8,14 @@ import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 
 /**
  * GameScene is responsible for handling logics 
- * common to all the scene such as player rendering
- * and player collision and transition detections
+ * common to all the scene such as player rendering,
+ * player collision, transition detections, and depth
+ * sorting.
  */
 class GameScene extends TilemapScene
 {
+
+  protected characterGroup?: Phaser.GameObjects.Group;
 
   // the character to control
   protected player?: Player;
@@ -85,7 +88,9 @@ class GameScene extends TilemapScene
     // bring top layer to the front
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene
-    this.topLayer?.setDepth(1);
+    this.topLayer?.setDepth(9999999);
+
+    this.characterGroup = this.add.group([this.player!]);
 
   }
 
@@ -94,6 +99,12 @@ class GameScene extends TilemapScene
     super.update();
 
     this.player?.update();
+
+    // perform depth sort
+    this.characterGroup?.getChildren().forEach(character => {
+      const c = character as Character;
+      c.setDepth(Math.max(0, c.y + c.height / 2));
+    })
   }
 }
 

@@ -12,11 +12,17 @@ class CropScene extends GameScene
   // manages the locations of the crops in this scene
   protected cropManager?: CropManager;
 
-  // player can place a seed in crop mode
+  // player can place the seeds in crop mode
   protected cropMode: boolean;
+
+  // player can plow the soil in plow mode
+  protected plowMode: boolean;
 
   // keyboard key to toggle crop mode
   protected keyC?: Phaser.Input.Keyboard.Key;
+
+  // keyboard key to toggle plow mode
+  protected keyP?: Phaser.Input.Keyboard.Key;
 
   // preview the plant when placed
   protected previewSprite?: Phaser.GameObjects.Sprite;
@@ -26,6 +32,7 @@ class CropScene extends GameScene
   {
     super(key, tilemapFilePath, tilesetFilePaths);
     this.cropMode = false;
+    this.plowMode = false;
   }
 
   preload()
@@ -39,6 +46,8 @@ class CropScene extends GameScene
     super.create();
 
     this.keyC = this.input.keyboard.addKey('C');
+    this.keyP = this.input.keyboard.addKey('P');
+
     this.cropManager = new CropManager(this.tilemap!.width, this.tilemap!.height);
 
     // Create a simple graphic that can be used to show which tile the mouse is over
@@ -81,6 +90,12 @@ class CropScene extends GameScene
       this.cropMode = !this.cropMode;
       this.previewSprite?.setVisible(this.cropMode);
       this.previewMarker?.setVisible(this.cropMode);
+    }
+
+    // toggle plow mode
+    if (Phaser.Input.Keyboard.JustDown(this.keyP!))
+    {
+      this.plowMode = !this.plowMode;
     }
 
     if (this.cropMode)

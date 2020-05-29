@@ -14,9 +14,9 @@ class Character extends Phaser.GameObjects.Container
 {
 
   private static readonly SPEED = 60;
-  private static readonly COLLISION_BODY_WIDTH = 32;
-  private static readonly COLLISION_BODY_HEIGHT = 48;
-
+  private static readonly COLLISION_BODY_WIDTH = 24;
+  private static readonly COLLISION_BODY_HEIGHT = 8;
+  
   private direction: Direction;
 
   private config: CharacterConfig;

@@ -41,12 +41,13 @@ class OurdoorScene extends CropScene
 
     // add collision detection between player and npcs
     this.physics.add.collider(this.player!, this.npcs!);
+
   }
   
   public update()
 	{
     super.update();
-    Phaser.Actions.Call(this.npcs!.getChildren(), (npc) => npc.update(), this);    
+    Phaser.Actions.Call(this.npcs!.getChildren(), (npc) => npc.update(), this);  
   }
 
   private createNPCs()
@@ -88,7 +89,7 @@ class OurdoorScene extends CropScene
     const npc3 = new NonPlayer(npcConfig3).setPosition(500, 200);
 
     this.npcs = this.add.group([npc1, npc2, npc3]);
-
+    this.characterGroup?.addMultiple([npc1, npc2, npc3]);
   }
 
 }
