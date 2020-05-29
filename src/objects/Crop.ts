@@ -17,7 +17,7 @@ class Crop extends Phaser.GameObjects.Sprite
 
   constructor(scene: Phaser.Scene, x: number, y: number, cropId: number)
   {
-    super(scene, x, y, "assets/tileset/farming/plants.png", cropId * 7);
+    super(scene, x, y, "assets/plant/plants.png", cropId * 7);
     this.cropId = cropId;
     this.scene.add.existing(this);
     this.setOrigin(0.5, 0.85);
