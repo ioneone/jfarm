@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" name="terrain" tilewidth="32" tileheight="32" tilecount="90" columns="15">
+  <image source="../tileset/farming/terrain.png" width="480" height="192"/>
+ </tileset>
+ <tileset firstgid="91" name="plowed_soil" tilewidth="32" tileheight="32" tilecount="18" columns="3">
+  <image source="../tileset/farming/plowed_soil.png" width="96" height="192"/>
+ </tileset>
  <layer id="1" name="Tile Layer 1" width="8" height="8">
   <data encoding="csv">
+106,106,106,106,106,106,0,0,
+106,106,106,0,0,0,0,0,
+106,106,106,0,0,0,0,0,
 0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="8" height="8">
+  <data encoding="csv">
+40,41,42,79,41,81,0,0,
+55,56,57,0,0,0,0,0,
+70,71,72,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="Tile Layer 3" width="8" height="8">
+  <data encoding="csv">
+0,0,0,3221225550,71,3221225548,0,0,
 0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,
