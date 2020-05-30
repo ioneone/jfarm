@@ -16,6 +16,10 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   },
 
   hair: {
@@ -24,6 +28,10 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   },
 
   legs: {
@@ -32,6 +40,10 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   },
 
   torso: {
@@ -40,6 +52,10 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   },
 
   feet: {
@@ -48,6 +64,10 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   },
 
   shadow: {
@@ -56,6 +76,22 @@ interface CharacterConfig
     walkLeftAnimationId: string;
     walkDownAnimationId: string;
     walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
+  },
+
+  weapon: {
+    spritesheetId: string;
+    walkUpAnimationId: string;
+    walkLeftAnimationId: string;
+    walkDownAnimationId: string;
+    walkRightAnimationId: string;
+    thrustUpAnimationId: string;
+    thrustLeftAnimationId: string;
+    thrustDownAnimationId: string;
+    thrustRightAnimationId: string;
   }
 
 }

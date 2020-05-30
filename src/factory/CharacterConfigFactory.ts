@@ -12,6 +12,10 @@ class CharacterConfigFactory
 
   // LPC standard
   public static readonly NUM_COL = 13;
+  public static readonly ROW_THRUST_UP = 4;
+  public static readonly ROW_THRUST_LEFT = 5;
+  public static readonly ROW_THRUST_DONW = 6;
+  public static readonly ROW_THRUST_RIGHT = 7;
   public static readonly ROW_UP = 8;
   public static readonly ROW_LEFT = 9;
   public static readonly ROW_DOWN = 10;
@@ -61,7 +65,8 @@ class CharacterConfigFactory
     torsoSpritesheetFilePath: CharacterAsset,
     legsSpritesheetFilePath: CharacterAsset,
     feetSpritesheetFilePath: CharacterAsset,
-    shadowSpritesheetFilePath: CharacterAsset
+    shadowSpritesheetFilePath: CharacterAsset,
+    weaponSpritesheetFilePath: CharacterAsset
     ) : CharacterConfig
   {
 
@@ -79,7 +84,11 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(bodySpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(bodySpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(bodySpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(bodySpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(bodySpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(bodySpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(bodySpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(bodySpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(bodySpritesheetFilePath)
       },
     
       hair: {
@@ -87,7 +96,11 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(hairSpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(hairSpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(hairSpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(hairSpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(hairSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(hairSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(hairSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(hairSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(hairSpritesheetFilePath)
       },
     
       legs: {
@@ -95,7 +108,11 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(legsSpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(legsSpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(legsSpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(legsSpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(legsSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(legsSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(legsSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(legsSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(legsSpritesheetFilePath)
       },
     
       torso: {
@@ -103,7 +120,11 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(torsoSpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(torsoSpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(torsoSpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(torsoSpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(torsoSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(torsoSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(torsoSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(torsoSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(torsoSpritesheetFilePath)
       },
     
       feet: {
@@ -111,7 +132,11 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(feetSpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(feetSpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(feetSpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(feetSpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(feetSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(feetSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(feetSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(feetSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(feetSpritesheetFilePath)
       },
     
       shadow: {
@@ -119,7 +144,23 @@ class CharacterConfigFactory
         walkUpAnimationId: this.getWalkUpAnimationId(shadowSpritesheetFilePath),
         walkLeftAnimationId: this.getWalkLeftAnimationId(shadowSpritesheetFilePath),
         walkDownAnimationId: this.getWalkDownAnimationId(shadowSpritesheetFilePath),
-        walkRightAnimationId: this.getWalkRightAnimationId(shadowSpritesheetFilePath)
+        walkRightAnimationId: this.getWalkRightAnimationId(shadowSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(shadowSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(shadowSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(shadowSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(shadowSpritesheetFilePath)
+      },
+
+      weapon: {
+        spritesheetId: weaponSpritesheetFilePath,
+        walkUpAnimationId: this.getWalkUpAnimationId(weaponSpritesheetFilePath),
+        walkLeftAnimationId: this.getWalkLeftAnimationId(weaponSpritesheetFilePath),
+        walkDownAnimationId: this.getWalkDownAnimationId(weaponSpritesheetFilePath),
+        walkRightAnimationId: this.getWalkRightAnimationId(weaponSpritesheetFilePath),
+        thrustUpAnimationId: this.getThrustUpAnimationId(weaponSpritesheetFilePath),
+        thrustLeftAnimationId: this.getThrustLeftAnimationId(weaponSpritesheetFilePath),
+        thrustDownAnimationId: this.getThrustDownAnimationId(weaponSpritesheetFilePath),
+        thrustRightAnimationId: this.getThrustRightAnimationId(weaponSpritesheetFilePath)
       }
 
     };
@@ -130,13 +171,54 @@ class CharacterConfigFactory
 
     // animation is global
     // If the existing key is provided, then it just returns the corresponding animation.
+
+    // thrust up animation
+    animationManager.create({
+      key: this.getThrustUpAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_UP + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_UP + 7 }),
+      frameRate: 7,
+      repeat: 0
+    });
+
+    // thrust left animation
+    animationManager.create({
+      key: this.getThrustLeftAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_LEFT + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_LEFT + 7 }),
+      frameRate: 7,
+      repeat: 0
+    });
+
+    // thrust down animation
+    animationManager.create({
+      key: this.getThrustDownAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_DONW + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_DONW + 7 }),
+      frameRate: 7,
+      repeat: 0
+    });
+
+    // thrust right animation
+    animationManager.create({
+      key: this.getThrustRightAnimationId(spritesheetFilePath),
+      frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
+        { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_RIGHT + 1, 
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_RIGHT + 7 }),
+      frameRate: 7,
+      repeat: 0
+    });
+
     // walk up animation
     animationManager.create({
       key: this.getWalkUpAnimationId(spritesheetFilePath),
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 1, 
           end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_UP + 8 }),
-      frameRate: 12,
+      frameRate: 7,
       repeat: -1
     });
 
@@ -146,7 +228,7 @@ class CharacterConfigFactory
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 1, 
           end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_LEFT + 8 }),
-      frameRate: 12,
+      frameRate: 7,
       repeat: -1
     });
 
@@ -156,7 +238,7 @@ class CharacterConfigFactory
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 1, 
           end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_DOWN + 8 }),
-      frameRate: 12,
+      frameRate: 7,
       repeat: -1
     });
 
@@ -166,10 +248,30 @@ class CharacterConfigFactory
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 1, 
           end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_RIGHT + 8 }),
-      frameRate: 12,
+      frameRate: 7,
       repeat: -1
     });
     
+  }
+
+  private getThrustUpAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":thrust_up";
+  }
+
+  private getThrustLeftAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":thrust_left";
+  }
+
+  private getThrustDownAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":thrust_down";
+  }
+
+  private getThrustRightAnimationId(spritesheetFilePath: CharacterAsset)
+  {
+    return spritesheetFilePath + ":thrust_right";
   }
 
   private getWalkUpAnimationId(spritesheetFilePath: CharacterAsset)

@@ -19,6 +19,13 @@ class UIScene extends Phaser.Scene
   public create()
   {
     const items = new Items(this, this.cameras.main.centerX, this.cameras.main.height - 32);
+    this.add.text(0, 0, "HP");
+    this.add.rectangle(100, 0, 100, 30, 0x2ff7d6);
+    this.add.text(50, 30, "100 / 100");
+
+    this.add.text(300, 0, "SP");
+    this.add.rectangle(400, 0, 100, 30, 0xf66f21);
+    this.add.text(350, 30, "100 / 100");
   }
 
   public update()

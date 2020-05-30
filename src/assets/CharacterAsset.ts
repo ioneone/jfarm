@@ -23,7 +23,10 @@ enum CharacterAsset
   BlackFemaleShoes = "assets/character/feet/shoes/female/black_shoes_female.png",
 
   // Shadow
-  Shadow = "assets/character/shadow/shadow.png"
+  Shadow = "assets/character/shadow/shadow.png",
+
+  // Weapon
+  Shovel = "assets/character/weapons/right-hand/male/spear_male.png"
 }
 
 

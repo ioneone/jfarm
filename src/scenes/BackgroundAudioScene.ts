@@ -7,6 +7,9 @@ import Phaser from 'phaser';
  */
 class BackgroundAudioScene extends Phaser.Scene
 {
+
+  protected keyM?: Phaser.Input.Keyboard.Key;
+
   /**
    * @param {string} key - The unique id of this scene 
    */
@@ -23,10 +26,15 @@ class BackgroundAudioScene extends Phaser.Scene
   create()
   {
     this.sound.play("assets/audio/summer_day.wav");
+    this.keyM = this.input.keyboard.addKey('M');
   }
 
   update()
   {
+    if (Phaser.Input.Keyboard.JustDown(this.keyM!))
+    {
+      this.sound.stopByKey("assets/audio/summer_day.wav");
+    }
   }
 }
 

@@ -50,6 +50,7 @@ class GameScene extends TilemapScene
       .setLegsCharacterAsset(CharacterAsset.MagentaMalePants)
       .setFeetCharacterAsset(CharacterAsset.BlackMaleShoes)
       .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .setWeaponCharacterAsset(CharacterAsset.Shovel)
       .setScene(this)
       .build();
     

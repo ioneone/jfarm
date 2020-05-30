@@ -11,6 +11,7 @@ class CharacterConfigBuilder {
   private legsCharacterAsset?: CharacterAsset;
   private feetCharacterAsset?: CharacterAsset;
   private shadowCharacterAsset?: CharacterAsset;
+  private weaponCharacterAsset?: CharacterAsset;
 
   public setHairCharacterAsset(hairCharacterAsset: CharacterAsset): CharacterConfigBuilder
   {
@@ -48,6 +49,12 @@ class CharacterConfigBuilder {
     return this;
   }
 
+  public setWeaponCharacterAsset(weaponCharacterAsset: CharacterAsset): CharacterConfigBuilder
+  {
+    this.weaponCharacterAsset = weaponCharacterAsset;
+    return this;
+  }
+
   public setScene(scene: Phaser.Scene)
   {
     this.scene = scene;
@@ -63,7 +70,8 @@ class CharacterConfigBuilder {
       this.torsoCharacterAsset!,
       this.legsCharacterAsset!,
       this.feetCharacterAsset!,
-      this.shadowCharacterAsset!
+      this.shadowCharacterAsset!,
+      this.weaponCharacterAsset!
     );
   }
 

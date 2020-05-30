@@ -2,6 +2,16 @@ import Crop from '../objects/Crop';
 import GameScene from "./GameScene";
 import CropManager from '../manager/CropManager';
 
+enum GameMode
+{
+  // player can place the seeds in crop mode
+  Crop,
+  // player can plow the soil in plow mode
+  Plow,
+  // initial game mode
+  Default
+}
+
 /**
  * CropScene is responsible for managing the soils
  * and crops in the scene
@@ -12,16 +22,13 @@ class CropScene extends GameScene
   // manages the locations of the crops in this scene
   protected cropManager?: CropManager;
 
-  // player can place the seeds in crop mode
-  protected cropMode: boolean;
-
-  // player can plow the soil in plow mode
-  protected plowMode: boolean;
-
-  // keyboard key to toggle crop mode
+  // current game mode
+  protected mode: GameMode;
+  
+  // keyboard key to turn on crop mode
   protected keyC?: Phaser.Input.Keyboard.Key;
 
-  // keyboard key to toggle plow mode
+  // keyboard key to turn on plow mode
   protected keyP?: Phaser.Input.Keyboard.Key;
 
   // preview the plant when placed
@@ -31,8 +38,7 @@ class CropScene extends GameScene
   constructor(key: string, tilemapFilePath: string, tilesetFilePaths: string[])
   {
     super(key, tilemapFilePath, tilesetFilePaths);
-    this.cropMode = false;
-    this.plowMode = false;
+    this.mode = GameMode.Default;
   }
 
   preload()
@@ -59,23 +65,64 @@ class CropScene extends GameScene
     // add event listener for left moust click for planting
     this.input.on('pointerdown', () => {
 
-      if (!this.cropMode) return;
-
-      const mouseTilePosition = this.getMouseTilePosition();
-      const snappedWorldPosition = this.getSnappedWorldPosition(mouseTilePosition);
-      this.previewSprite?.setPosition(snappedWorldPosition.x + 16, snappedWorldPosition.y + 16);
-      this.previewMarker?.setPosition(snappedWorldPosition.x + 16, snappedWorldPosition.y + 16);
-
-      const isSoil = this.bottomLayer!.getTileAt(mouseTilePosition.x, mouseTilePosition.y).properties.isSoil;
-      if (isSoil && !this.cropManager!.hasCrop(mouseTilePosition.x, mouseTilePosition.y))
+      if (this.mode === GameMode.Crop)
       {
-        this.cropManager!.addCrop(mouseTilePosition.x, mouseTilePosition.y, 
-          new Crop(this, snappedWorldPosition.x + 16, snappedWorldPosition.y + 16, 0))
+        const mouseTilePosition = this.getMouseTilePosition();
+        const snappedWorldPosition = this.getSnappedWorldPosition(mouseTilePosition);
+        this.previewSprite?.setPosition(snappedWorldPosition.x + 16, snappedWorldPosition.y + 16);
+        this.previewMarker?.setPosition(snappedWorldPosition.x + 16, snappedWorldPosition.y + 16);
+  
+        const isSoil = this.bottomLayer!.getTileAt(mouseTilePosition.x, mouseTilePosition.y).properties.isSoil;
+        if (isSoil && !this.cropManager!.hasCrop(mouseTilePosition.x, mouseTilePosition.y))
+        {
+          this.cropManager!.addCrop(mouseTilePosition.x, mouseTilePosition.y, 
+            new Crop(this, snappedWorldPosition.x + 16, snappedWorldPosition.y + 16, 0))
+        }
+        else
+        {
+          const snappedWorldPosition = this.getSnappedWorldPosition(mouseTilePosition);
+          const text = this.add.text(snappedWorldPosition.x, snappedWorldPosition.y, "not soil");
+
+          this.tweens.add({
+            targets: text,
+            alpha: 0,
+            duration: 2000,
+            ease: 'Power2'
+          });
+
+          this.time.delayedCall(2000, () => {
+            text.destroy();
+          });
+        }
       }
-      else
+      else if (this.mode === GameMode.Plow)
       {
-        console.log("not soil");
+        const mouseTilePosition = this.getMouseTilePosition();
+        const isGrass = this.bottomLayer!.getTileAt(mouseTilePosition.x, mouseTilePosition.y).properties.isGrass;
+        if (isGrass)
+        {
+          this.player?.thrust();
+          const tile = this.bottomLayer?.putTileAt(this.tilesets![2].firstgid + 15, mouseTilePosition.x, mouseTilePosition.y);
+          tile!.properties = this.tilesets![2].tileProperties[15];
+        }
+        else
+        {
+          const snappedWorldPosition = this.getSnappedWorldPosition(mouseTilePosition);
+          const text = this.add.text(snappedWorldPosition.x, snappedWorldPosition.y, "not grass");
+
+          this.tweens.add({
+            targets: text,
+            alpha: 0,
+            duration: 2000,
+            ease: 'Power2'
+          });
+
+          this.time.delayedCall(2000, () => {
+            text.destroy();
+          });
+        }
       }
+
     });
 
   }
@@ -84,21 +131,19 @@ class CropScene extends GameScene
   {
     super.update();
 
-    // toggle crop mode
     if (Phaser.Input.Keyboard.JustDown(this.keyC!))
     {
-      this.cropMode = !this.cropMode;
-      this.previewSprite?.setVisible(this.cropMode);
-      this.previewMarker?.setVisible(this.cropMode);
+      this.mode = GameMode.Crop;
     }
-
-    // toggle plow mode
-    if (Phaser.Input.Keyboard.JustDown(this.keyP!))
+    else if (Phaser.Input.Keyboard.JustDown(this.keyP!))
     {
-      this.plowMode = !this.plowMode;
+      this.mode = GameMode.Plow;
     }
 
-    if (this.cropMode)
+    this.previewSprite?.setVisible(this.mode === GameMode.Crop);
+    this.previewMarker?.setVisible(this.mode === GameMode.Crop);
+
+    if (this.mode === GameMode.Crop)
     {
       
       const mouseTilePosition = this.getMouseTilePosition();

@@ -18,7 +18,7 @@ class OurdoorScene extends CropScene
         "assets/tileset/outdoor/outdoor.png", 
         "assets/tileset/building-exterior/house.png", 
         "assets/tileset/farming/soil.png"
-      ]);  
+      ]);
   }
   
 	public preload()
@@ -59,6 +59,7 @@ class OurdoorScene extends CropScene
       .setLegsCharacterAsset(CharacterAsset.MagentaMalePants)
       .setFeetCharacterAsset(CharacterAsset.BlackMaleShoes)
       .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .setWeaponCharacterAsset(CharacterAsset.Shovel)
       .setScene(this)
       .build();
 
@@ -71,6 +72,7 @@ class OurdoorScene extends CropScene
       .setLegsCharacterAsset(CharacterAsset.FemaleSkirt)
       .setFeetCharacterAsset(CharacterAsset.BlackFemaleShoes)
       .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .setWeaponCharacterAsset(CharacterAsset.Shovel)
       .setScene(this)
       .build();
 
@@ -83,6 +85,7 @@ class OurdoorScene extends CropScene
       .setLegsCharacterAsset(CharacterAsset.FemaleSkirt)
       .setFeetCharacterAsset(CharacterAsset.BlackFemaleShoes)
       .setShadowCharacterAsset(CharacterAsset.Shadow)
+      .setWeaponCharacterAsset(CharacterAsset.Shovel)
       .setScene(this)
       .build();
 
