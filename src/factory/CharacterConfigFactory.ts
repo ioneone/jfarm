@@ -12,10 +12,10 @@ class CharacterConfigFactory
 
   // LPC standard
   public static readonly NUM_COL = 13;
-  public static readonly ROW_THRUST_UP = 4;
-  public static readonly ROW_THRUST_LEFT = 5;
-  public static readonly ROW_THRUST_DONW = 6;
-  public static readonly ROW_THRUST_RIGHT = 7;
+  public static readonly ROW_THRUST_UP = 12;
+  public static readonly ROW_THRUST_LEFT = 13;
+  public static readonly ROW_THRUST_DONW = 14;
+  public static readonly ROW_THRUST_RIGHT = 15;
   public static readonly ROW_UP = 8;
   public static readonly ROW_LEFT = 9;
   public static readonly ROW_DOWN = 10;
@@ -177,7 +177,7 @@ class CharacterConfigFactory
       key: this.getThrustUpAnimationId(spritesheetFilePath),
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_UP + 1, 
-          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_UP + 7 }),
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_UP + 5 }),
       frameRate: 7,
       repeat: 0
     });
@@ -187,7 +187,7 @@ class CharacterConfigFactory
       key: this.getThrustLeftAnimationId(spritesheetFilePath),
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_LEFT + 1, 
-          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_LEFT + 7 }),
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_LEFT + 5 }),
       frameRate: 7,
       repeat: 0
     });
@@ -197,7 +197,7 @@ class CharacterConfigFactory
       key: this.getThrustDownAnimationId(spritesheetFilePath),
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_DONW + 1, 
-          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_DONW + 7 }),
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_DONW + 5 }),
       frameRate: 7,
       repeat: 0
     });
@@ -207,7 +207,7 @@ class CharacterConfigFactory
       key: this.getThrustRightAnimationId(spritesheetFilePath),
       frames: animationManager.generateFrameNumbers(spritesheetFilePath, 
         { start: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_RIGHT + 1, 
-          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_RIGHT + 7 }),
+          end: CharacterConfigFactory.NUM_COL * CharacterConfigFactory.ROW_THRUST_RIGHT + 5 }),
       frameRate: 7,
       repeat: 0
     });

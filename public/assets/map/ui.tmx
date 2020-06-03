@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" name="scrollsandblocks" tilewidth="32" tileheight="32" tilecount="170" columns="17">
-  <image source="../ui/scrollsandblocks.png" width="544" height="320"/>
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="Box, Violet, Highlight" tilewidth="32" tileheight="32" tilecount="1" columns="1">
+  <image source="../ui/Box, Violet, Highlight.png" width="32" height="32"/>
  </tileset>
- <layer id="1" name="Tile Layer 1" width="8" height="8">
+ <tileset firstgid="2" name="Box, Violet Outside" tilewidth="32" tileheight="32" tilecount="1" columns="1">
+  <image source="../ui/Box, Violet Outside.png" width="32" height="32"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="5" height="5">
   <data encoding="csv">
-72,74,0,0,0,0,0,0,
-106,108,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0
+1,2,1,2,1,
+2,1,2,1,2,
+1,2,1,2,1,
+2,1,2,1,2,
+1,2,1,2,1
 </data>
  </layer>
 </map>

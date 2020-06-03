@@ -86,6 +86,9 @@ class GameScene extends TilemapScene
     // configure the camera to follow the player
     this.cameras.main.startFollow(this.player!, false, 1, 1, -16, -16);
 
+    // prevent tile bleeding
+    this.cameras.main.setRoundPixels(true);
+
     // bring top layer to the front
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene

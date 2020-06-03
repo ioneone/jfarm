@@ -25,7 +25,23 @@ class Player extends Character
   public update()
   {
 
-    if (this.keyW.isDown)
+    if (this.keyW.isDown && this.keyA.isDown)
+    {
+      this.move(Direction.UpLeft);
+    }
+    else if (this.keyS.isDown && this.keyA.isDown)
+    {
+      this.move(Direction.DownLeft);
+    }
+    else if (this.keyS.isDown && this.keyD.isDown)
+    {
+      this.move(Direction.DownRight);
+    }
+    else if (this.keyW.isDown && this.keyD.isDown)
+    {
+      this.move(Direction.UpRight);
+    }
+    else if (this.keyW.isDown)
     {
       this.move(Direction.Up);
     }

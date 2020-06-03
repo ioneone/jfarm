@@ -4,16 +4,20 @@ import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 
 enum Direction
 {
-  Up = "Up",
-  Left = "Left",
-  Down = "Down",
-  Right = "Right"
+  Up,
+  Left,
+  Down,
+  Right,
+  UpLeft,
+  DownLeft,
+  DownRight,
+  UpRight
 }
 
 class Character extends Phaser.GameObjects.Container
 {
 
-  private static readonly SPEED = 60;
+  private static readonly SPEED = 70;
   private static readonly COLLISION_BODY_WIDTH = 24;
   private static readonly COLLISION_BODY_HEIGHT = 8;
   
@@ -84,7 +88,6 @@ class Character extends Phaser.GameObjects.Container
       CharacterConfigFactory.FRAME_HEIGHT - Character.COLLISION_BODY_HEIGHT);
 
     this.bodySprite.on('animationcomplete', this.handleAnimationComplete, this);
-    
   }
 
   private handleAnimationComplete(animation: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame)
@@ -122,6 +125,26 @@ class Character extends Phaser.GameObjects.Container
     else if (this.direction === Direction.Right)
     {
       this.getBody().setVelocity(Character.SPEED, 0);
+    }
+    else if (this.direction === Direction.UpLeft)
+    {
+      this.getBody().setVelocity(-1, -1);
+      this.getBody().velocity.normalize().scale(Character.SPEED);
+    }
+    else if (this.direction === Direction.DownLeft)
+    {
+      this.getBody().setVelocity(-1, 1);
+      this.getBody().velocity.normalize().scale(Character.SPEED);
+    }
+    else if (this.direction === Direction.DownRight)
+    {
+      this.getBody().setVelocity(1, 1);
+      this.getBody().velocity.normalize().scale(Character.SPEED);
+    }
+    else if (this.direction === Direction.UpRight)
+    {
+      this.getBody().setVelocity(1, -1);
+      this.getBody().velocity.normalize().scale(Character.SPEED);
     }
 
   }

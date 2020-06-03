@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import Items from '../ui/Items';
+import Inventory from "../ui/Inventory";
 
 class UIScene extends Phaser.Scene
 {
@@ -14,6 +15,7 @@ class UIScene extends Phaser.Scene
     const option = { frameWidth: 32, frameHeight: 64 };
     this.load.spritesheet("assets/tileset/farming/plants.png", "assets/tileset/farming/plants.png", option);
     this.load.image("assets/ui/item.png", "assets/ui/item.png");
+    this.load.image("assets/ui/inventory.png", "assets/ui/inventory.png");
   }
 
   public create()
@@ -26,6 +28,8 @@ class UIScene extends Phaser.Scene
     this.add.text(300, 0, "SP");
     this.add.rectangle(400, 0, 100, 30, 0xf66f21);
     this.add.text(350, 30, "100 / 100");
+
+    // const inventory = new Inventory(this, this.cameras.main.centerX, this.cameras.main.centerY);
   }
 
   public update()
