@@ -21,9 +21,6 @@ npm install && npm start
 
 Dev logs are available [here](https://github.com/ioneone/jvalley/tree/develop/logs). The logs also serve as the documentation of the code base as well as references for people who want to develop games with Phaser 3 as there are not enough tutorials avaialble online. 
 
-1. [Getting Started with Phaser 3](https://github.com/ioneone/jvalley/blob/develop/logs/1-Getting-Started-with-Phaser-3.md)
-
-
 ## Contribution
 
 I'm open to suggestions! If you find any mistake in the development logs, please kindly let me know (by making a issue or pull request).
