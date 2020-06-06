@@ -33,7 +33,7 @@ class Player extends Phaser.GameObjects.Sprite
 
   public weapon: Phaser.GameObjects.Sprite;
 
-  private isAttacking: boolean;
+  public isAttacking: boolean;
   private attackAngle: number;
   
 
@@ -46,6 +46,8 @@ class Player extends Phaser.GameObjects.Sprite
     this.scene.add.existing(this.weapon);
     this.scene.physics.add.existing(this.weapon);
     this.weapon.setOrigin(0.5, 1);
+    this.weapon.setDepth(1);
+    this.setDepth(2);
 
     this.getWeaponBody().setCircle(6);
 
@@ -85,6 +87,14 @@ class Player extends Phaser.GameObjects.Sprite
     this.isAttacking = false;
     this.attackAngle = 0;
 
+  }
+
+  public receiveAttackFromEnemy()
+  {
+    this.setFrame(8);
+    this.hp -= 10;
+    this.scene.sound.play("assets/damage_1_karen.wav");
+    EventDispatcher.getInstance().emit("PlayerHpChange", { hp: this.hp, maxHp: this.maxHp });
   }
 
   public update()
@@ -159,9 +169,13 @@ class Player extends Phaser.GameObjects.Sprite
       this.setFrame(8);
     }
 
-    if (this.keyJ.isDown)
+    if (Phaser.Input.Keyboard.JustDown(this.keyJ))
     {
-      this.isAttacking = true;
+      if (!this.isAttacking)
+      {
+        this.isAttacking = true;
+        this.scene.sound.play("assets/swing.wav");
+      }
     }
 
     if (this.weapon.flipX)
@@ -201,6 +215,7 @@ class Player extends Phaser.GameObjects.Sprite
       radius * Math.sin(this.attackAngle * Math.PI / 180), 
       radius - radius * Math.cos(this.attackAngle * Math.PI / 180));
 
+    this.getWeaponBody().setVelocity(10);
   }
 
   public getBody(): Phaser.Physics.Arcade.Body

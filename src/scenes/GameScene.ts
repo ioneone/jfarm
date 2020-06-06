@@ -28,6 +28,9 @@ class GameScene extends TilemapScene
     this.load.spritesheet("assets/elf_f.png", "assets/elf_f.png", { frameWidth: 16, frameHeight: 28 });
     this.load.spritesheet("assets/orc_warrior.png", "assets/orc_warrior.png", { frameWidth: 16, frameHeight: 20 });
     this.load.image("assets/weapon_regular_sword.png", "assets/weapon_regular_sword.png");
+    this.load.audio("assets/damage_1_karen.wav", "assets/damage_1_karen.wav");
+    this.load.audio("assets/swing.wav", "assets/swing.wav");
+    this.load.audio("assets/Sound_1.wav", "assets/Sound_1.wav");
   }
 
   create()
@@ -55,7 +58,11 @@ class GameScene extends TilemapScene
 
     this.physics.add.overlap(this.player.weapon, this.enemies, throttle(200, (object1, object2) => {
       const enemy = object2 as Enemy;
-      enemy.receiveAttackFromPlayer();
+      if (this.player?.isAttacking)
+      {
+        enemy.receiveAttackFromPlayer();
+      }
+      
     }));
 
     // configure the camera to follow the player

@@ -12,6 +12,8 @@ class Enemy extends Phaser.GameObjects.Sprite
   private hp: number;
   private maxHp: number;
 
+  private attackCharge = 0;
+
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y, "assets/orc_warrior.png");
@@ -45,6 +47,13 @@ class Enemy extends Phaser.GameObjects.Sprite
   public receiveAttackFromPlayer()
   {
     this.hp -= 10;
+
+    this.getBody().setVelocity(0, 0);
+
+    this.scene.sound.play("assets/Sound_1.wav");
+
+    this.setFrame(5);
+
     if (this.hp <= 0)
     {
       this.destroy();
@@ -58,11 +67,25 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     if (32 < distanceToPlayer && distanceToPlayer < 64)
     {
-      // this.chasePlayer(player.getCenter());
+      this.chasePlayer(player.getCenter());
     }
     else if (distanceToPlayer >= 64)
     {
-      // this.moveRandomly();
+      this.moveRandomly();
+    }
+    else
+    {
+      if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
+      {
+        this.attackCharge += 1;
+        this.attackCharge %= 60;
+
+        if (this.attackCharge === 0)
+        {
+          player.receiveAttackFromEnemy();
+        }
+        
+      }
     }
 
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
