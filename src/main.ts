@@ -7,8 +7,11 @@ const config: Phaser.Types.Core.GameConfig = {
 	width: 320,
   height: 260,
   scale: {
-    autoCenter: Phaser.Scale.CENTER_BOTH,
     zoom: 2
+  },
+  parent: "phaser",
+  dom: {
+    createContainer: true
   },
 	physics: {
     default: 'arcade',
