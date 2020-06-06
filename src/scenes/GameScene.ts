@@ -1,10 +1,8 @@
-import SceneTransitionObject from '../objects/SceneTransitionObject';
-import Character, { Direction } from '../objects/Character';
+import EventDispatcher from '../dispatchers/EventDispatcher';
 import TilemapScene from "./TilemapScene";
 import Player from '../objects/Player';
-import CharacterConfigBuilder from '../builder/CharacterConfigBuilder';
-import CharacterAsset from '../assets/CharacterAsset';
-import CharacterConfigFactory from '../factory/CharacterConfigFactory';
+import Enemy from '../objects/Enemy';
+import { throttle, debounce } from 'throttle-debounce';
 
 /**
  * GameScene is responsible for handling logics 
@@ -15,100 +13,74 @@ import CharacterConfigFactory from '../factory/CharacterConfigFactory';
 class GameScene extends TilemapScene
 {
 
-  protected characterGroup?: Phaser.GameObjects.Group;
-
-  // the character to control
   protected player?: Player;
 
-  constructor(key: string, tilemapFilePath: string, tilesetFilePaths: string[])
+  protected enemies?: Phaser.GameObjects.Group;
+
+  constructor(key: string)
   {
-    super(key, tilemapFilePath, tilesetFilePaths);
+    super(key, "assets/map/map.json", ["assets/tiles.png"]);
   }
 
   preload()
   {
     super.preload();
-
-    // load character assets if not loaded
-    CharacterConfigFactory.getSingletonInstance().preloadCharacterSpritesheets(
-      this.load, Object.keys(CharacterAsset).map(key => CharacterAsset[key]));
+    this.load.spritesheet("assets/elf_f.png", "assets/elf_f.png", { frameWidth: 16, frameHeight: 28 });
+    this.load.spritesheet("assets/orc_warrior.png", "assets/orc_warrior.png", { frameWidth: 16, frameHeight: 20 });
+    this.load.image("assets/weapon_regular_sword.png", "assets/weapon_regular_sword.png");
   }
 
   create()
   {
     super.create();
 
-    // create character animation if not created
-    CharacterConfigFactory.getSingletonInstance().createCharacterAnimations(
-      this.anims, Object.keys(CharacterAsset).map(key => CharacterAsset[key]));
+    this.player = new Player(this, 100, 100);
 
-    // create the player
-    const playerConfig = new CharacterConfigBuilder()
-      .setHairCharacterAsset(CharacterAsset.WhiteBedheadMaleHair)
-      .setBodyCharacterAsset(CharacterAsset.LightMaleBody)
-      .setTorsoCharacterAsset(CharacterAsset.WhiteMaleLongSleeve)
-      .setLegsCharacterAsset(CharacterAsset.MagentaMalePants)
-      .setFeetCharacterAsset(CharacterAsset.BlackMaleShoes)
-      .setShadowCharacterAsset(CharacterAsset.Shadow)
-      .setWeaponCharacterAsset(CharacterAsset.Shovel)
-      .setScene(this)
-      .build();
+    this.enemies = this.add.group();
+    this.enemies.add(new Enemy(this, 200, 100));
+    this.enemies.add(new Enemy(this, 200, 200));
+    this.enemies.add(new Enemy(this, 300, 300));
     
-    if (this.sceneTransitionObject)
-    {
-      this.player = new Player(playerConfig)
-        .setPosition(this.sceneTransitionObject.getTargetX() - 32, this.sceneTransitionObject.getTargetY() - 32)
-        .setDirection(this.sceneTransitionObject.getDirection());
-    }
-    else
-    {
-      this.player = new Player(playerConfig)
-        .setPosition(400, 300)
-        .setDirection(Direction.Down);
-    }
-    
-
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
     this.physics.add.collider(this.player!, this.bottomLayer!);
 
-    // add transition detection
-    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
-      const player = object1 as Player;
-      const sceneTransitionObject = object2 as SceneTransitionObject;
-      if (player.getDirection() === sceneTransitionObject.getDirection())
-      {
-        // pass sceneTransitionObject to destination scene
-        this.scene.start(sceneTransitionObject.getDestination(), { sceneTransitionObject });
-      }
+    // add collision detection between enemy and collidable layer
+    this.physics.add.collider(this.enemies!, this.middleLayer!);
+    this.physics.add.collider(this.enemies!, this.bottomLayer!);
+
+    this.physics.add.collider(this.player!, this.enemies!, (object1, object2) => {
+      (object2 as Enemy).getBody().setVelocity(0, 0);
     });
 
-    // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, false, 1, 1, -16, -16);
+    this.physics.add.overlap(this.player.weapon, this.enemies, throttle(200, (object1, object2) => {
+      const enemy = object2 as Enemy;
+      enemy.receiveAttackFromPlayer();
+    }));
 
-    // prevent tile bleeding
-    this.cameras.main.setRoundPixels(true);
+    // configure the camera to follow the player
+    this.cameras.main.startFollow(this.player!, true, 1, 1);
 
     // bring top layer to the front
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene
     this.topLayer?.setDepth(9999999);
-
-    this.characterGroup = this.add.group([this.player!]);
-
   }
 
   update()
   {
     super.update();
-
+    
     this.player?.update();
-
-    // perform depth sort
-    this.characterGroup?.getChildren().forEach(character => {
-      const c = character as Character;
-      c.setDepth(Math.max(0, c.y + c.height / 2));
+    this.enemies?.getChildren().forEach(child => {
+      (child as Enemy).update(this.player!);
     })
+
+  }
+
+  public getPlayerLocation(): Phaser.Math.Vector2
+  {
+    return new Phaser.Math.Vector2(this.player!.x, this.player!.y);
   }
 }
 

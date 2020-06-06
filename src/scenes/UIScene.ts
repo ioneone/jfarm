@@ -1,6 +1,4 @@
 import Phaser from 'phaser';
-import Items from '../ui/Items';
-import Inventory from "../ui/Inventory";
 
 class UIScene extends Phaser.Scene
 {
@@ -12,24 +10,21 @@ class UIScene extends Phaser.Scene
 
   public preload()
   {
-    const option = { frameWidth: 32, frameHeight: 64 };
-    this.load.spritesheet("assets/tileset/farming/plants.png", "assets/tileset/farming/plants.png", option);
-    this.load.image("assets/ui/item.png", "assets/ui/item.png");
-    this.load.image("assets/ui/inventory.png", "assets/ui/inventory.png");
+
   }
 
   public create()
   {
-    const items = new Items(this, this.cameras.main.centerX, this.cameras.main.height - 32);
-    this.add.text(0, 0, "HP");
-    this.add.rectangle(100, 0, 100, 30, 0x2ff7d6);
-    this.add.text(50, 30, "100 / 100");
+    const hpText = this.add.text(0, 0, "HP", { fontSize: '12px' });
+    hpText.setStroke('#000000', 4);
 
-    this.add.text(300, 0, "SP");
-    this.add.rectangle(400, 0, 100, 30, 0xf66f21);
-    this.add.text(350, 30, "100 / 100");
+    this.add.rectangle(42, 8, 50, 10, 0x000000);
+    this.add.rectangle(42, 8, 46, 8, 0x2ff7d6);
 
-    // const inventory = new Inventory(this, this.cameras.main.centerX, this.cameras.main.centerY);
+    const spText = this.add.text(78, 0, "SP", { fontSize: '12px' });
+    spText.setStroke('#000000', 4);
+    this.add.rectangle(120, 8, 50, 10, 0x000000);
+    this.add.rectangle(120, 8, 46, 8, 0xf66f21);
   }
 
   public update()

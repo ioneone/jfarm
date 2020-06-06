@@ -1,12 +1,11 @@
 import SceneTransitionObject, { TiledTransitionObject } from '../objects/SceneTransitionObject';
 import Phaser from 'phaser';
-import BackgroundAudioScene from './BackgroundAudioScene';
 
 /**
  * TilemapScene is responsible for reading tiledmap and
  * rendering the world
  */
-class TilemapScene extends BackgroundAudioScene
+class TilemapScene extends Phaser.Scene
 {
   // file path to the tilemap of this scene
   protected tilemapFilePath: string;
@@ -39,7 +38,7 @@ class TilemapScene extends BackgroundAudioScene
   // press 'I' key to toggle debug mode
   protected keyI?: Phaser.Input.Keyboard.Key;
 
-  // data received from the scene transitioned from
+  // data received from previous scene
   protected sceneTransitionObject?: SceneTransitionObject;
 
   /**
@@ -61,6 +60,10 @@ class TilemapScene extends BackgroundAudioScene
     this.tilesetFilePaths = tilesetFilePaths;
   }
 
+  /**
+   * Use init() to pass data from one scene to another
+   * @param {{ sceneTransitionObject: SceneTransitionObject }} data - the data received from previous scene
+   */
   public init(data: { sceneTransitionObject: SceneTransitionObject })
   {
     this.sceneTransitionObject = data.sceneTransitionObject;
@@ -72,7 +75,6 @@ class TilemapScene extends BackgroundAudioScene
    */
 	public preload()
 	{
-    super.preload();
     // load tileset images
     this.tilesetFilePaths.forEach(tilesetFilePath => {
       this.load.image(tilesetFilePath, tilesetFilePath);
@@ -89,7 +91,6 @@ class TilemapScene extends BackgroundAudioScene
    */
 	public create()
 	{
-    super.create();
     // parse tilemap data
     this.tilemap = this.make.tilemap({ key: this.tilemapFilePath });
 
@@ -158,7 +159,6 @@ class TilemapScene extends BackgroundAudioScene
    */
   public update()
 	{
-    super.update();
     // toggle debug mode
     if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
     {

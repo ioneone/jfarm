@@ -1,16 +1,14 @@
 import Phaser from 'phaser'
 import GameScene from './scenes/GameScene'
-import RoomScene from './scenes/RoomScene'
 import UIScene from './scenes/UIScene'
-import OutdoorScene from "./scenes/OurdoorScene";
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	width: 800,
-  height: 500,
+	width: 320,
+  height: 260,
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    zoom: 1.25
+    zoom: 2
   },
 	physics: {
     default: 'arcade',
@@ -18,7 +16,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: true
     }
 	},
-	scene: [OutdoorScene, RoomScene, UIScene]
+	scene: [GameScene, UIScene]
 }
 
 export default new Phaser.Game(config)

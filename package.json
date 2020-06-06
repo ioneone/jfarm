@@ -21,12 +21,12 @@
 		"parcel-bundler": "^1.12.4",
 		"parcel-plugin-clean-easy": "^1.0.2",
 		"parcel-plugin-static-files-copy": "^2.2.1",
-		"tile-extruder": "^2.0.5",
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
+		"debounce": "^1.2.0",
 		"phaser": "^3.22.0",
-		"uniqid": "^5.2.0"
+		"throttle-debounce": "^2.1.0"
 	},
 	"parcelCleanPaths": [
 		"dist"
