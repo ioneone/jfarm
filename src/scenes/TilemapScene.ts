@@ -150,6 +150,10 @@ class TilemapScene extends Phaser.Scene
     // configure camera
     this.cameras.main.setBounds(0, 0, this.tilemap!.widthInPixels, this.tilemap!.heightInPixels);
 
+    // hide debug graphics
+    this.physics.world.debugGraphic.setVisible(false);
+    this.debugGraphics!.setVisible(false);
+
   }
   
   /**

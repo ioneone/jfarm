@@ -92,7 +92,26 @@ class Player extends Phaser.GameObjects.Sprite
   public receiveAttackFromEnemy()
   {
     this.setFrame(8);
-    this.hp -= 10;
+    this.hp -= 5;
+
+    const damage = 5;
+
+    const damageText = this.scene.add.text(this.x, this.y, damage.toString(), { fontSize: '8px' });
+    damageText.setStroke('#000000', 4);
+    damageText.setDepth(3);
+
+    this.scene.tweens.add({
+      targets: damageText,
+      ease: 'Linear',
+      y: '-=8',
+      alpha: 0,
+      duration: 500,
+      onComplete: () => {
+        damageText.destroy();
+      }
+    });
+
+
     this.scene.sound.play("assets/damage_1_karen.wav");
     EventDispatcher.getInstance().emit("PlayerHpChange", { hp: this.hp, maxHp: this.maxHp });
   }

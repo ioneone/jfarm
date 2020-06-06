@@ -14,6 +14,8 @@ class Enemy extends Phaser.GameObjects.Sprite
 
   private attackCharge = 0;
 
+  private moveEnergy = 0;
+
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y, "assets/orc_warrior.png");
@@ -46,7 +48,26 @@ class Enemy extends Phaser.GameObjects.Sprite
 
   public receiveAttackFromPlayer()
   {
-    this.hp -= 10;
+
+    const damage = 10;
+
+    this.hp -= damage;
+
+    this.moveEnergy = -8;
+
+    const damageText = this.scene.add.text(this.x, this.y, damage.toString(), { fontSize: '8px' });
+    damageText.setStroke('#000000', 4);
+
+    this.scene.tweens.add({
+      targets: damageText,
+      ease: 'Linear',
+      y: '-=8',
+      alpha: 0,
+      duration: 500,
+      onComplete: () => {
+        damageText.destroy();
+      }
+    });
 
     this.getBody().setVelocity(0, 0);
 
@@ -63,28 +84,34 @@ class Enemy extends Phaser.GameObjects.Sprite
   public update(player: Player)
   {
 
-    const distanceToPlayer = this.getCenter().distance(player.getCenter());
+    if (this.moveEnergy >= 0)
+    {
+      const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-    if (32 < distanceToPlayer && distanceToPlayer < 64)
-    {
-      this.chasePlayer(player.getCenter());
-    }
-    else if (distanceToPlayer >= 64)
-    {
-      this.moveRandomly();
-    }
-    else
-    {
-      if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
+      const attackRange = 24;
+      const vision = 64;
+
+      if (attackRange < distanceToPlayer && distanceToPlayer < vision)
       {
-        this.attackCharge += 1;
-        this.attackCharge %= 60;
-
-        if (this.attackCharge === 0)
+        this.chasePlayer(player.getCenter());
+      }
+      else if (distanceToPlayer >= vision)
+      {
+        this.moveRandomly();
+      }
+      else
+      {
+        if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
         {
-          player.receiveAttackFromEnemy();
+          this.attackCharge += 1;
+          this.attackCharge %= 60;
+  
+          if (this.attackCharge === 0)
+          {
+            player.receiveAttackFromEnemy();
+          }
+          
         }
-        
       }
     }
 
@@ -107,6 +134,8 @@ class Enemy extends Phaser.GameObjects.Sprite
     {
       this.setFlipX(true);
     }
+
+    this.moveEnergy = Math.min(this.moveEnergy + 1, 0);
 
   }
 
