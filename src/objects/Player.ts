@@ -98,13 +98,19 @@ class Player extends Phaser.GameObjects.Sprite
     this.setFrame(PlayerAssetData.HitFrame);
     this.hitPoints = Math.max(0, this.hitPoints - damage);
 
+    if (this.hitPoints === 0)
+    {
+      this.scene.scene.stop("UIScene");
+      this.scene.scene.start("GameOverScene");
+    }
+
     this.scene.sound.play(AudioAsset.DamagePlayer);
 
     const cameraWorldPosition = this.scene.cameras.main.getWorldPoint(
       this.scene.cameras.main.x, this.scene.cameras.main.y);
     
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y } as DamageEventData);
+      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y, color: 0xff0000 } as DamageEventData);
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
       { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);

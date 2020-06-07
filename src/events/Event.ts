@@ -33,5 +33,7 @@ export interface DamageEventData
   // x world coordinate in pixels of the object relative to the main camera
   x: number,
   // y world coordinate in pixels of the object relative to the main camera
-  y: number
+  y: number,
+  // color of the damage text (default white)
+  color?: number
 }

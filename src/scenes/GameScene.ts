@@ -1,4 +1,3 @@
-import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from './../assets/AudioAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { EnemyAsset, EnemyAssetData } from '../assets/EnemyAsset';
@@ -24,10 +23,10 @@ class GameScene extends TilemapScene
 
   constructor(key: string)
   {
-    super(key, "assets/map/map.json", ["assets/tiles.png"]);
+    super(key, "assets/map/level1.json", ["assets/map/tiles.png"]);
   }
 
-  preload()
+  public preload(): void
   {
     super.preload();
     this.load.spritesheet(PlayerAsset.ElfMale, PlayerAsset.ElfMale, 
@@ -40,16 +39,16 @@ class GameScene extends TilemapScene
     this.load.audio(AudioAsset.DamageEnemy, AudioAsset.DamageEnemy);
   }
 
-  create()
+  public create(): void
   {
     super.create();
 
-    this.player = new Player(this, 100, 100, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
+    this.player = new Player(this, 150, 250, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
 
     this.enemies = this.add.group();
-    this.enemies.add(new Enemy(this, 200, 100, EnemyAsset.OrcWarrior));
-    this.enemies.add(new Enemy(this, 200, 200, EnemyAsset.OrcWarrior));
-    this.enemies.add(new Enemy(this, 300, 300, EnemyAsset.OrcWarrior));
+    this.enemies.add(new Enemy(this, 250, 250, EnemyAsset.OrcWarrior));
+    // this.enemies.add(new Enemy(this, 200, 200, EnemyAsset.OrcWarrior));
+    // this.enemies.add(new Enemy(this, 300, 300, EnemyAsset.OrcWarrior));
     
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
@@ -80,14 +79,14 @@ class GameScene extends TilemapScene
     this.topLayer?.setDepth(9999999);
   }
 
-  update()
+  public update(): void
   {
     super.update();
     
     this.player?.update();
     this.enemies?.getChildren().forEach(child => {
       (child as Enemy).update(this.player!);
-    })
+    });
 
   }
 

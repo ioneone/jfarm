@@ -116,7 +116,7 @@ class Enemy extends Phaser.GameObjects.Sprite
   
           if (this.attackCharge === 0)
           {
-            player.receiveDamage(5);
+            player.receiveDamage(20);
           }
           
         }
