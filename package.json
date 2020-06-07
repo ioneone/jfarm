@@ -24,7 +24,6 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
-		"debounce": "^1.2.0",
 		"phaser": "^3.22.0",
 		"throttle-debounce": "^2.1.0"
 	},

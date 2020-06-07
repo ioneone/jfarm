@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 
 /**
- * EventDispatcher allows inter-communication between different objects 
+ * EventDispatcher allows inter-communication between different scenes 
  * in the scene
  * 
- * For example, an enemy object can emit an 'attack' event and the player
- * can listen to this event.
+ * For example, the player object can emit a 'PlayerHpChange' event, and
+ * the UI scene can listen for this event and change the HP bar accordingly.
  * 
  * EventDispatcher is a singlenton class. You can get the instance from 
  * anywhere by EventDispatcher.getInstance().

@@ -1,13 +1,18 @@
-import { throttle } from 'throttle-debounce';
+import { DamageEventData } from './../events/Event';
+import { AudioAsset } from './../assets/AudioAsset';
+import { EnemyAssetData } from './../assets/EnemyAsset';
 import Phaser from 'phaser';
-import GameScene from '../scenes/GameScene';
-import EventDispatcher from '~/dispatchers/EventDispatcher';
 import Player from './Player';
+import { EnemyAsset } from '../assets/EnemyAsset';
+import EventDispatcher from '~/events/EventDispatcher';
+import { Event } from '~/events/Event';
 
 class Enemy extends Phaser.GameObjects.Sprite
 {
 
   private static readonly SPEED = 32;
+
+  private asset: EnemyAsset;
 
   private hp: number;
   private maxHp: number;
@@ -16,9 +21,11 @@ class Enemy extends Phaser.GameObjects.Sprite
 
   private moveEnergy = 0;
 
-  constructor(scene: Phaser.Scene, x: number, y: number)
+  constructor(scene: Phaser.Scene, x: number, y: number, asset: EnemyAsset)
   {
-    super(scene, x, y, "assets/orc_warrior.png");
+    super(scene, x, y, asset);
+
+    this.asset = asset;
     
     // add enemy to the scene
     this.scene.add.existing(this);
@@ -27,14 +34,18 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     // register animations
     this.scene.anims.create({
-      key: "assets/orc_warrior.png:idle",
-      frames: this.scene.anims.generateFrameNames("assets/orc_warrior.png", { start: 0, end: 3 }),
+      key: asset + ":idle",
+      frames: this.scene.anims.generateFrameNames(asset, 
+        { start: EnemyAssetData.IdleAnimationFrameStart, 
+          end: EnemyAssetData.IdleAnimationFrameEnd }),
       frameRate: 8
     });
 
     this.scene.anims.create({
-      key: "assets/orc_warrior.png:run",
-      frames: this.scene.anims.generateFrameNames("assets/orc_warrior.png", { start: 4, end: 7 }),
+      key: asset + ":run",
+      frames: this.scene.anims.generateFrameNames(asset, 
+        { start: EnemyAssetData.RunAnimationFrameStart, 
+          end: EnemyAssetData.RunAnimationFrameEnd }),
       frameRate: 8
     });
 
@@ -46,39 +57,36 @@ class Enemy extends Phaser.GameObjects.Sprite
 
   }
 
-  public receiveAttackFromPlayer()
+  public receiveDamage(damage: number)
   {
 
-    const damage = 10;
-
-    this.hp -= damage;
+    this.hp = Math.max(0, this.hp - damage);
 
     this.moveEnergy = -8;
 
-    const damageText = this.scene.add.text(this.x, this.y, damage.toString(), { fontSize: '8px' });
-    damageText.setStroke('#000000', 4);
-
-    this.scene.tweens.add({
-      targets: damageText,
-      ease: 'Linear',
-      y: '-=8',
-      alpha: 0,
-      duration: 500,
-      onComplete: () => {
-        damageText.destroy();
-      }
-    });
+    const cameraWorldPosition = this.scene.cameras.main.getWorldPoint(
+      this.scene.cameras.main.x, this.scene.cameras.main.y);
+    
+    EventDispatcher.getInstance().emit(Event.Damage, 
+      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y } as DamageEventData);
 
     this.getBody().setVelocity(0, 0);
 
-    this.scene.sound.play("assets/Sound_1.wav");
+    this.scene.tweens.add({
+      targets: this,
+      ease: 'Linear',
+      duration: 60,
+      repeat: 4,
+      alpha: { from: 0, to: 1 }
+    });
 
-    this.setFrame(5);
+    this.scene.sound.play(AudioAsset.DamageEnemy);
 
-    if (this.hp <= 0)
+    if (this.hp === 0)
     {
       this.destroy();
     } 
+
   }
 
   public update(player: Player)
@@ -88,7 +96,7 @@ class Enemy extends Phaser.GameObjects.Sprite
     {
       const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-      const attackRange = 24;
+      const attackRange = 28;
       const vision = 64;
 
       if (attackRange < distanceToPlayer && distanceToPlayer < vision)
@@ -108,7 +116,7 @@ class Enemy extends Phaser.GameObjects.Sprite
   
           if (this.attackCharge === 0)
           {
-            player.receiveAttackFromEnemy();
+            player.receiveDamage(5);
           }
           
         }
@@ -117,12 +125,12 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
     {
-      this.anims.play("assets/orc_warrior.png:idle", true);
+      this.anims.play(this.asset + ":idle", true);
       this.getBody().setImmovable(true);
     }
     else
     {
-      this.anims.play("assets/orc_warrior.png:run", true);
+      this.anims.play(this.asset + ":run", true);
       this.getBody().setImmovable(false);
     }
 
@@ -141,15 +149,8 @@ class Enemy extends Phaser.GameObjects.Sprite
 
   private chasePlayer(playerLocation: Phaser.Math.Vector2)
   {
-    const distanceToPlayer = this.getCenter().distance(playerLocation);
-    if (1 < distanceToPlayer && distanceToPlayer < 64) {
-      this.getBody().setVelocity(playerLocation.x - this.x, playerLocation.y - this.y);
-      this.getBody().velocity.normalize().scale(Enemy.SPEED); 
-    }
-    else
-    {
-      this.getBody().setVelocity(0, 0);
-    }
+    this.getBody().setVelocity(playerLocation.x - this.x, playerLocation.y - this.y);
+    this.getBody().velocity.normalize().scale(Enemy.SPEED); 
   }
 
   private moveRandomly()

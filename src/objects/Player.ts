@@ -1,13 +1,27 @@
+import { AudioAsset } from './../assets/AudioAsset';
+import { PlayerHpChangeEventData, DamageEventData } from './../events/Event';
+import { WeaponAsset } from './../assets/WeaponAsset';
+import { PlayerAsset, PlayerAssetData } from './../assets/PlayerAsset';
 import Phaser from 'phaser';
-import EventDispatcher from '../dispatchers/EventDispatcher';
+import EventDispatcher from '../events/EventDispatcher';
+import { Event } from '../events/Event';
+import Weapon from './Weapon';
 
 class Player extends Phaser.GameObjects.Sprite
 {
 
-  private static readonly SPEED = 60;
+  // how fast the player moves
+  private static readonly MOVE_SPEED = 60;
 
+  // how fast the weapon rotates
+  private static readonly WEAPON_ROTATION_SPEED = 16;
+
+  // the dimensions of the physics body
   private static readonly COLLISION_BODY_WIDTH = 16;
   private static readonly COLLISION_BODY_HEIGHT = 16;
+
+  // the spritesheet path of the player
+  private asset: PlayerAsset;
 
   // keyboard key for moving up
   private keyW: Phaser.Input.Keyboard.Key;
@@ -21,36 +35,30 @@ class Player extends Phaser.GameObjects.Sprite
   // keyboard key for moving right
   private keyD: Phaser.Input.Keyboard.Key;
 
+  // keyboard key for attacking 
   private keyJ: Phaser.Input.Keyboard.Key;
-  private keyH: Phaser.Input.Keyboard.Key;
 
-  // status
-  private hp: number;
-  private maxHp: number;
+  // weapon the player is currently holding
+  private weapon: Weapon;
 
-  private sp: number;
-  private maxSp: number;
+  /**
+   * player status
+   * will be migrated into its own class
+   */
+  private hitPoints: number; // HP
+  private maxHitPoints: number;
+  private magicPoints: number; // MP
+  private maxMagicPoints: number;
 
-  public weapon: Phaser.GameObjects.Sprite;
-
-  public isAttacking: boolean;
-  private attackAngle: number;
-  
-
-  constructor(scene: Phaser.Scene, x: number, y: number)
+  constructor(scene: Phaser.Scene, x: number, y: number, asset: PlayerAsset, weapon: Weapon)
   {
-    super(scene, x, y, "assets/elf_f.png");
+    super(scene, x, y, asset);
 
-    // add weapon to the scene
-    this.weapon = new Phaser.GameObjects.Sprite(this.scene, x, y, "assets/weapon_regular_sword.png");
-    this.scene.add.existing(this.weapon);
-    this.scene.physics.add.existing(this.weapon);
-    this.weapon.setOrigin(0.5, 1);
-    this.weapon.setDepth(1);
-    this.setDepth(2);
-
-    this.getWeaponBody().setCircle(6);
-
+    this.asset = asset;
+    this.hitPoints = this.maxHitPoints = 100;
+    this.magicPoints = this.maxMagicPoints = 100;
+    this.weapon = weapon;
+    
     // add player to the scene
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
@@ -62,179 +70,122 @@ class Player extends Phaser.GameObjects.Sprite
     this.keyS = this.scene.input.keyboard.addKey('S');
     this.keyD = this.scene.input.keyboard.addKey('D');
     this.keyJ = this.scene.input.keyboard.addKey('J');
-    this.keyH = this.scene.input.keyboard.addKey('H');
 
     // register animations
     this.scene.anims.create({
-      key: "assets/elf_f.png:idle",
-      frames: this.scene.anims.generateFrameNames("assets/elf_f.png", { start: 0, end: 3 }),
+      key: asset + ":idle",
+      frames: this.scene.anims.generateFrameNames(asset, 
+        { start: PlayerAssetData.IdleAnimationFrameStart, 
+          end: PlayerAssetData.IdleAnimationFrameEnd }),
       frameRate: 8
     });
 
     this.scene.anims.create({
-      key: "assets/elf_f.png:run",
-      frames: this.scene.anims.generateFrameNames("assets/elf_f.png", { start: 4, end: 7 }),
+      key: asset + ":run",
+      frames: this.scene.anims.generateFrameNames(asset, 
+        { start: PlayerAssetData.RunAnimationFrameStart, 
+          end: PlayerAssetData.RunAnimationFrameEnd }),
       frameRate: 8
     });
 
     // set collision bounds
     this.getBody().setSize(Player.COLLISION_BODY_WIDTH, Player.COLLISION_BODY_HEIGHT);
-    this.getBody().setOffset(0, 28 - Player.COLLISION_BODY_HEIGHT);
-
-    this.hp = this.maxHp = 100;
-    this.sp = this.maxSp = 100;
-
-    this.isAttacking = false;
-    this.attackAngle = 0;
-
+    this.getBody().setOffset(0, PlayerAssetData.FrameHeight - Player.COLLISION_BODY_HEIGHT);
   }
 
-  public receiveAttackFromEnemy()
+  public receiveDamage(damage: number)
   {
-    this.setFrame(8);
-    this.hp -= 5;
+    this.setFrame(PlayerAssetData.HitFrame);
+    this.hitPoints = Math.max(0, this.hitPoints - damage);
 
-    const damage = 5;
+    this.scene.sound.play(AudioAsset.DamagePlayer);
 
-    const damageText = this.scene.add.text(this.x, this.y, damage.toString(), { fontSize: '8px' });
-    damageText.setStroke('#000000', 4);
-    damageText.setDepth(3);
-
-    this.scene.tweens.add({
-      targets: damageText,
-      ease: 'Linear',
-      y: '-=8',
-      alpha: 0,
-      duration: 500,
-      onComplete: () => {
-        damageText.destroy();
-      }
-    });
-
-
-    this.scene.sound.play("assets/damage_1_karen.wav");
-    EventDispatcher.getInstance().emit("PlayerHpChange", { hp: this.hp, maxHp: this.maxHp });
+    const cameraWorldPosition = this.scene.cameras.main.getWorldPoint(
+      this.scene.cameras.main.x, this.scene.cameras.main.y);
+    
+    EventDispatcher.getInstance().emit(Event.Damage, 
+      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y } as DamageEventData);
+    
+    EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
+      { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);
   }
 
   public update()
   {
 
+    // update velocity
     if (this.keyW.isDown && this.keyA.isDown)
     {
       this.getBody().setVelocity(-1, -1);
-      this.getBody().velocity.normalize().scale(Player.SPEED);
-      this.setFlipX(true);
-      this.weapon.setFlipX(true);
+      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
     }
     else if (this.keyS.isDown && this.keyA.isDown)
     {
       this.getBody().setVelocity(-1, 1);
-      this.getBody().velocity.normalize().scale(Player.SPEED);
-      this.setFlipX(true);
-      this.weapon.setFlipX(true);
+      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
     }
     else if (this.keyS.isDown && this.keyD.isDown)
     {
       this.getBody().setVelocity(1, 1);
-      this.getBody().velocity.normalize().scale(Player.SPEED);
-      this.setFlipX(false);
-      this.weapon.setFlipX(false);
+      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
     }
     else if (this.keyW.isDown && this.keyD.isDown)
     {
       this.getBody().setVelocity(1, -1);
-      this.getBody().velocity.normalize().scale(Player.SPEED);
-      this.setFlipX(false);
-      this.weapon.setFlipX(false);
+      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
     }
     else if (this.keyW.isDown)
     {
-      this.getBody().setVelocity(0, -Player.SPEED);
+      this.getBody().setVelocity(0, -Player.MOVE_SPEED);
     }
     else if (this.keyA.isDown)
     {
-      this.getBody().setVelocity(-Player.SPEED, 0);
-      this.setFlipX(true);
-      this.weapon.setFlipX(true);
+      this.getBody().setVelocity(-Player.MOVE_SPEED, 0);
     }
     else if (this.keyS.isDown)
     {
-      this.getBody().setVelocity(0, Player.SPEED);
+      this.getBody().setVelocity(0, Player.MOVE_SPEED);
     }
     else if (this.keyD.isDown)
     {
-      this.getBody().setVelocity(Player.SPEED, 0);
-      this.setFlipX(false);
-      this.weapon.setFlipX(false);
+      this.getBody().setVelocity(Player.MOVE_SPEED, 0);
     }
     else 
     {
       this.getBody().setVelocity(0, 0);
     }
 
+    // update flip x
+    if (this.getBody().velocity.x > 0)
+    {
+      this.setFlipX(false);
+      this.weapon.setFlipX(false);
+    }
+    else if (this.getBody().velocity.x < 0)
+    {
+      this.setFlipX(true);
+      this.weapon.setFlipX(true);
+    }
+
+    // update frame and physics body
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
     {
-      this.anims.play("assets/elf_f.png:idle", true);
+      this.anims.play(this.asset + ":idle", true);
       this.getBody().setImmovable(true);
     }
     else
     {
-      this.anims.play("assets/elf_f.png:run", true);
+      this.anims.play(this.asset + ":run", true);
       this.getBody().setImmovable(false);
     }
 
-    if (this.keyH.isDown)
-    {
-      this.setFrame(8);
-    }
+    this.weapon.update(this);
 
-    if (Phaser.Input.Keyboard.JustDown(this.keyJ))
-    {
-      if (!this.isAttacking)
-      {
-        this.isAttacking = true;
-        this.scene.sound.play("assets/swing.wav");
-      }
-    }
+  }
 
-    if (this.weapon.flipX)
-    {
-      this.weapon.setPosition(this.x - 8, this.y + 8);
-      this.attackAngle = -Math.abs(this.attackAngle);
-    }
-    else
-    {
-      this.weapon.setPosition(this.x + 8, this.y + 8);
-      this.attackAngle = Math.abs(this.attackAngle);
-    }
-
-    if (this.isAttacking)
-    {
-
-      if (this.weapon.flipX)
-      {
-       this.attackAngle -= 16;
-      }
-      else
-      {
-        this.attackAngle += 16;
-      }
-
-      if (this.attackAngle < -180 || this.attackAngle > 180)
-      {
-        this.isAttacking = false;
-        this.attackAngle = 0;
-      }
-
-    }
-
-    const radius = 16;
-    this.weapon.setAngle(this.attackAngle);
-    this.getWeaponBody().setOffset(
-      radius * Math.sin(this.attackAngle * Math.PI / 180), 
-      radius - radius * Math.cos(this.attackAngle * Math.PI / 180));
-
-    this.getWeaponBody().setVelocity(10);
+  public isActivatingWeapon()
+  {
+    return Phaser.Input.Keyboard.JustDown(this.keyJ);
   }
 
   public getBody(): Phaser.Physics.Arcade.Body
@@ -245,6 +196,16 @@ class Player extends Phaser.GameObjects.Sprite
   public getWeaponBody(): Phaser.Physics.Arcade.Body
   {
     return this.weapon.body as Phaser.Physics.Arcade.Body;
+  }
+
+  public getWeapon()
+  {
+    return this.weapon;
+  }
+
+  public isAttacking()
+  {
+    return this.weapon.isRotating();
   }
 
 }

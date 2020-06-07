@@ -1,8 +1,13 @@
-import EventDispatcher from '../dispatchers/EventDispatcher';
+import { WeaponAsset } from './../assets/WeaponAsset';
+import { AudioAsset } from './../assets/AudioAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { EnemyAsset, EnemyAssetData } from '../assets/EnemyAsset';
+import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import TilemapScene from "./TilemapScene";
 import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
-import { throttle, debounce } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
+import Weapon from '~/objects/Weapon';
 
 /**
  * GameScene is responsible for handling logics 
@@ -25,24 +30,26 @@ class GameScene extends TilemapScene
   preload()
   {
     super.preload();
-    this.load.spritesheet("assets/elf_f.png", "assets/elf_f.png", { frameWidth: 16, frameHeight: 28 });
-    this.load.spritesheet("assets/orc_warrior.png", "assets/orc_warrior.png", { frameWidth: 16, frameHeight: 20 });
-    this.load.image("assets/weapon_regular_sword.png", "assets/weapon_regular_sword.png");
-    this.load.audio("assets/damage_1_karen.wav", "assets/damage_1_karen.wav");
-    this.load.audio("assets/swing.wav", "assets/swing.wav");
-    this.load.audio("assets/Sound_1.wav", "assets/Sound_1.wav");
+    this.load.spritesheet(PlayerAsset.ElfMale, PlayerAsset.ElfMale, 
+      { frameWidth: PlayerAssetData.FrameWidth, frameHeight: PlayerAssetData.FrameHeight });
+    this.load.spritesheet(EnemyAsset.OrcWarrior, EnemyAsset.OrcWarrior, 
+      { frameWidth: EnemyAssetData.FrameWidth, frameHeight: EnemyAssetData.FrameHeight });
+    this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
+    this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
+    this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
+    this.load.audio(AudioAsset.DamageEnemy, AudioAsset.DamageEnemy);
   }
 
   create()
   {
     super.create();
 
-    this.player = new Player(this, 100, 100);
+    this.player = new Player(this, 100, 100, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
 
     this.enemies = this.add.group();
-    this.enemies.add(new Enemy(this, 200, 100));
-    this.enemies.add(new Enemy(this, 200, 200));
-    this.enemies.add(new Enemy(this, 300, 300));
+    this.enemies.add(new Enemy(this, 200, 100, EnemyAsset.OrcWarrior));
+    this.enemies.add(new Enemy(this, 200, 200, EnemyAsset.OrcWarrior));
+    this.enemies.add(new Enemy(this, 300, 300, EnemyAsset.OrcWarrior));
     
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
@@ -56,13 +63,12 @@ class GameScene extends TilemapScene
       (object2 as Enemy).getBody().setVelocity(0, 0);
     });
 
-    this.physics.add.overlap(this.player.weapon, this.enemies, throttle(200, (object1, object2) => {
+    this.physics.add.overlap(this.player.getWeapon(), this.enemies, throttle(200, (object1, object2) => {
       const enemy = object2 as Enemy;
-      if (this.player?.isAttacking)
+      if (this.player?.isAttacking())
       {
-        enemy.receiveAttackFromPlayer();
+        enemy.receiveDamage(10);
       }
-      
     }));
 
     // configure the camera to follow the player

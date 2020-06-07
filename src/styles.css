@@ -2,26 +2,15 @@ body {
   color: white;
   font-family: 'Press Start 2P';
   background: rgb(42, 42, 42);
+  font-size: 12;
+}
+
+#phaser {
+  width: 640px;
 }
 
 .container {
-  padding-right: 15px;
-  padding-left: 15px;
+  width: 640px;
   margin-right: auto;
   margin-left: auto;
-}
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-  }
 }
