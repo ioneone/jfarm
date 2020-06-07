@@ -2740,4 +2740,4 @@ var e=arguments[3];require("./polyfills");var r=require("./const"),i=require("./
 },{"phaser":"g7IM","../events/EventDispatcher":"dlv3","../events/Event":"TOzP"}],"ZCfc":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=t(require("phaser")),a=t(require("./scenes/GameScene")),r=t(require("./scenes/UIScene"));function t(e){return e&&e.__esModule?e:{default:e}}var u={type:e.default.AUTO,width:320,height:260,scale:{zoom:2},parent:"phaser",dom:{createContainer:!0},physics:{default:"arcade",arcade:{debug:!0}},scene:[a.default,r.default]},d=new e.default.Game(u);exports.default=d;
 },{"phaser":"g7IM","./scenes/GameScene":"HuEe","./scenes/UIScene":"fOS8"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/jvalley/main.841ff156.js.map
+//# sourceMappingURL=/shining-soul-j/main.841ff156.js.map
