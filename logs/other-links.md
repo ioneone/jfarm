@@ -6,3 +6,12 @@ https://www.joshmorony.com/adding-custom-fonts-to-your-phaser-game/
 
 https://blog.ourcade.co/posts/2020/phaser3-how-to-communicate-between-scenes/
 
+
+https://fonts.google.com/specimen/Press+Start+2P#standard-styles
+
+http://kvazars.com/littera/
+
+https://blog.ourcade.co/posts/2020/phaser3-how-to-communicate-between-scenes/
+
+
+https://blog.ourcade.co/posts/2020/phaser-3-player-select-choose-character/

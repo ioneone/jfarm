@@ -21,9 +21,9 @@ class GameScene extends TilemapScene
 
   protected enemies?: Phaser.GameObjects.Group;
 
-  constructor(key: string)
+  constructor()
   {
-    super(key, "assets/map/level1.json", ["assets/map/tiles.png"]);
+    super("GameScene", "assets/map/level1.json", ["assets/map/tiles.png"]);
   }
 
   public preload(): void

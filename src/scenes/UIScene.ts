@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event, PlayerHpChangeEventData, DamageEventData } from '../events/Event';
 
+// UIScene should always be active. Overlay UIScene on top of current scene.
 class UIScene extends Phaser.Scene
 {
 
@@ -13,8 +14,7 @@ class UIScene extends Phaser.Scene
 
   constructor()
   {
-    // UIScene should always be active. Overlay UIScene on top of current scene.
-    super({ key: "UIScene", active: true });
+    super("UIScene");
   }
 
   public preload()
@@ -50,6 +50,11 @@ class UIScene extends Phaser.Scene
     // event handling
     EventDispatcher.getInstance().on(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
+
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      EventDispatcher.getInstance().off(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
+      EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
+    });
   }
 
   private handlePlayerHpChangeEvent(data: PlayerHpChangeEventData)
@@ -76,7 +81,7 @@ class UIScene extends Phaser.Scene
     this.tweens.add({
       targets: damageText,
       ease: 'Linear',
-      x: (Math.random() - 1 > 0 ? '+=' : '-=' ) + (7 * Math.random() + 1).toString(),
+      x: (Math.random() - 0.5 > 0 ? '+=' : '-=' ) + (7 * Math.random() + 1).toString(),
       y: '-=' + (7 * Math.random() + 1).toString(),
       alpha: 0,
       duration: 500,
