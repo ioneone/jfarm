@@ -22,9 +22,13 @@ You can find full list of LPC assets at OpenGameArt website. There are also some
 - [makrohn/Universal-LPC-spritesheet](https://github.com/makrohn/Universal-LPC-spritesheet)
 - [OpenGameArt/LiberatedPixelCup](https://github.com/OpenGameArt/LiberatedPixelCup)
 
+Edit: I found some assets I liked better [here](https://0x72.itch.io/dungeontileset-ii) by [0x72](https://itch.io/profile/0x72). I will be using this instead.
+
 ## Texture Packer
 
 [Texture Packer](https://www.codeandweb.com/texturepacker) is a software (not free) for making a spritesheet from bunch of images. The key feature of Texture packer is making a texture atlas. Texture atlas is like a more efficient version of spritesheet, but it's an overkill for a simple game I will be making. Instead you can just use [Sprite Sheet Packer](https://www.codeandweb.com/free-sprite-sheet-packer), which is free.
+
+Though Texture Packer does not let you pack sprites in a specific order, in which case, I will be using [Sketch](https://www.sketch.com/) (not free) but you can use anything.
 
 ## Tiled
 
@@ -35,6 +39,8 @@ To learn how to integrate a map made with Tiled, you can read [this turorial](ht
 ## How to Make a Farming Game
 
 Continue reading this tutorial series to learn how to make a farming game. You can also check out [these video tutorials](https://www.youtube.com/watch?v=Tc4ijzjplZs). My tutorial series are basically Phaser 3 version of them.
+
+Edit: I decided to pivot my project from farm simulation to combat simulation. But still, the tutorial links are useful for game development in general.
 
 ## Useful Links
 

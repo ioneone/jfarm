@@ -1,12 +1,12 @@
 {
-	"name": "Jvalley",
+	"name": "shining-soul-j",
 	"version": "1.0.0",
 	"private": true,
-	"homepage": "https://ioneone.github.io/jvalley",
+	"homepage": "https://ioneone.github.io/shining-soul-j",
 	"description": "",
 	"scripts": {
 		"start": "parcel src/index.html -p 8000",
-		"build": "parcel build src/index.html --out-dir dist --public-url /jvalley/",
+		"build": "parcel build src/index.html --out-dir dist --public-url /shining-soul-j/",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -b master -d dist"
 	},
