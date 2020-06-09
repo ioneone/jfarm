@@ -15,3 +15,7 @@ https://blog.ourcade.co/posts/2020/phaser3-how-to-communicate-between-scenes/
 
 
 https://blog.ourcade.co/posts/2020/phaser-3-player-select-choose-character/
+
+https://github.com/sporadic-labs/tile-extruder#tile-extruder
+
+https://www.youtube.com/watch?v=ZwaomOYGuYo

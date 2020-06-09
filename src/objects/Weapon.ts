@@ -32,6 +32,7 @@ class Weapon extends Phaser.GameObjects.Sprite
 
   public update(player: Player)
   {
+
     if (player.isActivatingWeapon())
     {
       if (!this.rotating)

@@ -11,7 +11,7 @@ class Player extends Phaser.GameObjects.Sprite
 {
 
   // how fast the player moves
-  private static readonly MOVE_SPEED = 60;
+  private static readonly MOVE_SPEED = 64;
 
   // how fast the weapon rotates
   private static readonly WEAPON_ROTATION_SPEED = 16;
@@ -91,6 +91,8 @@ class Player extends Phaser.GameObjects.Sprite
     // set collision bounds
     this.getBody().setSize(Player.COLLISION_BODY_WIDTH, Player.COLLISION_BODY_HEIGHT);
     this.getBody().setOffset(0, PlayerAssetData.FrameHeight - Player.COLLISION_BODY_HEIGHT);
+
+    this.getBody().setImmovable(true);
   }
 
   public receiveDamage(damage: number)
@@ -106,11 +108,8 @@ class Player extends Phaser.GameObjects.Sprite
 
     this.scene.sound.play(AudioAsset.DamagePlayer);
 
-    const cameraWorldPosition = this.scene.cameras.main.getWorldPoint(
-      this.scene.cameras.main.x, this.scene.cameras.main.y);
-    
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y, color: 0xff0000 } as DamageEventData);
+      { damage: damage, x: this.x, y: this.y, color: 0xff0000 } as DamageEventData);
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
       { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);

@@ -21,8 +21,8 @@ class GameOverScene extends Phaser.Scene
   public create()
   {
     this.keyEnter = this.input.keyboard.addKey('ENTER');
-    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY, this.fontFamily, "GAME OVER", 16).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY + 24, this.fontFamily, "Press Enter to Restart", 8).setOrigin(0.5, 0.5)
+    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY, this.fontFamily, "GAME OVER", 24).setOrigin(0.5, 0.5);
+    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY + 36, this.fontFamily, "Press Enter to Restart", 12).setOrigin(0.5, 0.5)
   }
 
   public update()

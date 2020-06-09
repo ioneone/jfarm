@@ -3,15 +3,17 @@ import GameScene from './scenes/GameScene';
 import GameOverScene from './scenes/GameOverScene';
 import UIScene from './scenes/UIScene';
 import GameStartScene from './scenes/GameStartScene';
+import LevelScene from './scenes/LevelScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	width: 320,
-  height: 260,
-  scale: {
-    zoom: 2
-  },
+	width: 640,
+  height: 520,
   parent: "phaser",
+  render: {
+    antialiasGL: false,
+    pixelArt: true
+  },
   dom: {
     createContainer: true
   },
@@ -21,7 +23,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: true
     }
 	},
-	scene: [GameStartScene, GameScene, UIScene, GameOverScene]
+	scene: [GameStartScene, GameOverScene, GameScene, LevelScene, UIScene]
 }
 
 export default new Phaser.Game(config);

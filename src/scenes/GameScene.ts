@@ -2,11 +2,12 @@ import { AudioAsset } from './../assets/AudioAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { EnemyAsset, EnemyAssetData } from '../assets/EnemyAsset';
 import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
-import TilemapScene from "./TilemapScene";
+import TilemapScene, { TiledTransitionObject } from "./TilemapScene";
 import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import { throttle } from 'throttle-debounce';
 import Weapon from '~/objects/Weapon';
+import SceneTransitionObject from '~/objects/SceneTransitionObject';
 
 /**
  * GameScene is responsible for handling logics 
@@ -23,7 +24,7 @@ class GameScene extends TilemapScene
 
   constructor()
   {
-    super("GameScene", "assets/map/level1.json", ["assets/map/tiles.png"]);
+    super("GameScene");
   }
 
   public preload(): void
@@ -71,7 +72,8 @@ class GameScene extends TilemapScene
     }));
 
     // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, true, 1, 1);
+    // this.cameras.main.startFollow(this.player!, true);
+    this.cameras.main.setRoundPixels(true);
 
     // bring top layer to the front
     // Depth is 0 (unsorted) by default, which perform the rendering 
@@ -93,6 +95,29 @@ class GameScene extends TilemapScene
   public getPlayerLocation(): Phaser.Math.Vector2
   {
     return new Phaser.Math.Vector2(this.player!.x, this.player!.y);
+  }
+
+  /**
+   * file path to the tilemap of this scene
+   * @return {string} - tile map file path
+   */
+  public getTilemapFilePath(): string
+  {
+    return "assets/map/level1.json";
+  }
+
+  /**
+   * file path to the tileset for the tilemap
+   * @return {string} - tile set file path
+   */
+  public getTilesetFilePath(): string
+  {
+    return "assets/map/tiles.png";
+  }
+
+  public parseTransitionObject(tiledTransitionObject: TiledTransitionObject): SceneTransitionObject
+  {
+    return new SceneTransitionObject(this, tiledTransitionObject);
   }
 }
 

@@ -10,7 +10,7 @@ import { Event } from '~/events/Event';
 class Enemy extends Phaser.GameObjects.Sprite
 {
 
-  private static readonly SPEED = 32;
+  private static readonly SPEED = 64;
 
   private asset: EnemyAsset;
 
@@ -55,6 +55,8 @@ class Enemy extends Phaser.GameObjects.Sprite
     this.hp = 100;
     this.maxHp = 100;
 
+    this.getBody().bounce.setTo(1, 1);
+
   }
 
   public receiveDamage(damage: number)
@@ -68,7 +70,7 @@ class Enemy extends Phaser.GameObjects.Sprite
       this.scene.cameras.main.x, this.scene.cameras.main.y);
     
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: this.x - cameraWorldPosition.x, y: this.y - cameraWorldPosition.y } as DamageEventData);
+      { damage: damage, x: this.x , y: this.y } as DamageEventData);
 
     this.getBody().setVelocity(0, 0);
 
@@ -94,6 +96,9 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     if (this.moveEnergy >= 0)
     {
+
+      this.getBody().setAcceleration(0, 0);
+
       const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
       const attackRange = 28;
@@ -112,11 +117,11 @@ class Enemy extends Phaser.GameObjects.Sprite
         if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
         {
           this.attackCharge += 1;
-          this.attackCharge %= 60;
+          this.attackCharge %= 30;
   
           if (this.attackCharge === 0)
           {
-            player.receiveDamage(20);
+            player.receiveDamage(2);
           }
           
         }

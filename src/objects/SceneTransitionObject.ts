@@ -1,21 +1,16 @@
-import { Direction } from '../objects/Character';
 import Phaser from 'phaser';
+import { TiledTransitionObject } from '../scenes/TilemapScene';
 
-// Raw data of Tiled transition object
-// These are data provided by Tiled program by default
-export interface TiledTransitionObject
+export interface SceneModel {}
+
+export interface LevelSceneModel extends SceneModel
 {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  name: string;
-  properties: Array<{
-    name: string,
-    type: string,
-    value: string | number
-  }>;
+  destinationScene: string;
+  destinationXInTiles: number;
+  destinationYInTiles: number;
+  destinationLevel: number;
+  tilemapFileNamePrefix: string;
+  tilesetFileName: string;
 }
 
 /**
@@ -27,16 +22,17 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 {
 
   // the id of the scene to transition into
-  private destination?: string;
+  private destinationScene?: string;
 
-  // direction the subject needs to face to transition
-  private direction?: Direction;
+  private destinationXInTiles?: number;
 
-  // the x coordinate of the subject in the new scene
-  private targetX?: number;
+  private destinationYInTiles?: number;
 
-  // the y coordinate of the subject in the new scene
-  private targetY?: number;
+  private destinationLevel?: number
+
+  private tilemapFileNamePrefix?: string;
+
+  private tilesetFileName?: string;
 
   /**
    * @param {Phaser.Scene} scene - The scene this object belongs to
@@ -45,43 +41,46 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   constructor(scene: Phaser.Scene, tiledTransitionObject: TiledTransitionObject)
   {
     super(scene, tiledTransitionObject.x, tiledTransitionObject.y);
-    this.destination = tiledTransitionObject.name;
     tiledTransitionObject.properties.forEach(property =>{
-      if (property.name.localeCompare("direction") === 0)
+      if (property.name.localeCompare("DestinationLevel") === 0)
       {
-        this.direction = property.value as Direction;
+        this.destinationLevel = property.value as number;
       }
-      else if (property.name.localeCompare("targetX") === 0)
+      else if (property.name.localeCompare("DestinationScene") === 0)
       {
-        this.targetX = property.value as number;
+        this.destinationScene = property.value as string;
       }
-      else if (property.name.localeCompare("targetY") === 0)
+      else if (property.name.localeCompare("DestinationXInTiles") === 0)
       {
-        this.targetY = property.value as number;
+        this.destinationXInTiles = property.value as number;
+      }
+      else if (property.name.localeCompare("DestinationYInTiles") === 0)
+      {
+        this.destinationYInTiles = property.value as number;
+      }
+      else if (property.name.localeCompare("TilemapFileNamePrefix") === 0)
+      {
+        this.tilemapFileNamePrefix = property.value as string;
+      }
+      else if (property.name.localeCompare("TilesetFileName") === 0)
+      {
+        this.tilesetFileName = property.value as string;
       }
     });
     this.setOrigin(0);
     this.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
   }
 
-  getDestination(): string
+  public createSceneDataModel(): LevelSceneModel
   {
-    return this.destination!;
-  }
-
-  getDirection(): Direction
-  {
-    return this.direction!;
-  }
-
-  getTargetX(): number
-  {
-    return this.targetX!;
-  }
-
-  getTargetY(): number
-  {
-    return this.targetY!;
+    return {
+      destinationScene: this.destinationScene || "",
+      destinationXInTiles: this.destinationXInTiles || 0,
+      destinationYInTiles: this.destinationYInTiles || 0,
+      destinationLevel: this.destinationLevel || 0,
+      tilemapFileNamePrefix: this.tilemapFileNamePrefix || "",
+      tilesetFileName: this.tilesetFileName || ""
+    };
   }
 
 }
