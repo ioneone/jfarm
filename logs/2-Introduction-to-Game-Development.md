@@ -1,14 +1,10 @@
 # Phaser 3 Game Development Resources
 
-In this tutorial, you will learn some of the important concepts and tools for 
-game development.
+In this tutorial, you will learn some of the important concepts and tools for game development.
 
 ## Phaser Documentation and Community
 
-The [documentation](https://photonstorm.github.io/phaser3-docs/#toc3__anchor) provides detailed descriptions about the APIs. But this is useful only if you 
-know what functions you need to use. Often times, you don't even know what API
-to use. I would say just Google the problem. I frequently find the solutions 
-at HTML5 Game Devs Forum, Stack Overflow, and [Phaser 3 Examples](https://phaser.io/examples). 
+The [documentation](https://photonstorm.github.io/phaser3-docs/#toc3__anchor) provides detailed descriptions about the APIs. There is also an [unofficial documentation](https://github.com/rexrainbow/phaser3-rex-notes/) (phaser3-rex-notes) that explains the Phaser 3 APIs from a different perspective. But these are useful only if you know what functions you need to use. Often times, you don't even know what API to use. I would say just Google the problem. I frequently find the solutions at HTML5 Game Devs Forum, Stack Overflow, and [Phaser 3 Examples](https://phaser.io/examples). 
 
 If you are still stuck, there is a [Phaser discord channel](https://phaser.io/community/discord) where you can ask for help!
 
@@ -40,9 +36,9 @@ To learn how to integrate a map made with Tiled, you can read [this turorial](ht
 
 Continue reading this tutorial series to learn how to make a farming game. You can also check out [these video tutorials](https://www.youtube.com/watch?v=Tc4ijzjplZs). My tutorial series are basically Phaser 3 version of them.
 
-Edit: I decided to pivot my project from farm simulation to combat simulation. But still, the tutorial links are useful for game development in general.
+Edit: I decided to pivot my project from a farm simulation game to a role playing game. But still, the tutorial links are useful for game development in general.
 
-## Useful Links
+## Phaser 3 Beginner Guides 
 
 Check out these guides for Phaser 3 beginners. 
 

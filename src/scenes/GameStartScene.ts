@@ -1,43 +1,100 @@
-import { LevelSceneModel } from './../objects/SceneTransitionObject';
+import { SceneTransitionData } from './../objects/SceneTransitionObject';
+import { FontAsset, FontAssetData } from './../assets/FontAsset';
 import Phaser from 'phaser';
+import LevelScene from './LevelScene';
+import UIScene from './UIScene';
 
+/**
+ * The first scene the player sees when they start the game.
+ * @class
+ * @classdesc
+ * It displays the title of the game. This should be the first item in the 
+ * game config's scene list.
+ */
 class GameStartScene extends Phaser.Scene
 {
 
+  public static readonly KEY = "GameStartScene";
+
+  // reference to the ENTER key for starting the game
   private keyEnter?: Phaser.Input.Keyboard.Key;
 
   constructor()
   {
-    super("GameStartScene");
+    super(GameStartScene.KEY);
   }
 
-  public preload()
+  /**
+   * Scenes can have a init method, which is always called before the Scenes
+   * preload method, allowing you to initialize data that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {any} data - the data being passed when the scene manager starts this scene
+   */
+  public init(data: any): void
   {
-    this.load.bitmapFont('PressStart2P', 'assets/font/font.png', 'assets/font/font.fnt');
   }
 
-  public create()
+  /**
+   * Scenes can have a preload method, which is always called before the Scenes 
+   * create method, allowing you to preload assets that the Scene may need.
+   */
+  public preload(): void
+  {
+    // load font
+    this.load.bitmapFont(FontAsset.PressStart2P, 
+      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
+      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
+  }
+
+  /**
+   * Scenes can have a create method, which is always called after the Scenes 
+   * init and preload methods, allowing you to create assets that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {any} data - the data being passed when the scene manager starts this scene
+   */
+  public create(data: any): void
   {
     this.keyEnter = this.input.keyboard.addKey('ENTER');
-    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY, 'PressStart2P', "SHINING SOUL J", 24).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY + 36, 'PressStart2P', "Press Enter to Start", 12).setOrigin(0.5, 0.5)
+
+    const title = "SHINING SOUL J";
+    const titleFontSize = 24;
+
+    const helperText = "Press Enter to Start";
+    const helperTextFontSize = 12;
+    const spacingBetweenTitleAndHelperText = 24;
+
+    // draw texts on the center of the screen
+    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, 
+      this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
+    this.add.bitmapText(this.cameras.main.centerX, 
+      titleBitmapText.y + titleBitmapText.height / 2 + spacingBetweenTitleAndHelperText, 
+      FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
   }
 
-  public update()
+  /**
+   * This method is called once per game step while the scene is running.
+   * @param {number} time - the current time
+   * @param {number} delta - the delta time in ms since the last frame
+   */
+  public update(time: number, delta: number): void
   {
     if (Phaser.Input.Keyboard.JustDown(this.keyEnter!))
     {
-
-      this.scene.start("LevelScene", {
-        destinationScene: "LevelScene",
+      this.scene.start(LevelScene.KEY, {
+        destinationScene: LevelScene.KEY,
         destinationXInTiles: 9,
         destinationYInTiles: 16,
         destinationLevel: 1,
         tilemapFileNamePrefix: "level",
         tilesetFileName: "tiles.png"
-      } as LevelSceneModel);
-      this.scene.start("UIScene");
-      
+      } as SceneTransitionData);
+      this.scene.start(UIScene.KEY);
     }
   }
 

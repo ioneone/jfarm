@@ -1,38 +1,56 @@
-import { DamageEventData } from './../events/Event';
-import EventDispatcher from '../events/EventDispatcher';
 import { throttle } from 'throttle-debounce';
-import { SceneTransitionObjectData, LevelSceneModel } from './../objects/SceneTransitionObject';
+import { SceneTransitionData } from './../objects/SceneTransitionObject';
 import Weapon from '../objects/Weapon';
 import { AudioAsset } from './../assets/AudioAsset';
 import { WeaponAsset } from './../assets/WeaponAsset';
 import { EnemyAsset, EnemyAssetData } from './../assets/EnemyAsset';
 import { PlayerAsset, PlayerAssetData } from './../assets/PlayerAsset';
 import Phaser from 'phaser';
-import TilemapScene, { TiledTransitionObject } from './TilemapScene';
+import TilemapScene from './TilemapScene';
 import Player from '../objects/Player';
 import SceneTransitionObject from '~/objects/SceneTransitionObject';
 import Enemy from '~/objects/Enemy';
-import { Event } from '~/events/Event';
 
+/**
+ * ...
+ * @class
+ * @classdesc
+ * ...
+ */
 class LevelScene extends TilemapScene
 {
 
-  private model?: LevelSceneModel; 
+  public static readonly KEY = "LevelScene";
 
-  private player?: Player;
+  // the player to control
+  protected player?: Player;
 
+  // the group of enemies in the scene
   protected enemies?: Phaser.GameObjects.Group;
 
   constructor()
   {
-    super("LevelScene");
+    super(LevelScene.KEY);
   }
 
-  public init(model: LevelSceneModel)
+  /**
+   * Scenes can have a init method, which is always called before the Scenes
+   * preload method, allowing you to initialize data that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   */
+  public init(data: any)
   {
-    this.model = model;    
+    super.init(data);  
   }
  
+  /**
+   * Scenes can have a preload method, which is always called before the Scenes 
+   * create method, allowing you to preload assets that the Scene may need.
+   */
   public preload()
   {
     super.preload();
@@ -44,14 +62,22 @@ class LevelScene extends TilemapScene
     this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
     this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
     this.load.audio(AudioAsset.DamageEnemy, AudioAsset.DamageEnemy);
-    this.load.bitmapFont('PressStart2P', 'assets/font/font.png', 'assets/font/font.fnt');
   }
 
-  public create()
+  /**
+   * Scenes can have a create method, which is always called after the Scenes 
+   * init and preload methods, allowing you to create assets that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   */
+  public create(data: SceneTransitionData)
   {
-    super.create();
+    super.create(data);
 
-    this.player = new Player(this, this.model!.destinationXInTiles * 16, this.model!.destinationYInTiles * 16, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
+    this.player = new Player(this, data.destinationXInTiles * 16, data.destinationYInTiles * 16, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
 
     this.enemies = this.add.group();
     this.enemies.add(new Enemy(this, 250, 250, EnemyAsset.OrcWarrior));
@@ -69,8 +95,8 @@ class LevelScene extends TilemapScene
      });
  
      this.physics.add.overlap(this.player.getWeapon(), this.enemies, throttle(200, (object1, object2) => {
-       const enemy = object2 as Enemy;
        const weapon = object1 as Weapon;
+       const enemy = object2 as Enemy;
        
        if (weapon.isRotating())
        {
@@ -81,81 +107,52 @@ class LevelScene extends TilemapScene
      }));
 
     this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
-      const sceneTransitionObject = object2 as SceneTransitionObject;
-      const model = sceneTransitionObject.createSceneDataModel();
-      this.scene.start(model.destinationScene, model);
+      const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
+      this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
     });
 
     // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, true);
+    this.cameras.main.startFollow(this.player!);
   
     // bring top layer to the front
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene
     this.topLayer?.setDepth(1000);
 
-    EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
-
-    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
-    });
-
   }
 
-  public update(time, delta)
+  /**
+   * This method is called once per game step while the scene is running.
+   * @param {number} time - the current time
+   * @param {number} delta - the delta time in ms since the last frame
+   */
+  public update(time: number, delta: number)
   {
     super.update(time, delta);
     this.player?.update();
-    this.enemies?.getChildren().forEach(child => {
-      (child as Enemy).update(this.player!);
-    });
-
-  }
-
-  private handleDamageEvent(data: DamageEventData)
-  {
-    const damageText = this.add.bitmapText(data.x, data.y, 'PressStart2P', data.damage.toString(), 6);
-    if (data.color)
-    {
-      damageText.setTint(data.color);
-    }
-    
-    this.tweens.add({
-      targets: damageText,
-      ease: 'Linear',
-      x: (Math.random() - 0.5 > 0 ? '+=' : '-=' ) + (7 * Math.random() + 1).toString(),
-      y: '-=' + (7 * Math.random() + 1).toString(),
-      alpha: 0,
-      duration: 500,
-      onComplete: () => {
-        damageText.destroy();
-      }
-    });
+    this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!));
   }
 
   /**
-   * File path to the tilemap of this scene.
-   * Assume the tilemap file is located at assets/map/ and the extension is json.
+   * File path to the tilemap of this scene. Assume the tilemap file is located 
+   * at assets/map/ and the extension is json.
+   * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile map file path
    */
-  public getTilemapFilePath(): string
+  public getTilemapFilePath(data: SceneTransitionData): string
   {
-    return "assets/map/" + this.model?.tilemapFileNamePrefix + this.model?.destinationLevel!.toString() + ".json";
+    return "assets/map/" + data.tilemapFileNamePrefix + data.destinationLevel!.toString() + ".json";
   }
 
   /**
-   * File path to the tileset for the tilemap.
-   * Assume the tileset file is located at assets/map/
+   * File path to the tileset for the tilemap. Assume the tileset file is 
+   * located at assets/map/
+   * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile set file path
    */
-  public getTilesetFilePath(): string
+  public getTilesetFilePath(data: SceneTransitionData): string
   {
-    return "assets/map/" + this.model?.tilesetFileName;
-  }
-
-  public parseTransitionObject(tiledTransitionObject: TiledTransitionObject): SceneTransitionObject
-  {
-    return new SceneTransitionObject(this, tiledTransitionObject);
+    return "assets/map/" + data.tilesetFileName;
   }
 
 }

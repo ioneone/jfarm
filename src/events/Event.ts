@@ -1,22 +1,22 @@
 /**
- * Custom events
+ * Collection of custom events of the game. Events are useful when you want to 
+ * pass data from one scene to another. See {@link EventDispatcher} to learn 
+ * more about how to fire and listen for events.
+ * @readonly
+ * @enum {string}
  */
 export enum Event
 {
-  // This event should be fired when the hit points of the player changes.
-  // It is fired by Player and listened by UIScene
+  // the hit points of the player has changed
   PlayerHpChange = "playerhpchange",
-
-  // someone loses hit points
-  // It is fired by Player or Enemy and listened by UIScene
+  // someone has lost hit points
   Damage = "damage"
 }
 
 /**
- * Custom event data
+ * Data type to be sent when {@link Event#PlayerHpChange} is fired.
+ * @interface
  */
-
-// Event data for Event.PlayerHpChange
 export interface PlayerHpChangeEventData
 {
   // hit points of the player
@@ -25,14 +25,17 @@ export interface PlayerHpChangeEventData
   maxHitPoints: number;
 }
 
-// Event data for Event.Damage
+/**
+ * Data type to be sent when {@link Event#Damage} is fired.
+ * @interface
+ */
 export interface DamageEventData
 {
   // damage the object receives
   damage: number,
-  // x world coordinate in pixels of the object relative to the main camera
+  // x world coordinate of the object relative to the canvas position the event occured
   x: number,
-  // y world coordinate in pixels of the object relative to the main camera
+  // y world coordinate of the object relative to the canvas position the event occured
   y: number,
   // color of the damage text (default white)
   color?: number

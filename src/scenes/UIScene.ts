@@ -1,76 +1,131 @@
+import { FontAsset, FontAssetData } from './../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event, PlayerHpChangeEventData, DamageEventData } from '../events/Event';
+import HitPointsBar from '~/ui/HitPointsBar';
 
-// UIScene should always be active. Overlay UIScene on top of current scene.
+/**
+ * The user interface scene.
+ * @class
+ * @classdesc
+ * This scene should always be active except when 
+ * {@link GameStartScene} or {@link GameOverScene} is active. This scene 
+ * should be rendered on top of any other scene, and thus should be placed 
+ * as the last item of the scene list in the game config.
+ */
 class UIScene extends Phaser.Scene
 {
 
-  // A visual indicator of the player's hit points
-  private hitPointsBar?: Phaser.GameObjects.Rectangle;
+  public static readonly KEY = "UIScene";
 
-  // Digit representation of the player's hit points
-  private hitPointsText?: Phaser.GameObjects.BitmapText;
+  // font size for the damage text
+  private static readonly DAMAGE_FONT_SIZE = 12;
+
+  // easing equation to use for damage text
+  private static readonly DAMAGE_EASE = 'Linear';
+
+  // maximum pixels to move per frame for damage text
+  private static readonly DAMAGE_MAX_OFFSET_PER_FRAME = 8;
+
+  // duration for showing the damage text in ms
+  private static readonly DAMAGE_LIFE_DURATION_IN_MS = 400;
+
+  // the visualization of the player's current hit points
+  private hitPointsBar?: HitPointsBar;
 
   constructor()
   {
-    super("UIScene");
+    super(UIScene.KEY);
   }
 
-  public preload()
+  /**
+   * Scenes can have a init method, which is always called before the Scenes
+   * preload method, allowing you to initialize data that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {any} data - the data being passed when the scene manager starts this scene
+   */
+  public init(data: any): void
   {
-    this.load.bitmapFont('PressStart2P', 'assets/font/font.png', 'assets/font/font.fnt');
   }
 
-  public create()
+  /**
+   * Scenes can have a preload method, which is always called before the Scenes 
+   * create method, allowing you to preload assets that the Scene may need.
+   */
+  public preload(): void
   {
-    const blackColor = 0x000000;
-    const lightBlueColor = 0x2ff7d6;
-    const orangeColor = 0xf66f21;
+    // load font
+    this.load.bitmapFont(FontAsset.PressStart2P, 
+      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
+      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
+  }
 
-    const fontFamily = 'PressStart2P';
-    const statusBarOffsetX = 8;
-    const statusBarOffsetY = 8;
-    const textFontSize = 16;
-    const digitFontSize = 12;
-    const spacing = 2;
+  /**
+   * Scenes can have a create method, which is always called after the Scenes 
+   * init and preload methods, allowing you to create assets that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {any} data - the data being passed when the scene manager starts this scene
+   */
+  public create(data: any): void
+  {
+    this.hitPointsBar = new HitPointsBar(this, 0, 0);
 
-    const barBackgroundWidth = 100;
+    EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
 
-    const hpText = this.add.bitmapText(statusBarOffsetX, statusBarOffsetY, fontFamily, "HP", textFontSize);
-    
-    const hitPointsBarBackground = this.add.rectangle(hpText.x + hpText.width + spacing, statusBarOffsetY, barBackgroundWidth, hpText.height, blackColor).setOrigin(0, 0);
-    this.hitPointsBar = this.add.rectangle(hitPointsBarBackground.x + spacing, statusBarOffsetY + spacing, barBackgroundWidth - 2 * spacing, hpText.height - 2 * spacing, lightBlueColor).setOrigin(0, 0);
-    this.hitPointsText = this.add.bitmapText(hitPointsBarBackground.x + hitPointsBarBackground.width, hitPointsBarBackground.y + hitPointsBarBackground.height + spacing, fontFamily, "100/100", digitFontSize).setOrigin(1, 0);
-
-    const spText = this.add.bitmapText(hitPointsBarBackground.x + hitPointsBarBackground.width + spacing * 8, statusBarOffsetY, fontFamily, "SP", textFontSize);
-    const spPointsBarBackground = this.add.rectangle(spText.x + spText.width + spacing, statusBarOffsetY, barBackgroundWidth, spText.height, blackColor).setOrigin(0, 0);
-    this.add.rectangle(spPointsBarBackground.x + spacing, statusBarOffsetY + spacing, barBackgroundWidth - 2 * spacing, spText.height - 2 * spacing, orangeColor).setOrigin(0, 0);
-    this.add.bitmapText(spPointsBarBackground.x + spPointsBarBackground.width, spPointsBarBackground.y + spPointsBarBackground.height + spacing, fontFamily, "100/100", digitFontSize).setOrigin(1, 0);
-
-    // event handling
-    EventDispatcher.getInstance().on(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
-
+    // clean up listeners when removed
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
+      EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
     });
   }
 
-  private handlePlayerHpChangeEvent(data: PlayerHpChangeEventData)
+  /**
+   * This method is called once per game step while the scene is running.
+   * @param {number} time - the current time
+   * @param {number} delta - the delta time in ms since the last frame
+   */
+  public update(time: number, delta: number): void
   {
-    const hp = data.hitPoints;
-    const maxHp = data.maxHitPoints;
-
-    const spacing = 2;
-    const barBackgroundWidth = 100;
-    
-    this.hitPointsBar?.setDisplaySize(Math.max(0, Math.floor((barBackgroundWidth - 2 * spacing) * hp / maxHp)), 
-      this.hitPointsBar.height);
-    this.hitPointsText?.setText(hp.toString() + '/' + maxHp.toString());
   }
 
-  public update()
+  /**
+   * Callback for receiving {@link Event#Damage} event.
+   * @param {DamageEventData} data - the data associated with the event
+   */
+  private handleDamageEvent(data: DamageEventData): void
   {
+    const damageText = this.add.bitmapText(data.x, data.y, FontAsset.PressStart2P, data.damage.toString(), UIScene.DAMAGE_FONT_SIZE);
+    
+    if (data.color)
+    {
+      damageText.setTint(data.color);
+    }
+
+    const max = UIScene.DAMAGE_MAX_OFFSET_PER_FRAME;
+    const min = -UIScene.DAMAGE_MAX_OFFSET_PER_FRAME;
+
+    // -UIScene.DAMAGE_MAX_OFFSET_PER_FRAME to UIScene.DAMAGE_MAX_OFFSET_PER_FRAME
+    const randomX = Math.random() * (max - min) + min;
+
+    // 0 to UIScene.DAMAGE_MAX_OFFSET_PER_FRAME
+    const randomY = Math.random() * max;
+    
+    this.tweens.add({
+      targets: damageText,
+      ease: UIScene.DAMAGE_EASE,
+      x: '+=' + randomX.toString(),
+      y: '-=' + randomY.toString(), // the text should always go up
+      alpha: 0,
+      duration: UIScene.DAMAGE_LIFE_DURATION_IN_MS,
+      onComplete: () => {
+        damageText.destroy();
+      }
+    });
   }
 
 }

@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import { TiledTransitionObject } from '../scenes/TilemapScene';
 
-export interface SceneModel {}
-
-export interface LevelSceneModel extends SceneModel
+/**
+ * Custom properties of scene transition obejct
+ * @interface
+ */
+export interface SceneTransitionData
 {
   destinationScene: string;
   destinationXInTiles: number;
@@ -14,9 +16,11 @@ export interface LevelSceneModel extends SceneModel
 }
 
 /**
- * SceneTransitionObject is an instantiation of
- * transition object from Tiled map. This will be used
- * with overlap detection with the player.
+ * An Phaser representation of transition object from Tiled map. This will be used
+ * for overlap detection with the player.
+ * @class
+ * @classdesc
+ * ...
  */
 class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 {
@@ -24,14 +28,19 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   // the id of the scene to transition into
   private destinationScene?: string;
 
+  // the x coordinate in tiles to spawn the player in the next scene
   private destinationXInTiles?: number;
 
+  // the y coordinate in tiles to spawn the player in the next scene
   private destinationYInTiles?: number;
 
+  // the level of the dungeon in the next scene
   private destinationLevel?: number
 
+  // file name prefix for the tilemap
   private tilemapFileNamePrefix?: string;
 
+  // file name of the tileset for the tilemap
   private tilesetFileName?: string;
 
   /**
@@ -71,7 +80,11 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
     this.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
   }
 
-  public createSceneDataModel(): LevelSceneModel
+  /**
+   * Get the data needed for starting next scene
+   * @return {SceneTransitionData} - the data representation of this object
+   */
+  public toData(): SceneTransitionData
   {
     return {
       destinationScene: this.destinationScene || "",

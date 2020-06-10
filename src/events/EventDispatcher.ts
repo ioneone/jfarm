@@ -1,16 +1,18 @@
 import Phaser from 'phaser';
 
 /**
- * EventDispatcher allows inter-communication between different scenes 
- * in the scene
+ * Allows inter-communication between different scenes.
+ * @class
+ * @classdesc 
+ * For example, the player object can fire a {@link Event#PlayerHpChange} event, 
+ * and the UI scene can listen for this event and change the HP bar accordingly.
  * 
- * For example, the player object can emit a 'PlayerHpChange' event, and
- * the UI scene can listen for this event and change the HP bar accordingly.
+ * {@link EventDispatcher} is a singlenton class. You can get the instance from 
+ * anywhere by `EventDispatcher.getInstance()`.
  * 
- * EventDispatcher is a singlenton class. You can get the instance from 
- * anywhere by EventDispatcher.getInstance().
+ * List of events can be found at {@link Event}.
  * 
- * Reference: https://phasergames.com/phaser-3-dispatching-custom-events/
+ * @see {@link https://phasergames.com/phaser-3-dispatching-custom-events/}
  */
 class EventDispatcher extends Phaser.Events.EventEmitter
 {
@@ -22,7 +24,11 @@ class EventDispatcher extends Phaser.Events.EventEmitter
     super();
   }
 
-  static getInstance()
+  /**
+   * Get the singleton event dispatcher.
+   * @return {EventDispatcher} - the singeleton event dispatcher
+   */
+  static getInstance(): EventDispatcher
   {
     if (!EventDispatcher.singelton)
     {

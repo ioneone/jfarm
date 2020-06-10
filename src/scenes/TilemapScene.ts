@@ -1,6 +1,14 @@
+import { SceneTransitionData } from './../objects/SceneTransitionObject';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Phaser from 'phaser';
+import AnimatedTile, { TilesetTileData } from '~/objects/AnimatedTile';
 
+/**
+ * The name of tile layers of the tilemap exported from Tiled program.
+ * @see TilemapScene
+ * @readonly
+ * @enum {string}
+ */
 export enum TileLayer
 {
   Top = "TopLayer",
@@ -9,8 +17,11 @@ export enum TileLayer
   Transition = "TransitionLayer"
 }
 
-// Raw data of Tiled transition object
-// These are data provided by Tiled program by default
+/**
+ * Data type of raw Tiled transition object. These are data provided by Tiled
+ * program by default. Custom data will be stored in `properties`.
+ * @interface
+ */
 export interface TiledTransitionObject
 {
   id: number;
@@ -27,25 +38,34 @@ export interface TiledTransitionObject
 }
 
 /**
- * TilemapScene is responsible for reading tiledmap and
- * rendering the world
+ * Responsible for reading tiledmap and rendering the world.
+ * @class
+ * @classdesc
+ * The tilemap must have the structure as follows:
+ * - TopLayer (non-collidable)
+ * - MiddleLayer (collidable)
+ * - BottomLayer (collidable)
+ * - TransitionLayer
+ * The lower layer will be rendered first. Use default name for tileset name. 
+ * (e.g. `path/to/file/foo.png` => `foo`)
  */
 abstract class TilemapScene extends Phaser.Scene
 {
 
-  /**
-   * The tilemap must have the structure as follows:
-   * - TopLayer (non-collidable)
-   * - MiddleLayer (collidable)
-   * - BottomLayer (collidable)
-   * - TransitionLayer
-   * The lower layer will be rendered first.
-   * Use default name for tileset name. 
-   * (e.g. path/to/file/foo.png => foo)
-   */
+  // the style config for debug mode
+  private static readonly RENDER_DEBUG_CONFIG = {
+    // Color of non-colliding tiles
+    tileColor: null, 
+    // Color of colliding tiles
+    collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), 
+    // Color of colliding face edges
+    faceColor: new Phaser.Display.Color(40, 39, 37, 255) 
+  }
+
+  // the tilemap of the scene
   protected tilemap?: Phaser.Tilemaps.Tilemap;
 
-  // Tileset for the tilemap
+  // tileset for the tilemap
   protected tileset?: Phaser.Tilemaps.Tileset;
 
   // transition objects
@@ -66,10 +86,13 @@ abstract class TilemapScene extends Phaser.Scene
   // press 'I' key to toggle debug mode
   protected keyI?: Phaser.Input.Keyboard.Key;
 
-  protected animatedTiles: any[];
+  // referene to animatable tiles
+  protected animatedTiles: AnimatedTile[];
+
+  protected sceneTransitionData?: SceneTransitionData;
 
   /**
-   * @param key {string} - the unique id of the scene
+   * @param {string} key - the unique id of the scene
    */
 	constructor(key: string)
 	{
@@ -78,66 +101,72 @@ abstract class TilemapScene extends Phaser.Scene
   }
 
   /**
-   * Use init() to pass data from one scene to another.
-   * init() is called before preload()
-   * @param data {any} - the data received from another scene
+   * Scenes can have a init method, which is always called before the Scenes
+   * preload method, allowing you to initialize data that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
    */
-  public init(data: any)
+  public init(data: SceneTransitionData): void
   {
+    this.animatedTiles = [];
+    this.sceneTransitionData = data;
   }
   
   /**
-   * preload() is always called before the Scenes create method, 
-   * allowing you to preload assets that the Scene may need.
+   * Scenes can have a preload method, which is always called before the Scenes 
+   * create method, allowing you to preload assets that the Scene may need.
    */
-	public preload()
+	public preload(): void
 	{
     // load tileset image
-    this.load.image(this.getTilesetFilePath(), this.getTilesetFilePath());
+    this.load.image(this.getTilesetFilePath(this.sceneTransitionData!), this.getTilesetFilePath(this.sceneTransitionData!));
     // load tilemap json data
-    this.load.tilemapTiledJSON(this.getTilemapFilePath(), this.getTilemapFilePath());
+    this.load.tilemapTiledJSON(this.getTilemapFilePath(this.sceneTransitionData!), this.getTilemapFilePath(this.sceneTransitionData!));
 	}
 
   /**
-   * create() is called after preload() is completed.
-   * You can safely assume all the resources are declared in preload()
-   * are loaded to the memory.
+   * Scenes can have a create method, which is always called after the Scenes 
+   * init and preload methods, allowing you to create assets that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
    */
-	public create()
+	public create(data: SceneTransitionData): void
 	{
     // parse tilemap json data to phaser tile map object
-    this.tilemap = this.make.tilemap({ key: this.getTilemapFilePath() });
+    this.tilemap = this.make.tilemap({ key: this.getTilemapFilePath(this.sceneTransitionData!) });
 
     // parse tileset image
-    const tilesetNameInTilemapData = this.getTilesetFilePath().slice(
-      this.getTilesetFilePath().lastIndexOf("/") + 1, this.getTilesetFilePath().lastIndexOf("."));
-    this.tileset = this.tilemap.addTilesetImage(tilesetNameInTilemapData, this.getTilesetFilePath());
-
+    const tilesetNameInTilemapData = this.getTilesetFilePath(this.sceneTransitionData!).slice(
+      this.getTilesetFilePath(this.sceneTransitionData!).lastIndexOf("/") + 1, this.getTilesetFilePath(this.sceneTransitionData!).lastIndexOf("."));
+    this.tileset = this.tilemap.addTilesetImage(tilesetNameInTilemapData, this.getTilesetFilePath(this.sceneTransitionData!));
 
     // create transition layer
     this.transitionObjectGroup = this.physics.add.staticGroup();
     const tiledTransitionObjects = this.tilemap.getObjectLayer(TileLayer.Transition).objects as TiledTransitionObject[];
     tiledTransitionObjects.forEach(tiledTransitionObject => {
-      const transitionObject = this.parseTransitionObject(tiledTransitionObject); 
-      this.transitionObjectGroup?.add(transitionObject);
+      this.transitionObjectGroup?.add(new SceneTransitionObject(this, tiledTransitionObject));
     });
 
     // create bottom layer
-    this.bottomLayer = this.tilemap.createDynamicLayer("BottomLayer", this.tileset, 0, 0);
+    this.bottomLayer = this.tilemap.createDynamicLayer(TileLayer.Bottom, this.tileset, 0, 0);
     this.bottomLayer.setCollisionByProperty({ collision: true });   
 
     // create middle layer
-    this.middleLayer = this.tilemap.createDynamicLayer("MiddleLayer", this.tileset, 0, 0);
+    this.middleLayer = this.tilemap.createDynamicLayer(TileLayer.Middle, this.tileset, 0, 0);
     this.middleLayer.setCollisionByProperty({ collision: true });     
     
     // create top layer
-    this.topLayer = this.tilemap.createDynamicLayer("TopLayer", this.tileset, 0, 0);
+    this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0);
 
-    console.log(this.tileset);
-
-    for (let key in this.tileset.tileData as {[key: number]: { animation?: { duration: number, tileid: number }[] }})
+    // create animated tiles
+    for (let key in this.tileset.tileData as TilesetTileData)
     {
-      const value = this.tileset.tileData[key];
       this.tilemap.layers.forEach(layer => {
         if (layer.tilemapLayer.type === "DynamicTilemapLayer") 
         {
@@ -145,9 +174,7 @@ abstract class TilemapScene extends Phaser.Scene
             tileRow.forEach(tile => {
               if ((tile.index - this.tileset!.firstgid) === parseInt(key)) 
               {
-                this.animatedTiles.push(tile);
-                tile.animationData = value.animation;
-                tile.currentAnimationFrame = 0;
+                this.animatedTiles.push(new AnimatedTile(tile, (this.tileset!.tileData as TilesetTileData)[key].animation!, this.tileset!.firstgid));
               }
             });
           });
@@ -155,30 +182,13 @@ abstract class TilemapScene extends Phaser.Scene
       })
     }
 
-    console.log(this.animatedTiles);
-
     // get reference to the keyboard key
     this.keyI = this.input.keyboard.addKey('I');
 
     // setup debug mode
     this.debugGraphics = this.add.graphics().setAlpha(0.5);
-    this.bottomLayer.renderDebug(this.debugGraphics!, {
-      // Color of non-colliding tiles
-      tileColor: null, 
-      // Color of colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), 
-      // Color of colliding face edges
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) 
-    });
-
-    this.middleLayer.renderDebug(this.debugGraphics!, {
-      // Color of non-colliding tiles
-      tileColor: null, 
-      // Color of colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), 
-      // Color of colliding face edges
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) 
-    });
+    this.bottomLayer.renderDebug(this.debugGraphics!, TilemapScene.RENDER_DEBUG_CONFIG);
+    this.middleLayer.renderDebug(this.debugGraphics!, TilemapScene.RENDER_DEBUG_CONFIG);
 
     // set world bounds
     this.physics.world.bounds.width = this.tilemap.widthInPixels;
@@ -195,11 +205,11 @@ abstract class TilemapScene extends Phaser.Scene
   }
   
   /**
-   * update() is called after create() is completed.
-   * This method is called every frame and updates the state
-   * of the scene.
+   * This method is called once per game step while the scene is running.
+   * @param {number} time - the current time
+   * @param {number} delta - the delta time in ms since the last frame
    */
-  public update(time, delta)
+  public update(time: number, delta: number): void
 	{
     // toggle debug mode
     if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
@@ -211,34 +221,23 @@ abstract class TilemapScene extends Phaser.Scene
       this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
     }
 
-    this.animatedTiles.forEach(tile => {
-      tile.currentAnimationFrame += delta;
-      tile.currentAnimationFrame %= 300;
-      const animationIndex = Math.floor(tile.currentAnimationFrame / 100);
-      tile.index = tile.animationData[animationIndex].tileid + this.tileset!.firstgid;
-    })
+    this.animatedTiles.forEach(tile => tile.update(delta));
 
   }
 
   /**
    * file path to the tilemap of this scene
+   * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile map file path
    */
-  public abstract getTilemapFilePath(): string;
+  public abstract getTilemapFilePath(data: SceneTransitionData): string;
 
   /**
    * file path to the tileset for the tilemap
+   * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile set file path
    */
-  public abstract getTilesetFilePath(): string;
-
-  /**
-   * How to parse transition object depends on its destination scene
-   * Every scene requires different data for initialization
-   * @param tiledTransitionObject {TiledTransitionObject} - transition object to parse
-   * @return {[key: string]: string} - an object 
-   */
-  public abstract parseTransitionObject(tiledTransitionObject: TiledTransitionObject): SceneTransitionObject;
+  public abstract getTilesetFilePath(data: SceneTransitionData): string;
 
 }
 

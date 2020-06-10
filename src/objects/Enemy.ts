@@ -10,7 +10,7 @@ import { Event } from '~/events/Event';
 class Enemy extends Phaser.GameObjects.Sprite
 {
 
-  private static readonly SPEED = 64;
+  private static readonly SPEED = 48;
 
   private asset: EnemyAsset;
 
@@ -68,10 +68,19 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     const cameraWorldPosition = this.scene.cameras.main.getWorldPoint(
       this.scene.cameras.main.x, this.scene.cameras.main.y);
-    
-    EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: this.x , y: this.y } as DamageEventData);
 
+    const cameraTopLeftX = this.scene.cameras.main.worldView.x;
+    const cameraTopLeftY = this.scene.cameras.main.worldView.y;
+
+    const ratioX = (this.x - cameraTopLeftX) / this.scene.cameras.main.width;
+    const ratioY = (this.y - cameraTopLeftY) / this.scene.cameras.main.height;
+
+    const canvasWidth = this.scene.cameras.main.width * this.scene.cameras.main.zoom;
+    const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
+
+    EventDispatcher.getInstance().emit(Event.Damage, 
+      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight } as DamageEventData);
+    
     this.getBody().setVelocity(0, 0);
 
     this.scene.tweens.add({
@@ -121,7 +130,7 @@ class Enemy extends Phaser.GameObjects.Sprite
   
           if (this.attackCharge === 0)
           {
-            player.receiveDamage(2);
+            player.receiveDamage(10);
           }
           
         }

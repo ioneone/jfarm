@@ -6,6 +6,8 @@ import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event } from '../events/Event';
 import Weapon from './Weapon';
+import UIScene from '~/scenes/UIScene';
+import GameOverScene from '~/scenes/GameOverScene';
 
 class Player extends Phaser.GameObjects.Sprite
 {
@@ -102,14 +104,23 @@ class Player extends Phaser.GameObjects.Sprite
 
     if (this.hitPoints === 0)
     {
-      this.scene.scene.stop("UIScene");
-      this.scene.scene.start("GameOverScene");
+      this.scene.scene.stop(UIScene.KEY);
+      this.scene.scene.start(GameOverScene.KEY);
     }
 
     this.scene.sound.play(AudioAsset.DamagePlayer);
 
+    const cameraTopLeftX = this.scene.cameras.main.worldView.x;
+    const cameraTopLeftY = this.scene.cameras.main.worldView.y;
+
+    const ratioX = (this.x - cameraTopLeftX) / this.scene.cameras.main.width;
+    const ratioY = (this.y - cameraTopLeftY) / this.scene.cameras.main.height;
+
+    const canvasWidth = this.scene.cameras.main.width * this.scene.cameras.main.zoom;
+    const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
+
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: this.x, y: this.y, color: 0xff0000 } as DamageEventData);
+      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as DamageEventData);
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
       { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);
