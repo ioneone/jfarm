@@ -16,6 +16,7 @@ import HitPointsBar from '~/ui/HitPointsBar';
 class UIScene extends Phaser.Scene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "UIScene";
 
   // font size for the damage text

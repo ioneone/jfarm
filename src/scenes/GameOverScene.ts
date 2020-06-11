@@ -13,6 +13,7 @@ import UIScene from './UIScene';
 class GameOverScene extends Phaser.Scene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "GameOverScene";
 
   // reference to the ENTER key for restarting the game

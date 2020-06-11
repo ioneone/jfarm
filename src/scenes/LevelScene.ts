@@ -11,14 +11,17 @@ import SceneTransitionObject from '~/objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
 
 /**
- * ...
+ * The scene for the dugeon.
  * @class
  * @classdesc
- * ...
+ * A dungeon is a collection of level scenes. Make sure your transition object 
+ * exported from Tiled program has all the properties specified in {@link SceneTransitionData}.
+ * Then it automatically takes care of loading the next level scene.
  */
 class LevelScene extends TilemapScene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "LevelScene";
 
   // the player to control
@@ -76,8 +79,10 @@ class LevelScene extends TilemapScene
   {
     super.create(data);
 
+    // add player to the scene
     this.player = new Player(this, data.destinationXInTiles * 16, data.destinationYInTiles * 16, PlayerAsset.ElfMale);
 
+    // add enemies to the scene
     this.enemies = this.add.group();
     this.enemies.add(new Enemy(this, 250, 250, EnemyAsset.OrcWarrior));
     this.enemies.add(new Enemy(this, 250, 300, EnemyAsset.OrcWarrior));
@@ -90,30 +95,29 @@ class LevelScene extends TilemapScene
     this.physics.add.collider(this.enemies!, this.middleLayer!);
     this.physics.add.collider(this.enemies!, this.bottomLayer!);
  
-    this.physics.add.collider(this.player!, this.enemies!, (object1, object2) => {
-      const player = object1 as Player;
+    // add collision detection between player and enemy
+    this.physics.add.collider(this.player!, this.enemies!, (_, object2) => {
       const enemy = object2 as Enemy;
-      enemy.updateState = EnemyUpdateState.AttackPlayer;
+      enemy.setUpdateState(EnemyUpdateState.AttackPlayer);
+      // prevent enemy from pushing the player
       enemy.getBody().setVelocity(0, 0);
     });
 
+    // add overlap detection between player attack and enemy
     this.physics.add.overlap(this.player.getWeapon(), this.enemies, (object1, object2) => {
-
       const weapon = object1 as Weapon;
       const enemy = object2 as Enemy;
-
       const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
       enemy.knockBack(knockBackVelocity);
       enemy.receiveDamage(10);
-
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
       const enemy = object2 as Enemy;
-
-      return weapon.getBody().angularVelocity !== 0 && enemy.updateState !== EnemyUpdateState.KnockBack;
+      return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
     });
 
-    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
+    // add overlap detection between player and transition objects
+    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (_, object2) => {
       const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
       this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
     });
@@ -121,10 +125,10 @@ class LevelScene extends TilemapScene
     // configure the camera to follow the player
     this.cameras.main.startFollow(this.player!);
   
-    // bring top layer to the front
+    // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
-    // in the order it was added to the scene
-    this.topLayer?.setDepth(1000);
+    // in the order it was added to the scene.
+    this.topLayer?.setDepth(1);
 
   }
 
