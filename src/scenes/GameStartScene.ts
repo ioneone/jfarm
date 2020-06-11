@@ -14,6 +14,7 @@ import UIScene from './UIScene';
 class GameStartScene extends Phaser.Scene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "GameStartScene";
 
   // reference to the ENTER key for starting the game

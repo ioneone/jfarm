@@ -164,6 +164,8 @@ abstract class TilemapScene extends Phaser.Scene
     // create top layer
     this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0);
 
+    console.log(this.tileset.tileData);
+
     // create animated tiles
     for (let key in this.tileset.tileData as TilesetTileData)
     {

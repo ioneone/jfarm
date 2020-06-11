@@ -124,7 +124,7 @@ class LevelScene extends TilemapScene
 
     // configure the camera to follow the player
     this.cameras.main.startFollow(this.player!);
-  
+    
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene.
@@ -142,6 +142,7 @@ class LevelScene extends TilemapScene
     super.update(time, delta);
     this.player?.update();
     this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
+
   }
 
   /**

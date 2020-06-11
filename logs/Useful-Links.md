@@ -18,10 +18,10 @@ These are some useful links I haven't figured out where to put in the dev logs y
 
 - https://github.com/sporadic-labs/tile-extruder#tile-extruder
 
-- https://www.youtube.com/watch?v=ZwaomOYGuYo
-
 - https://github.com/nkholski/phaser-animated-tiles/blob/master/src/plugin/main.js
 
 - https://jsdoc.app/index.html
 
 - https://github.com/rexrainbow/phaser3-rex-notes/
+
+- https://phasertutorials.com/how-to-create-a-phaser-3-mmorpg-part-1/

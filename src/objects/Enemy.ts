@@ -16,6 +16,8 @@ import { Event } from '~/events/Event';
 export enum EnemyUpdateState
 {
   Default,
+  FoundPlayer,
+  ChasePlayer,
   KnockBack,
   AttackPlayer
 }
@@ -117,17 +119,10 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     this.hitPoints = Math.max(0, this.hitPoints - damage);
 
-    const cameraTopLeftX = this.scene.cameras.main.worldView.x;
-    const cameraTopLeftY = this.scene.cameras.main.worldView.y;
-
-    const ratioX = (this.x - cameraTopLeftX) / this.scene.cameras.main.width;
-    const ratioY = (this.y - cameraTopLeftY) / this.scene.cameras.main.height;
-
-    const canvasWidth = this.scene.cameras.main.width * this.scene.cameras.main.zoom;
-    const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
+    const canvasViewPosition = this.computeCanvasViewPosition();
 
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight } as DamageEventData);
+      { damage: damage, x: canvasViewPosition.x, y: canvasViewPosition.y } as DamageEventData);
     
     // enemey flash effect
     this.scene.tweens.add({
@@ -171,7 +166,8 @@ class Enemy extends Phaser.GameObjects.Sprite
 
       if (distanceToPlayer < this.vision)
       {
-        this.chasePlayer(player);
+        this.updateState = EnemyUpdateState.FoundPlayer;
+        this.elapsedTime = 0;
       }
       else
       {
@@ -179,11 +175,43 @@ class Enemy extends Phaser.GameObjects.Sprite
       }
 
     }
+    else if (this.updateState === EnemyUpdateState.FoundPlayer)
+    {
+      const canvasViewPosition = this.computeCanvasViewPosition();
+      EventDispatcher.getInstance().emit("EnemyFoundPlayer", { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height });
+      this.updateState = EnemyUpdateState.ChasePlayer;
+      this.elapsedTime = 0;
+    }
+    else if (this.updateState === EnemyUpdateState.ChasePlayer)
+    {
+      const distanceToPlayer = this.getCenter().distance(player.getCenter());
+
+      if (distanceToPlayer < this.vision)
+      {
+        this.chasePlayer(player);
+      }
+      else
+      {
+        this.updateState = EnemyUpdateState.Default;
+        this.elapsedTime = 0;
+        this.getBody().setVelocity(0, 0);
+      }
+    }
     else if (this.updateState === EnemyUpdateState.KnockBack)
     {
       if (this.elapsedTime > this.knockBackDuration)
       {
-        this.updateState = EnemyUpdateState.Default;
+        const distanceToPlayer = this.getCenter().distance(player.getCenter());
+
+        if (distanceToPlayer < this.vision)
+        {
+          this.updateState = EnemyUpdateState.ChasePlayer;
+        }
+        else
+        {
+          this.updateState = EnemyUpdateState.Default;
+
+        }
         this.elapsedTime = 0;
         this.getBody().setVelocity(0, 0);
       }
@@ -322,6 +350,24 @@ class Enemy extends Phaser.GameObjects.Sprite
   public getBody(): Phaser.Physics.Arcade.Body
   {
     return this.body as Phaser.Physics.Arcade.Body;
+  }
+
+  /**
+   * Compute the position in pixels of this object in canvas coordinate system
+   * @return {Phaser.Math.Vector2} - the position in pixels relative to canvas coordinate system 
+   */
+  private computeCanvasViewPosition(): Phaser.Math.Vector2
+  {
+    const cameraTopLeftX = this.scene.cameras.main.worldView.x;
+    const cameraTopLeftY = this.scene.cameras.main.worldView.y;
+
+    const ratioX = (this.x - cameraTopLeftX) / this.scene.cameras.main.width;
+    const ratioY = (this.y - cameraTopLeftY) / this.scene.cameras.main.height;
+
+    const canvasWidth = this.scene.cameras.main.width * this.scene.cameras.main.zoom;
+    const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
+
+    return new Phaser.Math.Vector2(ratioX * canvasWidth, ratioY * canvasHeight);
   }
 
 }

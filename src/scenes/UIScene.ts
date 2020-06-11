@@ -22,9 +22,6 @@ class UIScene extends Phaser.Scene
   // font size for the damage text
   private static readonly DAMAGE_FONT_SIZE = 12;
 
-  // easing equation to use for damage text
-  private static readonly DAMAGE_EASE = 'Linear';
-
   // maximum pixels to move per frame for damage text
   private static readonly DAMAGE_MAX_OFFSET_PER_FRAME = 8;
 
@@ -78,11 +75,25 @@ class UIScene extends Phaser.Scene
     this.hitPointsBar = new HitPointsBar(this, 0, 0);
 
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
-
+    EventDispatcher.getInstance().on("EnemyFoundPlayer", (data) => {
+      const notificationText = this.add.bitmapText(data.x, data.y - data.height, FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);
+      notificationText.setTint(0xfccba3);
+      this.tweens.add({
+        targets: notificationText,
+        alpha: 0,
+        duration: 400,
+        onComplete: () => {
+          notificationText.destroy();
+        }
+      });
+  
+    });
+ 
     // clean up listeners when removed
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
     });
+    
   }
 
   /**
@@ -118,7 +129,6 @@ class UIScene extends Phaser.Scene
     
     this.tweens.add({
       targets: damageText,
-      ease: UIScene.DAMAGE_EASE,
       x: '+=' + randomX.toString(),
       y: '-=' + randomY.toString(), // the text should always go up
       alpha: 0,
@@ -127,6 +137,7 @@ class UIScene extends Phaser.Scene
         damageText.destroy();
       }
     });
+
   }
 
 }
