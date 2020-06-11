@@ -1,3 +1,4 @@
+import { throttle } from 'throttle-debounce';
 import { DamageEventData } from './../events/Event';
 import { AudioAsset } from './../assets/AudioAsset';
 import { EnemyAssetData } from './../assets/EnemyAsset';
@@ -7,30 +8,52 @@ import { EnemyAsset } from '../assets/EnemyAsset';
 import EventDispatcher from '~/events/EventDispatcher';
 import { Event } from '~/events/Event';
 
+export enum EnemyUpdateState
+{
+  Default,
+  KnockBack,
+  AttackPlayer
+}
+
 class Enemy extends Phaser.GameObjects.Sprite
 {
 
-  private static readonly SPEED = 48;
+  private static readonly SPEED = 64;
 
   private asset: EnemyAsset;
 
   private hp: number;
-  private maxHp: number;
 
   private attackCharge = 0;
 
   private moveEnergy = 0;
+
+  private attackCounter = 0;
+
+  private isFrozen = false;
+
+  public updateState;
+
+  private elapsedTime = 0;
+
+  private duration = 100; // ms
+
+  private attackInterval = 800; // ms
 
   constructor(scene: Phaser.Scene, x: number, y: number, asset: EnemyAsset)
   {
     super(scene, x, y, asset);
 
     this.asset = asset;
+
+    this.updateState = EnemyUpdateState.Default;
     
     // add enemy to the scene
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     this.getBody().setCollideWorldBounds(true);
+
+    this.getBody().setBounce(0, 0);
 
     // register animations
     this.scene.anims.create({
@@ -53,10 +76,12 @@ class Enemy extends Phaser.GameObjects.Sprite
     this.getBody().setImmovable(true);
 
     this.hp = 100;
-    this.maxHp = 100;
 
-    this.getBody().bounce.setTo(1, 1);
+  }
 
+  public attackPlayer(player: Player)
+  {
+    player.receiveDamage(1);
   }
 
   public receiveDamage(damage: number)
@@ -81,8 +106,6 @@ class Enemy extends Phaser.GameObjects.Sprite
     EventDispatcher.getInstance().emit(Event.Damage, 
       { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight } as DamageEventData);
     
-    this.getBody().setVelocity(0, 0);
-
     this.scene.tweens.add({
       targets: this,
       ease: 'Linear',
@@ -91,73 +114,91 @@ class Enemy extends Phaser.GameObjects.Sprite
       alpha: { from: 0, to: 1 }
     });
 
-    this.scene.sound.play(AudioAsset.DamageEnemy);
-
+    // die
     if (this.hp === 0)
     {
       this.destroy();
-    } 
+    }
 
   }
 
-  public update(player: Player)
+  public knockBack(force: Phaser.Math.Vector2)
+  {
+    this.updateState = EnemyUpdateState.KnockBack;
+    this.getBody().setVelocity(force.x, force.y);
+    this.elapsedTime = 0;
+  }
+
+  public update(player: Player, delta: number)
   {
 
-    if (this.moveEnergy >= 0)
+    if (this.updateState === EnemyUpdateState.Default)
     {
-
-      this.getBody().setAcceleration(0, 0);
-
       const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-      const attackRange = 28;
-      const vision = 64;
+      const chaseRadius = 64;
+      // large enough so it won't push the player
+      const attackRadius = 28;
 
-      if (attackRange < distanceToPlayer && distanceToPlayer < vision)
+      if (attackRadius < distanceToPlayer && distanceToPlayer < chaseRadius)
       {
         this.chasePlayer(player.getCenter());
       }
-      else if (distanceToPlayer >= vision)
+      else if (distanceToPlayer > chaseRadius)
       {
         this.moveRandomly();
       }
+      
+      if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
+      {
+        this.anims.play(this.asset + ":idle", true);
+        this.getBody().setImmovable(true);
+      }
       else
       {
-        if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
-        {
-          this.attackCharge += 1;
-          this.attackCharge %= 30;
-  
-          if (this.attackCharge === 0)
-          {
-            player.receiveDamage(10);
-          }
-          
-        }
+        this.anims.play(this.asset + ":run", true);
+        this.getBody().setImmovable(false);
+      }
+
+      if (this.getBody().velocity.x > 0)
+      {
+        this.setFlipX(false);
+      }
+      else if (this.getBody().velocity.x < 0)
+      {
+        this.setFlipX(true);
+      }
+
+    }
+    else if (this.updateState === EnemyUpdateState.KnockBack)
+    {
+      this.elapsedTime += delta;
+      if (this.elapsedTime > this.duration)
+      {
+        this.updateState = EnemyUpdateState.Default;
+        this.getBody().setVelocity(0, 0);
       }
     }
+    else if (this.updateState === EnemyUpdateState.AttackPlayer)
+    {
+      this.elapsedTime += delta;
+      if (this.elapsedTime > this.attackInterval)
+      {
+        const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-    if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
-    {
-      this.anims.play(this.asset + ":idle", true);
-      this.getBody().setImmovable(true);
+        const attackRadius = 28; // TODO: don't use constant
+        if (distanceToPlayer < attackRadius)
+        {
+          this.attackPlayer(player);
+        }
+        else
+        {
+          this.updateState = EnemyUpdateState.Default;
+        }
+        
+        this.elapsedTime = 0;
+      }
     }
-    else
-    {
-      this.anims.play(this.asset + ":run", true);
-      this.getBody().setImmovable(false);
-    }
-
-    if (this.getBody().velocity.x > 0)
-    {
-      this.setFlipX(false);
-    }
-    else if (this.getBody().velocity.x < 0)
-    {
-      this.setFlipX(true);
-    }
-
-    this.moveEnergy = Math.min(this.moveEnergy + 1, 0);
 
   }
 

@@ -1,4 +1,3 @@
-import { throttle } from 'throttle-debounce';
 import { SceneTransitionData } from './../objects/SceneTransitionObject';
 import Weapon from '../objects/Weapon';
 import { AudioAsset } from './../assets/AudioAsset';
@@ -9,7 +8,7 @@ import Phaser from 'phaser';
 import TilemapScene from './TilemapScene';
 import Player from '../objects/Player';
 import SceneTransitionObject from '~/objects/SceneTransitionObject';
-import Enemy from '~/objects/Enemy';
+import Enemy, { EnemyUpdateState } from '../objects/Enemy';
 
 /**
  * ...
@@ -77,34 +76,42 @@ class LevelScene extends TilemapScene
   {
     super.create(data);
 
-    this.player = new Player(this, data.destinationXInTiles * 16, data.destinationYInTiles * 16, PlayerAsset.ElfMale, new Weapon(this, WeaponAsset.RegularSword));
+    this.player = new Player(this, data.destinationXInTiles * 16, data.destinationYInTiles * 16, PlayerAsset.ElfMale);
 
     this.enemies = this.add.group();
     this.enemies.add(new Enemy(this, 250, 250, EnemyAsset.OrcWarrior));
+    this.enemies.add(new Enemy(this, 250, 300, EnemyAsset.OrcWarrior));
     
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
     this.physics.add.collider(this.player!, this.bottomLayer!);
     
-     // add collision detection between enemy and collidable layer
-     this.physics.add.collider(this.enemies!, this.middleLayer!);
-     this.physics.add.collider(this.enemies!, this.bottomLayer!);
+    // add collision detection between enemy and collidable layer
+    this.physics.add.collider(this.enemies!, this.middleLayer!);
+    this.physics.add.collider(this.enemies!, this.bottomLayer!);
  
-     this.physics.add.collider(this.player!, this.enemies!, (object1, object2) => {
-       (object2 as Enemy).getBody().setVelocity(0, 0);
-     });
- 
-     this.physics.add.overlap(this.player.getWeapon(), this.enemies, throttle(200, (object1, object2) => {
-       const weapon = object1 as Weapon;
-       const enemy = object2 as Enemy;
-       
-       if (weapon.isRotating())
-       {
-         const knockBack = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(1000);
-         enemy.getBody().setAcceleration(knockBack.x, knockBack.y);
-         enemy.receiveDamage(10);
-       }
-     }));
+    this.physics.add.collider(this.player!, this.enemies!, (object1, object2) => {
+      const player = object1 as Player;
+      const enemy = object2 as Enemy;
+      enemy.updateState = EnemyUpdateState.AttackPlayer;
+      enemy.getBody().setVelocity(0, 0);
+    });
+
+    this.physics.add.overlap(this.player.getWeapon(), this.enemies, (object1, object2) => {
+
+      const weapon = object1 as Weapon;
+      const enemy = object2 as Enemy;
+
+      const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
+      enemy.knockBack(knockBackVelocity);
+      enemy.receiveDamage(10);
+
+    }, (object1, object2) => {
+      const weapon = object1 as Weapon;
+      const enemy = object2 as Enemy;
+
+      return weapon.getBody().angularVelocity !== 0 && enemy.updateState !== EnemyUpdateState.KnockBack;
+    });
 
     this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
       const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
@@ -130,12 +137,12 @@ class LevelScene extends TilemapScene
   {
     super.update(time, delta);
     this.player?.update();
-    this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!));
+    this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
   }
 
   /**
    * File path to the tilemap of this scene. Assume the tilemap file is located 
-   * at assets/map/ and the extension is json.
+   * at `assets/map/` and the extension is json.
    * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile map file path
    */
@@ -146,7 +153,7 @@ class LevelScene extends TilemapScene
 
   /**
    * File path to the tileset for the tilemap. Assume the tileset file is 
-   * located at assets/map/
+   * located at `assets/map/`
    * @param {SceneTransitionData} data - the data the scene received for initialization
    * @return {string} - tile set file path
    */

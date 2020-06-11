@@ -16,11 +16,10 @@ export interface SceneTransitionData
 }
 
 /**
- * An Phaser representation of transition object from Tiled map. This will be used
- * for overlap detection with the player.
+ * An Phaser representation of transition object from Tiled map.
  * @class
  * @classdesc
- * ...
+ * This will be used for overlap detection with the player.
  */
 class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 {

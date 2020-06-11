@@ -9,6 +9,10 @@ import Weapon from './Weapon';
 import UIScene from '~/scenes/UIScene';
 import GameOverScene from '~/scenes/GameOverScene';
 
+/**
+ * The player to control.
+ * @class
+ */
 class Player extends Phaser.GameObjects.Sprite
 {
 
@@ -21,6 +25,10 @@ class Player extends Phaser.GameObjects.Sprite
   // the dimensions of the physics body
   private static readonly COLLISION_BODY_WIDTH = 16;
   private static readonly COLLISION_BODY_HEIGHT = 16;
+
+  // the offsets from origin to player's hands
+  public static readonly HANDS_OFFSET_X = 8;
+  public static readonly HANDS_OFFSET_Y = 8;
 
   // the spritesheet path of the player
   private asset: PlayerAsset;
@@ -43,23 +51,17 @@ class Player extends Phaser.GameObjects.Sprite
   // weapon the player is currently holding
   private weapon: Weapon;
 
-  /**
-   * player status
-   * will be migrated into its own class
-   */
-  private hitPoints: number; // HP
+  // HP
+  private hitPoints: number; 
   private maxHitPoints: number;
-  private magicPoints: number; // MP
-  private maxMagicPoints: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, asset: PlayerAsset, weapon: Weapon)
+  constructor(scene: Phaser.Scene, x: number, y: number, asset: PlayerAsset)
   {
     super(scene, x, y, asset);
 
     this.asset = asset;
     this.hitPoints = this.maxHitPoints = 100;
-    this.magicPoints = this.maxMagicPoints = 100;
-    this.weapon = weapon;
+    this.weapon = new Weapon(this.scene, WeaponAsset.RegularSword);
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -94,21 +96,26 @@ class Player extends Phaser.GameObjects.Sprite
     this.getBody().setSize(Player.COLLISION_BODY_WIDTH, Player.COLLISION_BODY_HEIGHT);
     this.getBody().setOffset(0, PlayerAssetData.FrameHeight - Player.COLLISION_BODY_HEIGHT);
 
-    this.getBody().setImmovable(true);
   }
 
+  /**
+   * This method is called by enemies when they attack the player.
+   * @param {number} damage - the amount of damage to receive 
+   */
   public receiveDamage(damage: number)
   {
     this.setFrame(PlayerAssetData.HitFrame);
+
     this.hitPoints = Math.max(0, this.hitPoints - damage);
 
+    this.scene.sound.play(AudioAsset.DamagePlayer);
+
+    // game over
     if (this.hitPoints === 0)
     {
       this.scene.scene.stop(UIScene.KEY);
       this.scene.scene.start(GameOverScene.KEY);
     }
-
-    this.scene.sound.play(AudioAsset.DamagePlayer);
 
     const cameraTopLeftX = this.scene.cameras.main.worldView.x;
     const cameraTopLeftY = this.scene.cameras.main.worldView.y;
@@ -126,7 +133,10 @@ class Player extends Phaser.GameObjects.Sprite
       { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);
   }
 
-  public update()
+  /**
+   * This should be called every frame.
+   */
+  public update(): void
   {
 
     // update velocity
@@ -199,29 +209,34 @@ class Player extends Phaser.GameObjects.Sprite
 
   }
 
-  public isActivatingWeapon()
+  /**
+   * Return whether the player is trying to attack regardless of whether the 
+   * player is already attacking. If this returns `true`, the weapon will 
+   * start to rotate.
+   * @see Weapon#update
+   * @return {boolean} - whether the player is trying to attack
+   */
+  public isActivatingWeapon(): boolean
   {
     return Phaser.Input.Keyboard.JustDown(this.keyJ);
   }
 
+  /**
+   * Get the physics body
+   * @return {Phaser.Physics.Arcade.Body} - the physics body
+   */
   public getBody(): Phaser.Physics.Arcade.Body
   {
     return this.body as Phaser.Physics.Arcade.Body;
   }
 
-  public getWeaponBody(): Phaser.Physics.Arcade.Body
-  {
-    return this.weapon.body as Phaser.Physics.Arcade.Body;
-  }
-
-  public getWeapon()
+  /**
+   * Get the weapon the player is holding
+   * @return {Weapon} - the weapon player is holding
+   */
+  public getWeapon(): Weapon
   {
     return this.weapon;
-  }
-
-  public isAttacking()
-  {
-    return this.weapon.isRotating();
   }
 
 }
