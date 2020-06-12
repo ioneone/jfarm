@@ -5,7 +5,8 @@
  */
 export enum AudioAsset
 {
-  DamagePlayer = "assets/audio/damage_player.wav",
-  DamageEnemy  = "assets/audio/damage_enemy.wav",
-  Swing        = "assets/audio/swing.wav"
+  DamagePlayer     = "assets/audio/damage_player.wav",
+  Swing            = "assets/audio/swing.wav",
+  EnemyFoundPlayer = "assets/audio/enemy_found_player.wav",
+  FootSteps        = "assets/audio/foot_steps.wav"
 }

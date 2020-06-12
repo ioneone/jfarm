@@ -10,7 +10,9 @@ export enum Event
   // the hit points of the player has changed
   PlayerHpChange = "playerhpchange",
   // someone has lost hit points
-  Damage = "damage"
+  Damage = "damage",
+  // enemy sees player in its vision range
+  EnemyFoundPlayer = "EnemyFoundPlayer"
 }
 
 /**
@@ -39,4 +41,14 @@ export interface DamageEventData
   y: number,
   // color of the damage text (default white)
   color?: number
+}
+
+export interface EnemyFoundPlayerEventData
+{
+  // x world coordinate of the object relative to the canvas position the event occured
+  x: number,
+  // y world coordinate of the object relative to the canvas position the event occured
+  y: number,
+  // height of the object in pixels
+  height: number
 }

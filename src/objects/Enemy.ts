@@ -1,5 +1,5 @@
 import { throttle } from 'throttle-debounce';
-import { DamageEventData } from './../events/Event';
+import { DamageEventData, EnemyFoundPlayerEventData } from './../events/Event';
 import { AudioAsset } from './../assets/AudioAsset';
 import { EnemyAssetData } from './../assets/EnemyAsset';
 import Phaser from 'phaser';
@@ -178,7 +178,8 @@ class Enemy extends Phaser.GameObjects.Sprite
     else if (this.updateState === EnemyUpdateState.FoundPlayer)
     {
       const canvasViewPosition = this.computeCanvasViewPosition();
-      EventDispatcher.getInstance().emit("EnemyFoundPlayer", { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height });
+      EventDispatcher.getInstance().emit(Event.EnemyFoundPlayer, 
+        { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height } as EnemyFoundPlayerEventData);
       this.updateState = EnemyUpdateState.ChasePlayer;
       this.elapsedTime = 0;
     }
@@ -233,6 +234,10 @@ class Enemy extends Phaser.GameObjects.Sprite
         {
           this.attackPlayer(player);
           this.updateState = EnemyUpdateState.AttackPlayer;
+        }
+        else if (distanceToPlayer < this.vision)
+        {
+          this.updateState = EnemyUpdateState.ChasePlayer;
         }
         else
         {

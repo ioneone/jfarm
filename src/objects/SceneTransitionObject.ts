@@ -50,27 +50,27 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   {
     super(scene, tiledTransitionObject.x, tiledTransitionObject.y);
     tiledTransitionObject.properties.forEach(property =>{
-      if (property.name.localeCompare("DestinationLevel") === 0)
+      if (property.name === "DestinationLevel")
       {
         this.destinationLevel = property.value as number;
       }
-      else if (property.name.localeCompare("DestinationScene") === 0)
+      else if (property.name === "DestinationScene")
       {
         this.destinationScene = property.value as string;
       }
-      else if (property.name.localeCompare("DestinationXInTiles") === 0)
+      else if (property.name === "DestinationXInTiles")
       {
         this.destinationXInTiles = property.value as number;
       }
-      else if (property.name.localeCompare("DestinationYInTiles") === 0)
+      else if (property.name === "DestinationYInTiles")
       {
         this.destinationYInTiles = property.value as number;
       }
-      else if (property.name.localeCompare("TilemapFileNamePrefix") === 0)
+      else if (property.name === "TilemapFileNamePrefix")
       {
         this.tilemapFileNamePrefix = property.value as string;
       }
-      else if (property.name.localeCompare("TilesetFileName") === 0)
+      else if (property.name === "TilesetFileName")
       {
         this.tilesetFileName = property.value as string;
       }

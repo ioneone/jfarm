@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="6">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="16">
  <editorsettings>
   <export target="." format="json"/>
  </editorsettings>
@@ -406,6 +406,12 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="79" name="elf_m" tilewidth="16" tileheight="28" tilecount="12" columns="4">
+  <image source="../players/elf_m.png" width="64" height="84"/>
+ </tileset>
+ <tileset firstgid="91" name="orc_warrior" tilewidth="16" tileheight="20" tilecount="8" columns="4">
+  <image source="../enemies/orc_warrior.png" width="64" height="40"/>
+ </tileset>
  <objectgroup id="4" name="TransitionLayer">
   <object id="5" x="352" y="288" width="16" height="16">
    <properties>
@@ -490,6 +496,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="5" name="ObjectLayer">
+  <object id="10" name="Player" gid="79" x="144.203" y="250.124" width="16" height="28"/>
+  <object id="12" name="OrcWarrior" gid="91" x="270.569" y="234.497" width="16" height="20"/>
+  <object id="13" name="OrcWarrior" gid="91" x="303.399" y="266.638" width="16" height="20"/>
+  <object id="14" name="OrcWarrior" gid="91" x="287.949" y="299.95" width="16" height="20"/>
+  <object id="15" name="OrcWarrior" gid="91" x="319.331" y="315.882" width="16" height="20"/>
+ </objectgroup>
  <layer id="3" name="TopLayer" width="32" height="32">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

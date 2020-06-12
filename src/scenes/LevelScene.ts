@@ -5,10 +5,13 @@ import { WeaponAsset } from './../assets/WeaponAsset';
 import { EnemyAsset, EnemyAssetData } from './../assets/EnemyAsset';
 import { PlayerAsset, PlayerAssetData } from './../assets/PlayerAsset';
 import Phaser from 'phaser';
-import TilemapScene from './TilemapScene';
+import TilemapScene, { TileLayer } from './TilemapScene';
 import Player from '../objects/Player';
 import SceneTransitionObject from '~/objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
+import OrcWarrior from '~/objects/OrcWarrior';
+import IceZombie from '~/objects/IceZombie';
+import Chort from '~/objects/Chort';
 
 /**
  * The scene for the dugeon.
@@ -59,11 +62,15 @@ class LevelScene extends TilemapScene
     this.load.spritesheet(PlayerAsset.ElfMale, PlayerAsset.ElfMale, 
       { frameWidth: PlayerAssetData.FrameWidth, frameHeight: PlayerAssetData.FrameHeight });
     this.load.spritesheet(EnemyAsset.OrcWarrior, EnemyAsset.OrcWarrior, 
-      { frameWidth: EnemyAssetData.FrameWidth, frameHeight: EnemyAssetData.FrameHeight });
+      { frameWidth: 16, frameHeight: 20 });
+    this.load.spritesheet(EnemyAsset.IceZombie, EnemyAsset.IceZombie, 
+      { frameWidth: 16, frameHeight: 16 });
+    this.load.spritesheet(EnemyAsset.Chort, EnemyAsset.Chort, 
+      { frameWidth: 16, frameHeight: 24 });
     this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
     this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
     this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
-    this.load.audio(AudioAsset.DamageEnemy, AudioAsset.DamageEnemy);
+    this.load.audio(AudioAsset.FootSteps, AudioAsset.FootSteps);
   }
 
   /**
@@ -84,8 +91,25 @@ class LevelScene extends TilemapScene
 
     // add enemies to the scene
     this.enemies = this.add.group();
-    this.enemies.add(new Enemy(this, 250, 250, EnemyAsset.OrcWarrior));
-    this.enemies.add(new Enemy(this, 250, 300, EnemyAsset.OrcWarrior));
+    this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(object => {
+      console.log(object.name);
+      if (object.name === "OrcWarrior")
+      {
+        this.enemies?.add(new OrcWarrior(this, object.x!, object.y!));
+      }
+      else if (object.name === "IceZombie")
+      {
+        this.enemies?.add(new IceZombie(this, object.x!, object.y!));
+      }
+      else if (object.name === "Chort")
+      {
+        this.enemies?.add(new Chort(this, object.x!, object.y!));
+      }
+    });
+
+    
+    
+    
     
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
@@ -117,9 +141,17 @@ class LevelScene extends TilemapScene
     });
 
     // add overlap detection between player and transition objects
-    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (_, object2) => {
+    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
+      const player = object1 as Player;
+      player.getBody().setEnable(false);
       const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
-      this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
+      this.sound.play(AudioAsset.FootSteps);
+      this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
+        if (progress === 1)
+        {
+          this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
+        }
+      });
     });
 
     // configure the camera to follow the player
@@ -142,7 +174,6 @@ class LevelScene extends TilemapScene
     super.update(time, delta);
     this.player?.update();
     this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
-
   }
 
   /**

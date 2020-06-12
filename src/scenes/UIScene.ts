@@ -1,7 +1,7 @@
 import { FontAsset, FontAssetData } from './../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event, PlayerHpChangeEventData, DamageEventData } from '../events/Event';
+import { Event, PlayerHpChangeEventData, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import HitPointsBar from '~/ui/HitPointsBar';
 
 /**
@@ -59,6 +59,9 @@ class UIScene extends Phaser.Scene
     this.load.bitmapFont(FontAsset.PressStart2P, 
       `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
       `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
+
+    // load audio
+    this.load.audio("assets/audio/enemy_found_player.wav", "assets/audio/enemy_found_player.wav");
   }
 
   /**
@@ -75,23 +78,12 @@ class UIScene extends Phaser.Scene
     this.hitPointsBar = new HitPointsBar(this, 0, 0);
 
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
-    EventDispatcher.getInstance().on("EnemyFoundPlayer", (data) => {
-      const notificationText = this.add.bitmapText(data.x, data.y - data.height, FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);
-      notificationText.setTint(0xfccba3);
-      this.tweens.add({
-        targets: notificationText,
-        alpha: 0,
-        duration: 400,
-        onComplete: () => {
-          notificationText.destroy();
-        }
-      });
-  
-    });
+    EventDispatcher.getInstance().on(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
  
     // clean up listeners when removed
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
+      EventDispatcher.getInstance().off(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
     });
     
   }
@@ -138,6 +130,23 @@ class UIScene extends Phaser.Scene
       }
     });
 
+  }
+
+  private handleEnemyFoundPlayer(data: EnemyFoundPlayerEventData)
+  {
+    const notificationText = this.add.bitmapText(data.x, data.y - data.height, 
+      FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);
+    notificationText.setTint(0xfccba3);
+    this.tweens.add({
+      targets: notificationText,
+      alpha: 0,
+      duration: 400,
+      onComplete: () => {
+        notificationText.destroy();
+      }
+    });
+
+    this.sound.play("assets/audio/enemy_found_player.wav", { volume: 0.5 });
   }
 
 }
