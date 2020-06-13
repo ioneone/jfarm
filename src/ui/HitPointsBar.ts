@@ -87,10 +87,13 @@ class HitPointsBar extends Phaser.GameObjects.Container
       to: 0,
       onUpdate: (tween) => {
         const value = Math.floor(tween.getValue());
-        this.heartSprites.forEach(heartSprite => heartSprite.setTintFill(Phaser.Display.Color.GetColor(value, value, value)));
+        const tintColor = Phaser.Display.Color.GetColor(value, value, value);
+        this.heartSprites.forEach(heartSprite => heartSprite.setTintFill(tintColor));
+        this.hpText.setTint(tintColor);
       },
       onComplete: () => {
         this.heartSprites.forEach(heartSprite => heartSprite.clearTint());
+        this.hpText.clearTint();
       },
       loop: 2,
       yoyo: true

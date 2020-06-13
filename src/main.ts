@@ -6,8 +6,12 @@ import LevelScene from './scenes/LevelScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
-	width: 640,
-  height: 520,
+	width: 1024,
+  height: 768,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   // create canvas in div with id "phaser"
   parent: "phaser",
   render: {

@@ -84,7 +84,12 @@ class UIScene extends Phaser.Scene
   {
     this.hitPointsBar = new HitPointsBar(this, 0, 0);
 
-    this.inventory = new Inventory(this, 200, 460);
+    this.inventory = new Inventory(this, this.cameras.main.centerX, this.cameras.main.height);
+    const inventoryBounds = this.inventory.getBounds();
+    this.inventory.setPosition(
+      this.inventory.x - inventoryBounds.width / 2,
+      this.inventory.y - inventoryBounds.height - 16
+    );
 
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
     EventDispatcher.getInstance().on(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
@@ -157,11 +162,6 @@ class UIScene extends Phaser.Scene
     });
 
     this.sound.play("assets/audio/enemy_found_player.wav", { volume: 0.5 });
-  }
-
-  private handlePlayerHpChange(data: PlayerHpChangeEventData)
-  {
-    this.cameras.main.shake(200, 0.005);
   }
 
 }

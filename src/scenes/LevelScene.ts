@@ -86,6 +86,7 @@ class LevelScene extends TilemapScene
     this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
     this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
     this.load.audio(AudioAsset.ThreeFootSteps, AudioAsset.ThreeFootSteps);
+    this.load.audio("assets/audio/hit_enemy.wav", "assets/audio/hit_enemy.wav");
   }
 
   /**
@@ -144,6 +145,7 @@ class LevelScene extends TilemapScene
       const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
       enemy.knockBack(knockBackVelocity);
       enemy.receiveDamage(10);
+      this.sound.play("assets/audio/hit_enemy.wav");
       this.cameras.main.shake(100, 0.001);
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
