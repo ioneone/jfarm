@@ -60,7 +60,7 @@ class Player extends Phaser.GameObjects.Sprite
     super(scene, x, y, asset);
 
     this.asset = asset;
-    this.hitPoints = this.maxHitPoints = 100;
+    this.hitPoints = this.maxHitPoints = 10;
     this.weapon = new Weapon(this.scene, WeaponAsset.RegularSword);
     
     // add player to the scene
@@ -130,7 +130,7 @@ class Player extends Phaser.GameObjects.Sprite
       { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as DamageEventData);
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
-      { hitPoints: this.hitPoints, maxHitPoints: this.maxHitPoints } as PlayerHpChangeEventData);
+      { currentHitPoints: this.hitPoints } as PlayerHpChangeEventData);
   }
 
   /**
@@ -237,6 +237,14 @@ class Player extends Phaser.GameObjects.Sprite
   public getWeapon(): Weapon
   {
     return this.weapon;
+  }
+
+  public getBodyCenter(): Phaser.Math.Vector2
+  {
+    return new Phaser.Math.Vector2(
+      this.getBody().x + this.getBody().width / 2,
+      this.getBody().y + this.getBody().height / 2
+    );
   }
 
 }

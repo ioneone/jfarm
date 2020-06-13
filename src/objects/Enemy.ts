@@ -74,7 +74,7 @@ class Enemy extends Phaser.GameObjects.Sprite
     this.elapsedTime = 0;
     this.knockBackDuration = 100;
     this.attackInterval = 800;
-    this.attackDamage = 2;
+    this.attackDamage = 1;
     this.vision = 64;
     
     // add enemy to the scene
@@ -83,21 +83,19 @@ class Enemy extends Phaser.GameObjects.Sprite
     this.getBody().setCollideWorldBounds(true);
 
     // register animations
-    this.scene.anims.create({
-      key: asset + ":idle",
-      frames: this.scene.anims.generateFrameNames(asset, 
-        { start: EnemyAssetData.IdleAnimationFrameStart, 
-          end: EnemyAssetData.IdleAnimationFrameEnd }),
+    this.scene.anims.create({ 
+      key: asset + ":idle", 
+      frames: this.scene.anims.generateFrameNames(asset, { prefix: asset + '_idle_anim_f', start: 0, end: 3 }),
       frameRate: 8
     });
 
-    this.scene.anims.create({
-      key: asset + ":run",
-      frames: this.scene.anims.generateFrameNames(asset, 
-        { start: EnemyAssetData.RunAnimationFrameStart, 
-          end: EnemyAssetData.RunAnimationFrameEnd }),
+    this.scene.anims.create({ 
+      key: asset + ":run", 
+      frames: this.scene.anims.generateFrameNames(asset, { prefix: asset + '_run_anim_f', start: 0, end: 3 }),
       frameRate: 8
     });
+
+    this.setPipeline('Light2D');
 
   }
 
@@ -222,7 +220,7 @@ class Enemy extends Phaser.GameObjects.Sprite
       
       if (this.elapsedTime > this.attackInterval)
       {
-        const distanceToPlayer = this.getCenter().distance(player.getCenter());
+        const distanceToPlayer = this.getCenter().distance(player.getBodyCenter());
 
         // max distance between player and enemy when they touch each other
         const attackRadius = Math.sqrt(

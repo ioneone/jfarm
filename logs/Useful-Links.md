@@ -25,3 +25,8 @@ These are some useful links I haven't figured out where to put in the dev logs y
 - https://github.com/rexrainbow/phaser3-rex-notes/
 
 - https://phasertutorials.com/how-to-create-a-phaser-3-mmorpg-part-1/
+
+- http://cpetry.github.io/NormalMap-Online/
+
+- https://gammafp.com/tool/atlas-packer/
+

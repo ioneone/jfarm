@@ -8,9 +8,9 @@
  */
 export enum EnemyAsset
 {
-  OrcWarrior = "assets/enemies/orc_warrior.png",
-  IceZombie  = "assets/enemies/ice_zombie.png",
-  Chort      = "assets/enemies/chort.png"
+  OrcWarrior = "orc_warrior",
+  IceZombie  = "ice_zombie",
+  Chort      = "chort"
 }
 
 /**

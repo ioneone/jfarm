@@ -93,7 +93,7 @@ class GameStartScene extends Phaser.Scene
         destinationYInTiles: 16,
         destinationLevel: 1,
         tilemapFileNamePrefix: "level",
-        tilesetFileName: "tiles.png"
+        tilesetFileName: "tiles"
       } as SceneTransitionData);
       this.scene.start(UIScene.KEY);
     }

@@ -21,10 +21,8 @@ export enum Event
  */
 export interface PlayerHpChangeEventData
 {
-  // hit points of the player
-  hitPoints: number;
-  // maximum hit points of the player
-  maxHitPoints: number;
+  // the player's current hit points
+  currentHitPoints: number
 }
 
 /**

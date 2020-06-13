@@ -33,9 +33,12 @@ class LevelScene extends TilemapScene
   // the group of enemies in the scene
   protected enemies?: Phaser.GameObjects.Group;
 
+  protected bright: boolean;
+
   constructor()
   {
     super(LevelScene.KEY);
+    this.bright = false;
   }
 
   /**
@@ -61,16 +64,28 @@ class LevelScene extends TilemapScene
     super.preload();
     this.load.spritesheet(PlayerAsset.ElfMale, PlayerAsset.ElfMale, 
       { frameWidth: PlayerAssetData.FrameWidth, frameHeight: PlayerAssetData.FrameHeight });
-    this.load.spritesheet(EnemyAsset.OrcWarrior, EnemyAsset.OrcWarrior, 
-      { frameWidth: 16, frameHeight: 20 });
-    this.load.spritesheet(EnemyAsset.IceZombie, EnemyAsset.IceZombie, 
-      { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet(EnemyAsset.Chort, EnemyAsset.Chort, 
-      { frameWidth: 16, frameHeight: 24 });
+    this.load.atlas({
+      key: EnemyAsset.OrcWarrior,
+      textureURL: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '.png',
+      normalMap: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '_n.png',
+      atlasURL: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '.json'
+    });
+    this.load.atlas({
+      key: EnemyAsset.IceZombie,
+      textureURL: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '.png',
+      normalMap: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '_n.png',
+      atlasURL: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '.json'
+    });
+    this.load.atlas({
+      key: EnemyAsset.Chort,
+      textureURL: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '.png',
+      normalMap: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '_n.png',
+      atlasURL: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '.json'
+    });
     this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
     this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
     this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
-    this.load.audio(AudioAsset.FootSteps, AudioAsset.FootSteps);
+    this.load.audio(AudioAsset.ThreeFootSteps, AudioAsset.ThreeFootSteps);
   }
 
   /**
@@ -92,7 +107,6 @@ class LevelScene extends TilemapScene
     // add enemies to the scene
     this.enemies = this.add.group();
     this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(object => {
-      console.log(object.name);
       if (object.name === "OrcWarrior")
       {
         this.enemies?.add(new OrcWarrior(this, object.x!, object.y!));
@@ -107,10 +121,6 @@ class LevelScene extends TilemapScene
       }
     });
 
-    
-    
-    
-    
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
     this.physics.add.collider(this.player!, this.bottomLayer!);
@@ -145,7 +155,7 @@ class LevelScene extends TilemapScene
       const player = object1 as Player;
       player.getBody().setEnable(false);
       const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
-      this.sound.play(AudioAsset.FootSteps);
+      this.sound.play(AudioAsset.ThreeFootSteps);
       this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
         if (progress === 1)
         {
@@ -162,6 +172,11 @@ class LevelScene extends TilemapScene
     // in the order it was added to the scene.
     this.topLayer?.setDepth(1);
 
+    // lights
+    this.light = this.lights.addLight(0, 0, 150);
+
+    this.lights.enable().setAmbientColor(0x000000);
+
   }
 
   /**
@@ -174,6 +189,8 @@ class LevelScene extends TilemapScene
     super.update(time, delta);
     this.player?.update();
     this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
+    this.light.x = this.player?.x;
+    this.light.y = this.player.y;
   }
 
   /**
@@ -195,7 +212,39 @@ class LevelScene extends TilemapScene
    */
   public getTilesetFilePath(data: SceneTransitionData): string
   {
-    return "assets/map/" + data.tilesetFileName;
+    return "assets/map/" + data.tilesetFileName + ".png";
+  }
+
+  public getTilesetNormalMapFilePath(data: SceneTransitionData): string
+  {
+    return "assets/map/" + data.tilesetFileName + "_n.png";
+  }
+
+  protected toggleDebugMode(): void
+  {
+    super.toggleDebugMode();
+
+    if (this.bright)
+    {
+      this.enemies?.getChildren().forEach(child => {
+        (child as Enemy).setPipeline('Light2D');
+      });
+      this.bottomLayer?.setPipeline('Light2D');
+      this.middleLayer?.setPipeline('Light2D');
+      this.topLayer?.setPipeline('Light2D');
+    }
+    else
+    {
+      this.enemies?.getChildren().forEach(child => {
+        (child as Enemy).resetPipeline();
+      });
+      this.bottomLayer?.resetPipeline();
+      this.middleLayer?.resetPipeline();
+      this.topLayer?.resetPipeline();
+    }
+
+    this.bright = !this.bright;
+    
   }
 
 }

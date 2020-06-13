@@ -90,7 +90,7 @@ class GameOverScene extends Phaser.Scene
         destinationYInTiles: 16,
         destinationLevel: 1,
         tilemapFileNamePrefix: "level",
-        tilesetFileName: "tiles.png"
+        tilesetFileName: "tiles"
       } as LevelSceneModel);
       this.scene.start(UIScene.KEY);
     }

@@ -12,36 +12,8 @@ import { Event } from '../events/Event';
  */
 class HitPointsBar extends Phaser.GameObjects.Container
 {
-
-  // color of the bar background
-  private static readonly BAR_RECTANGLE_BACK_COLOR  = 0x000000;
-
-  // color of the bar foreground
-  private static readonly BAR_RECTANGLE_FRONT_COLOR = 0x2ff7d6;
-
-  // font size of the text "HP"
-  private static readonly TEXT_FONT_SIZE = 16;
-
-  // font size of the hit points digits
-  private static readonly DIGIT_FONT_SIZE = 12;
-
-  // spacing between components
-  private static readonly SPACING = 2;
-
-  // width of the bar background
-  private static readonly BAR_RECTANGLE_WIDTH = 100;
-
-  // the "HP" text object
-  private hpText: Phaser.GameObjects.BitmapText;
-
-  // the bar background
-  private barRectangleBack: Phaser.GameObjects.Rectangle;
-
-  // the bar foreground
-  private barRectangleFront: Phaser.GameObjects.Rectangle;
   
-  // the hit points digits object
-  private hitPointsText: Phaser.GameObjects.BitmapText; 
+  private heartSprites: Phaser.GameObjects.Sprite[];
 
   /**
    * @param {Phaser.Scene} scene - the scene this object belongs to
@@ -53,24 +25,14 @@ class HitPointsBar extends Phaser.GameObjects.Container
     super(scene, x, y);
     this.scene.add.existing(this);
 
-    this.hpText = new Phaser.GameObjects.BitmapText(this.scene, this.x, this.y, 
-      FontAsset.PressStart2P, "HP", HitPointsBar.TEXT_FONT_SIZE);
-    this.barRectangleBack = new Phaser.GameObjects.Rectangle(this.scene, 
-      this.hpText.x + this.hpText.width + HitPointsBar.SPACING, this.y, 
-      HitPointsBar.BAR_RECTANGLE_WIDTH, this.hpText.height, HitPointsBar.BAR_RECTANGLE_BACK_COLOR).setOrigin(0, 0);
-    this.barRectangleFront = new Phaser.GameObjects.Rectangle(this.scene, 
-      this.barRectangleBack.x + HitPointsBar.SPACING, this.y + HitPointsBar.SPACING, 
-      HitPointsBar.BAR_RECTANGLE_WIDTH - 2 * HitPointsBar.SPACING, 
-      this.hpText.height - 2 * HitPointsBar.SPACING, HitPointsBar.BAR_RECTANGLE_FRONT_COLOR).setOrigin(0, 0);
-    this.hitPointsText = new Phaser.GameObjects.BitmapText(this.scene, 
-      this.barRectangleBack.x + this.barRectangleBack.width, 
-      this.barRectangleBack.y + this.barRectangleBack.height + HitPointsBar.SPACING, 
-      FontAsset.PressStart2P, "100/100", HitPointsBar.DIGIT_FONT_SIZE).setOrigin(1, 0)
+    this.heartSprites = [];
+    this.heartSprites.push(this.scene.add.sprite(x, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(this.scene.add.sprite(x + 32, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(this.scene.add.sprite(x + 64, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(this.scene.add.sprite(x + 96, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(this.scene.add.sprite(x + 128, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
 
-    this.add(this.hpText);
-    this.add(this.barRectangleBack);
-    this.add(this.barRectangleFront);
-    this.add(this.hitPointsText);
+    this.add(this.heartSprites);
 
     // event handling
     EventDispatcher.getInstance().on(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
@@ -87,14 +49,32 @@ class HitPointsBar extends Phaser.GameObjects.Container
    */
   private handlePlayerHpChangeEvent(data: PlayerHpChangeEventData): void
   {
-    const hp = data.hitPoints;
-    const maxHp = data.maxHitPoints;
 
-    const hpLeftRatio = hp / maxHp;
+    const currentHitPoints = data.currentHitPoints;
+
+    const numFullHearts = Math.floor(currentHitPoints / 2);
+    const hasHalfHeart = currentHitPoints % 2 !== 0;
+
+    for (let i = 0; i < this.heartSprites.length; i++)
+    {
+      if (i < numFullHearts)
+      {
+        this.heartSprites[i].setFrame(2);
+      }
+      else
+      {
+        if (i === numFullHearts && hasHalfHeart)
+        {
+          this.heartSprites[i].setFrame(1);
+        }
+        else
+        {
+          this.heartSprites[i].setFrame(0); 
+        }
+      }
+      
+    }
     
-    this.barRectangleFront?.setDisplaySize(Math.max(0, Math.floor((HitPointsBar.BAR_RECTANGLE_WIDTH - 2 * HitPointsBar.SPACING) * hpLeftRatio)), 
-      this.barRectangleFront.height);
-    this.hitPointsText?.setText(hp.toString() + '/' + maxHp.toString());
   }
 
 }

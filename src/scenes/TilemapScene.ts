@@ -123,7 +123,8 @@ abstract class TilemapScene extends Phaser.Scene
 	public preload(): void
 	{
     // load tileset image
-    this.load.image(this.getTilesetFilePath(this.sceneTransitionData!), this.getTilesetFilePath(this.sceneTransitionData!));
+    this.load.image(this.getTilesetFilePath(this.sceneTransitionData!), 
+      [this.getTilesetFilePath(this.sceneTransitionData!), this.getTilesetNormalMapFilePath(this.sceneTransitionData!)]);
     // load tilemap json data
     this.load.tilemapTiledJSON(this.getTilemapFilePath(this.sceneTransitionData!), this.getTilemapFilePath(this.sceneTransitionData!));
 	}
@@ -155,15 +156,15 @@ abstract class TilemapScene extends Phaser.Scene
     });
 
     // create bottom layer
-    this.bottomLayer = this.tilemap.createDynamicLayer(TileLayer.Bottom, this.tileset, 0, 0);
+    this.bottomLayer = this.tilemap.createDynamicLayer(TileLayer.Bottom, this.tileset, 0, 0).setPipeline('Light2D');
     this.bottomLayer.setCollisionByProperty({ collision: true });   
 
     // create middle layer
-    this.middleLayer = this.tilemap.createDynamicLayer(TileLayer.Middle, this.tileset, 0, 0);
+    this.middleLayer = this.tilemap.createDynamicLayer(TileLayer.Middle, this.tileset, 0, 0).setPipeline('Light2D');
     this.middleLayer.setCollisionByProperty({ collision: true });     
     
     // create top layer
-    this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0);
+    this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0).setPipeline('Light2D');
 
     // create animated tiles
     for (let key in this.tileset.tileData as TilesetTileData)
@@ -215,11 +216,7 @@ abstract class TilemapScene extends Phaser.Scene
     // toggle debug mode
     if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
     {
-      // built in debug display
-      this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
-
-      // custom debug display
-      this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
+      this.toggleDebugMode(); 
     }
 
     this.animatedTiles.forEach(tile => tile.update(delta));
@@ -239,6 +236,17 @@ abstract class TilemapScene extends Phaser.Scene
    * @return {string} - tile set file path
    */
   public abstract getTilesetFilePath(data: SceneTransitionData): string;
+
+  public abstract getTilesetNormalMapFilePath(data: SceneTransitionData): string;
+
+  protected toggleDebugMode(): void
+  {
+    // built in debug display
+    this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
+
+    // custom debug display
+    this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
+  }
 
 }
 

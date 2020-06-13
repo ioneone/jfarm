@@ -55,6 +55,9 @@ class UIScene extends Phaser.Scene
    */
   public preload(): void
   {
+    // load image
+    this.load.spritesheet("assets/ui/ui_heart.png", "assets/ui/ui_heart.png", { frameWidth: 16, frameHeight: 16 });
+
     // load font
     this.load.bitmapFont(FontAsset.PressStart2P, 
       `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 

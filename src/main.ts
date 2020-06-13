@@ -5,7 +5,7 @@ import GameStartScene from './scenes/GameStartScene';
 import LevelScene from './scenes/LevelScene';
 
 const config: Phaser.Types.Core.GameConfig = {
-	type: Phaser.AUTO,
+	type: Phaser.WEBGL,
 	width: 640,
   height: 520,
   // create canvas in div with id "phaser"
