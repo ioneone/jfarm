@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import GrayscalePipeline from '../pipelines/GrayScalePipeline';
+import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 
 class Inventory extends Phaser.GameObjects.Container
 {
