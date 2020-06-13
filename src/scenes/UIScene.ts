@@ -1,3 +1,4 @@
+import { WeaponAsset } from './../assets/WeaponAsset';
 import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
@@ -59,8 +60,11 @@ class UIScene extends Phaser.Scene
   public preload(): void
   {
     // load image
-    this.load.image("assets/ui/item_slot.png", "assets/ui/item_slot.png");
+    this.load.image("assets/ui/item_slot_bordered.png", "assets/ui/item_slot_bordered.png");
     this.load.spritesheet("assets/ui/ui_heart.png", "assets/ui/ui_heart.png", { frameWidth: 16, frameHeight: 16 });
+    this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
+    this.load.image(WeaponAsset.Axe, WeaponAsset.Axe);
+    this.load.image(WeaponAsset.Hammer, WeaponAsset.Hammer);
 
     // load font
     this.load.bitmapFont(FontAsset.PressStart2P, 

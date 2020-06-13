@@ -1,3 +1,4 @@
+import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
 import { PlayerHpChangeEventData, DamageEventData } from '../events/Event';
 import { WeaponAsset } from '../assets/WeaponAsset';
@@ -96,6 +97,31 @@ class Player extends Phaser.GameObjects.Sprite
     this.getBody().setSize(Player.COLLISION_BODY_WIDTH, Player.COLLISION_BODY_HEIGHT);
     this.getBody().setOffset(0, PlayerAssetData.FrameHeight - Player.COLLISION_BODY_HEIGHT);
 
+    EventDispatcher.getInstance().on("ItemSlotChange", this.handleItemSlotChange, this);
+
+    this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      EventDispatcher.getInstance().off("ItemSlotChange", this.handleItemSlotChange, this);
+    });
+
+  }
+
+  private handleItemSlotChange(data: any)
+  {
+    const item = data.currentItem as Phaser.GameObjects.Sprite;
+
+    if (item)
+    {
+      this.weapon.setTexture(item.texture.key); 
+      this.weapon.getBody().setEnable(true);
+      this.weapon.setVisible(true);
+      this.weapon.setActive(true);
+    }
+    else
+    {
+      this.weapon.setVisible(false);
+      this.weapon.getBody().setEnable(false);
+      this.weapon.setActive(false);
+    }
   }
 
   /**
@@ -206,7 +232,11 @@ class Player extends Phaser.GameObjects.Sprite
       this.getBody().setImmovable(false);
     }
 
-    this.weapon.update(this);
+    if (this.weapon.active)
+    {
+      this.weapon.update(this);
+    }
+    
 
   }
 

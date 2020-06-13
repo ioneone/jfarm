@@ -83,6 +83,8 @@ class LevelScene extends TilemapScene
       atlasURL: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '.json'
     });
     this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
+    this.load.image(WeaponAsset.Axe, WeaponAsset.Axe);
+    this.load.image(WeaponAsset.Hammer, WeaponAsset.Hammer);
     this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
     this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
     this.load.audio(AudioAsset.ThreeFootSteps, AudioAsset.ThreeFootSteps);
@@ -178,7 +180,7 @@ class LevelScene extends TilemapScene
     // lights
     this.light = this.lights.addLight(0, 0, 150);
 
-    this.lights.enable().setAmbientColor(0x000000);
+    this.lights.enable().setAmbientColor(0x404040);
 
   }
 
