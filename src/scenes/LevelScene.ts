@@ -1,17 +1,17 @@
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import Weapon from '../objects/Weapon';
-import { AudioAsset } from './../assets/AudioAsset';
-import { WeaponAsset } from './../assets/WeaponAsset';
-import { EnemyAsset, EnemyAssetData } from './../assets/EnemyAsset';
-import { PlayerAsset, PlayerAssetData } from './../assets/PlayerAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { EnemyAsset, EnemyAssetData } from '../assets/EnemyAsset';
+import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import TilemapScene, { TileLayer } from './TilemapScene';
 import Player from '../objects/Player';
-import SceneTransitionObject from '~/objects/SceneTransitionObject';
+import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
-import OrcWarrior from '~/objects/OrcWarrior';
-import IceZombie from '~/objects/IceZombie';
-import Chort from '~/objects/Chort';
+import OrcWarrior from '../objects/OrcWarrior';
+import IceZombie from '../objects/IceZombie';
+import Chort from '../objects/Chort';
 
 /**
  * The scene for the dugeon.

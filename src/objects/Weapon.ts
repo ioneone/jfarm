@@ -1,5 +1,4 @@
-import { Weapon } from '~/objects/Weapon';
-import { AudioAsset } from './../assets/AudioAsset';
+import { AudioAsset } from '../assets/AudioAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import Phaser from 'phaser';
 import Player from "./Player";

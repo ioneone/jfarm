@@ -1,12 +1,9 @@
-import { throttle } from 'throttle-debounce';
-import { DamageEventData, EnemyFoundPlayerEventData } from './../events/Event';
-import { AudioAsset } from './../assets/AudioAsset';
-import { EnemyAssetData } from './../assets/EnemyAsset';
+import { DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import Phaser from 'phaser';
 import Player from './Player';
 import { EnemyAsset } from '../assets/EnemyAsset';
-import EventDispatcher from '~/events/EventDispatcher';
-import { Event } from '~/events/Event';
+import EventDispatcher from '../events/EventDispatcher';
+import { Event } from '../events/Event';
 
 /**
  * State machine of the enemy. This affects the behavior of {@link Enemy#update}.

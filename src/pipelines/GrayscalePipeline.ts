@@ -1,3 +1,5 @@
+import Phaser from 'phaser';
+
 /**
  * @see {@link https://www.dynetisgames.com/2018/12/09/shaders-phaser-3/}
  */

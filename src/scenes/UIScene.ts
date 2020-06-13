@@ -1,9 +1,9 @@
-import { FontAsset, FontAssetData } from './../assets/FontAsset';
+import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event, PlayerHpChangeEventData, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
-import HitPointsBar from '~/ui/HitPointsBar';
-import Inventory from '~/ui/Inventory';
+import HitPointsBar from '../ui/HitPointsBar';
+import Inventory from '../ui/Inventory';
 
 /**
  * The user interface scene.

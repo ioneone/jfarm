@@ -1,6 +1,6 @@
-import { PlayerHpChangeEventData } from './../events/Event';
+import { PlayerHpChangeEventData } from '../events/Event';
 import EventDispatcher from '../events/EventDispatcher';
-import { FontAsset } from './../assets/FontAsset';
+import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import { Event } from '../events/Event';
 

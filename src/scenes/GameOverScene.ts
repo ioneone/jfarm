@@ -1,5 +1,5 @@
-import { LevelSceneModel } from './../objects/SceneTransitionObject';
-import { FontAsset, FontAssetData } from './../assets/FontAsset';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
+import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
@@ -91,7 +91,7 @@ class GameOverScene extends Phaser.Scene
         destinationLevel: 1,
         tilemapFileNamePrefix: "level",
         tilesetFileName: "tiles"
-      } as LevelSceneModel);
+      } as SceneTransitionData);
       this.scene.start(UIScene.KEY);
     }
   }

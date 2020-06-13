@@ -1,7 +1,7 @@
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Phaser from 'phaser';
-import AnimatedTile, { TilesetTileData } from '~/objects/AnimatedTile';
+import AnimatedTile, { TilesetTileData } from '../objects/AnimatedTile';
 
 /**
  * The name of tile layers of the tilemap exported from Tiled program.

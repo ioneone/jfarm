@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import Enemy from './Enemy';
-import { EnemyAsset } from '~/assets/EnemyAsset';
+import { EnemyAsset } from '../assets/EnemyAsset';
 
 class OrcWarrior extends Enemy
 {

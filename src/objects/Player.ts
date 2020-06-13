@@ -1,13 +1,13 @@
-import { AudioAsset } from './../assets/AudioAsset';
-import { PlayerHpChangeEventData, DamageEventData } from './../events/Event';
-import { WeaponAsset } from './../assets/WeaponAsset';
-import { PlayerAsset, PlayerAssetData } from './../assets/PlayerAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { PlayerHpChangeEventData, DamageEventData } from '../events/Event';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event } from '../events/Event';
 import Weapon from './Weapon';
-import UIScene from '~/scenes/UIScene';
-import GameOverScene from '~/scenes/GameOverScene';
+import UIScene from '../scenes/UIScene';
+import GameOverScene from '../scenes/GameOverScene';
 
 /**
  * The player to control.

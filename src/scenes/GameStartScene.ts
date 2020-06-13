@@ -1,5 +1,5 @@
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
-import { FontAsset, FontAssetData } from './../assets/FontAsset';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
+import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
