@@ -48,7 +48,7 @@
                         {
                          "name":"TilesetFileName",
                          "type":"string",
-                         "value":"tiles.png"
+                         "value":"tiles"
                         }],
                  "rotation":0,
                  "type":"",
@@ -101,44 +101,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":144.202937249666,
-                 "y":250.12435628457
-                }, 
-                {
-                 "gid":91,
-                 "height":20,
-                 "id":12,
-                 "name":"OrcWarrior",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":270.569014628494,
-                 "y":234.49669289818
-                }, 
-                {
-                 "gid":91,
-                 "height":20,
-                 "id":13,
-                 "name":"OrcWarrior",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":303.398638536185,
-                 "y":266.637860280983
-                }, 
-                {
-                 "gid":91,
-                 "height":20,
-                 "id":14,
-                 "name":"OrcWarrior",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":287.949403756095,
-                 "y":299.950272775552
+                 "x":144.203,
+                 "y":250.124
                 }, 
                 {
                  "gid":91,
@@ -149,8 +113,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":319.330661903153,
-                 "y":315.882296142519
+                 "x":319.331,
+                 "y":315.882
                 }],
          "opacity":1,
          "type":"objectgroup",
