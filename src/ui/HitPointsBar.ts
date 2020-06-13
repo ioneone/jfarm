@@ -15,6 +15,8 @@ class HitPointsBar extends Phaser.GameObjects.Container
   
   private heartSprites: Phaser.GameObjects.Sprite[];
 
+  private hpText: Phaser.GameObjects.BitmapText;
+
   /**
    * @param {Phaser.Scene} scene - the scene this object belongs to
    * @param {number} x - the x world coordinate in pixels
@@ -25,12 +27,17 @@ class HitPointsBar extends Phaser.GameObjects.Container
     super(scene, x, y);
     this.scene.add.existing(this);
 
+    this.hpText = new Phaser.GameObjects.BitmapText(this.scene, 16, 16, FontAsset.PressStart2P, "HP", 12);
+
+    
+
+    this.add(this.hpText);
+
     this.heartSprites = [];
-    this.heartSprites.push(this.scene.add.sprite(x, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(this.scene.add.sprite(x + 32, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(this.scene.add.sprite(x + 64, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(this.scene.add.sprite(x + 96, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(this.scene.add.sprite(x + 128, y, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 32, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 64, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 96, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
+    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 128, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
 
     this.add(this.heartSprites);
 
@@ -71,10 +78,24 @@ class HitPointsBar extends Phaser.GameObjects.Container
         {
           this.heartSprites[i].setFrame(0); 
         }
-      }
-      
+      } 
     }
-    
+
+    this.scene.tweens.addCounter({
+      duration: 50,
+      from: 255,
+      to: 0,
+      onUpdate: (tween) => {
+        const value = Math.floor(tween.getValue());
+        this.heartSprites.forEach(heartSprite => heartSprite.setTintFill(Phaser.Display.Color.GetColor(value, value, value)));
+      },
+      onComplete: () => {
+        this.heartSprites.forEach(heartSprite => heartSprite.clearTint());
+      },
+      loop: 2,
+      yoyo: true
+    })
+
   }
 
 }

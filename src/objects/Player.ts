@@ -60,7 +60,7 @@ class Player extends Phaser.GameObjects.Sprite
     super(scene, x, y, asset);
 
     this.asset = asset;
-    this.hitPoints = this.maxHitPoints = 10;
+    this.hitPoints = this.maxHitPoints = 8;
     this.weapon = new Weapon(this.scene, WeaponAsset.RegularSword);
     
     // add player to the scene
@@ -131,6 +131,7 @@ class Player extends Phaser.GameObjects.Sprite
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
       { currentHitPoints: this.hitPoints } as PlayerHpChangeEventData);
+
   }
 
   /**

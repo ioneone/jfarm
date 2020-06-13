@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event, PlayerHpChangeEventData, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import HitPointsBar from '~/ui/HitPointsBar';
+import Inventory from '~/ui/Inventory';
 
 /**
  * The user interface scene.
@@ -31,6 +32,8 @@ class UIScene extends Phaser.Scene
   // the visualization of the player's current hit points
   private hitPointsBar?: HitPointsBar;
 
+  private inventory?: Inventory;
+
   constructor()
   {
     super(UIScene.KEY);
@@ -56,6 +59,7 @@ class UIScene extends Phaser.Scene
   public preload(): void
   {
     // load image
+    this.load.image("assets/ui/item_slot.png", "assets/ui/item_slot.png");
     this.load.spritesheet("assets/ui/ui_heart.png", "assets/ui/ui_heart.png", { frameWidth: 16, frameHeight: 16 });
 
     // load font
@@ -80,6 +84,8 @@ class UIScene extends Phaser.Scene
   {
     this.hitPointsBar = new HitPointsBar(this, 0, 0);
 
+    this.inventory = new Inventory(this, 200, 460);
+
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
     EventDispatcher.getInstance().on(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
  
@@ -88,7 +94,7 @@ class UIScene extends Phaser.Scene
       EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
       EventDispatcher.getInstance().off(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
     });
-    
+  
   }
 
   /**
@@ -98,6 +104,7 @@ class UIScene extends Phaser.Scene
    */
   public update(time: number, delta: number): void
   {
+    this.inventory?.update();
   }
 
   /**
@@ -150,6 +157,11 @@ class UIScene extends Phaser.Scene
     });
 
     this.sound.play("assets/audio/enemy_found_player.wav", { volume: 0.5 });
+  }
+
+  private handlePlayerHpChange(data: PlayerHpChangeEventData)
+  {
+    this.cameras.main.shake(200, 0.005);
   }
 
 }

@@ -144,6 +144,7 @@ class LevelScene extends TilemapScene
       const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
       enemy.knockBack(knockBackVelocity);
       enemy.receiveDamage(10);
+      this.cameras.main.shake(100, 0.001);
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
       const enemy = object2 as Enemy;
@@ -165,7 +166,7 @@ class LevelScene extends TilemapScene
     });
 
     // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!);
+    this.cameras.main.startFollow(this.player!, true, 0.1, 0.1);
     
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
