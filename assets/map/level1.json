@@ -103,18 +103,6 @@
                  "width":16,
                  "x":144.203,
                  "y":250.124
-                }, 
-                {
-                 "gid":91,
-                 "height":20,
-                 "id":15,
-                 "name":"OrcWarrior",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":319.331,
-                 "y":315.882
                 }],
          "opacity":1,
          "type":"objectgroup",

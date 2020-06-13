@@ -498,7 +498,6 @@
  </layer>
  <objectgroup id="5" name="ObjectLayer">
   <object id="10" name="Player" gid="79" x="144.203" y="250.124" width="16" height="28"/>
-  <object id="15" name="OrcWarrior" gid="91" x="319.331" y="315.882" width="16" height="20"/>
  </objectgroup>
  <layer id="3" name="TopLayer" width="32" height="32">
   <data encoding="csv">
