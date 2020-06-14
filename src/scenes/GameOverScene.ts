@@ -3,6 +3,7 @@ import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
+import BaseScene from './BaseScene';
 
 /**
  * The scene the player sees when died. 
@@ -10,7 +11,7 @@ import UIScene from './UIScene';
  * @classdesc
  * Prompts the player to restart the game.
  */
-class GameOverScene extends Phaser.Scene
+class GameOverScene extends BaseScene
 {
 
   // the unique id of this scene
@@ -44,9 +45,7 @@ class GameOverScene extends Phaser.Scene
   public preload(): void
   {
     // load font
-    this.load.bitmapFont(FontAsset.PressStart2P, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
+    this.load.bitmapFont(FontAsset.PressStart2P);
   }
 
   /**

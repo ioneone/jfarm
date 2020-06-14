@@ -1,7 +1,7 @@
+import { ItemSlotChangeEventData } from './../events/Event';
 import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
 import { PlayerHpChangeEventData, DamageEventData } from '../events/Event';
-import { WeaponAsset } from '../assets/WeaponAsset';
 import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
@@ -9,6 +9,16 @@ import { Event } from '../events/Event';
 import Weapon from './Weapon';
 import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
+import WeaponAssetFactory from '../factory/WeaponModelFactory';
+
+export interface PlayerConfig
+{
+  asset: PlayerAsset;
+  bodyWidth: number;
+  bodyHeight: number;
+  bodyOffsetX: number;
+  bodyOffsetY: number;
+}
 
 /**
  * The player to control.
@@ -17,21 +27,17 @@ import GameOverScene from '../scenes/GameOverScene';
 class Player extends Phaser.GameObjects.Sprite
 {
 
+  // the maximum hit points of the player
+  private static readonly MAX_HIT_POINTS = 8;
+
   // how fast the player moves
   private static readonly MOVE_SPEED = 64;
-
-  // how fast the weapon rotates
-  private static readonly WEAPON_ROTATION_SPEED = 16;
-
-  // the dimensions of the physics body
-  private static readonly COLLISION_BODY_WIDTH = 16;
-  private static readonly COLLISION_BODY_HEIGHT = 16;
 
   // the offsets from origin to player's hands
   public static readonly HANDS_OFFSET_X = 8;
   public static readonly HANDS_OFFSET_Y = 8;
 
-  // the spritesheet path of the player
+  // the texture path of the player
   private asset: PlayerAsset;
 
   // keyboard key for moving up
@@ -52,17 +58,17 @@ class Player extends Phaser.GameObjects.Sprite
   // weapon the player is currently holding
   private weapon: Weapon;
 
-  // HP
+  // current hit points
   private hitPoints: number; 
-  private maxHitPoints: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, asset: PlayerAsset)
+  constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
-    super(scene, x, y, asset);
+    super(scene, x, y, config.asset);
 
-    this.asset = asset;
-    this.hitPoints = this.maxHitPoints = 8;
-    this.weapon = new Weapon(this.scene, WeaponAsset.RegularSword);
+    // initialize memeber variables
+    this.asset = config.asset;
+    this.hitPoints = Player.MAX_HIT_POINTS;
+    this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -78,50 +84,39 @@ class Player extends Phaser.GameObjects.Sprite
 
     // register animations
     this.scene.anims.create({
-      key: asset + ":idle",
-      frames: this.scene.anims.generateFrameNames(asset, 
-        { start: PlayerAssetData.IdleAnimationFrameStart, 
-          end: PlayerAssetData.IdleAnimationFrameEnd }),
+      key: this.getIdleAnimationKey(), 
+      frames: this.scene.anims.generateFrameNames(this.asset, 
+        {
+          prefix: PlayerAssetData.IdleAnimationPrefix as string,
+          end: PlayerAssetData.IdleAnimationFrameEnd as number,
+        }
+      ),
       frameRate: 8
     });
 
     this.scene.anims.create({
-      key: asset + ":run",
-      frames: this.scene.anims.generateFrameNames(asset, 
-        { start: PlayerAssetData.RunAnimationFrameStart, 
-          end: PlayerAssetData.RunAnimationFrameEnd }),
+      key: this.getRunAnimationKey(),
+      frames: this.scene.anims.generateFrameNames(this.asset, 
+        { 
+          prefix: PlayerAssetData.RunAnimationPrefix as string,
+          end: PlayerAssetData.RunAnimationFrameEnd as number,
+        }
+      ),
       frameRate: 8
     });
 
     // set collision bounds
-    this.getBody().setSize(Player.COLLISION_BODY_WIDTH, Player.COLLISION_BODY_HEIGHT);
-    this.getBody().setOffset(0, PlayerAssetData.FrameHeight - Player.COLLISION_BODY_HEIGHT);
+    this.getBody().setSize(config.bodyWidth, config.bodyHeight);
+    this.getBody().setOffset(config.bodyOffsetX, config.bodyOffsetY);
 
-    EventDispatcher.getInstance().on("ItemSlotChange", this.handleItemSlotChange, this);
+    // initialize event handlings
+    EventDispatcher.getInstance().on(Event.ItemSlotChange, this.handleItemSlotChange, this);
 
+    // remove event listener when the scene is removed
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off("ItemSlotChange", this.handleItemSlotChange, this);
+      EventDispatcher.getInstance().off(Event.ItemSlotChange, this.handleItemSlotChange, this);
     });
 
-  }
-
-  private handleItemSlotChange(data: any)
-  {
-    const item = data.currentItem as Phaser.GameObjects.Sprite;
-
-    if (item)
-    {
-      this.weapon.setTexture(item.texture.key); 
-      this.weapon.getBody().setEnable(true);
-      this.weapon.setVisible(true);
-      this.weapon.setActive(true);
-    }
-    else
-    {
-      this.weapon.setVisible(false);
-      this.weapon.getBody().setEnable(false);
-      this.weapon.setActive(false);
-    }
   }
 
   /**
@@ -130,7 +125,7 @@ class Player extends Phaser.GameObjects.Sprite
    */
   public receiveDamage(damage: number)
   {
-    this.setFrame(PlayerAssetData.HitFrame);
+    this.setFrame(this.asset + PlayerAssetData.HitFrameKey);
 
     this.hitPoints = Math.max(0, this.hitPoints - damage);
 
@@ -223,12 +218,12 @@ class Player extends Phaser.GameObjects.Sprite
     // update frame and physics body
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
     {
-      this.anims.play(this.asset + ":idle", true);
+      this.anims.play(this.getIdleAnimationKey(), true);
       this.getBody().setImmovable(true);
     }
     else
     {
-      this.anims.play(this.asset + ":run", true);
+      this.anims.play(this.getRunAnimationKey(), true);
       this.getBody().setImmovable(false);
     }
 
@@ -237,7 +232,6 @@ class Player extends Phaser.GameObjects.Sprite
       this.weapon.update(this);
     }
     
-
   }
 
   /**
@@ -270,12 +264,53 @@ class Player extends Phaser.GameObjects.Sprite
     return this.weapon;
   }
 
+  /**
+   * Get the center of the physics body
+   * @return {Phaser.Math.Vector2} - the center of the physics body
+   */
   public getBodyCenter(): Phaser.Math.Vector2
   {
     return new Phaser.Math.Vector2(
       this.getBody().x + this.getBody().width / 2,
       this.getBody().y + this.getBody().height / 2
     );
+  }
+
+  /**
+   * Get the key for idle animation.
+   */
+  private getIdleAnimationKey(): string
+  {
+    return `${this.asset}:${PlayerAssetData.IdleAnimationPrefix}`;
+  }
+
+  /**
+   * Get the key for running animation.
+   */
+  private getRunAnimationKey(): string
+  {
+    return `${this.asset}:${PlayerAssetData.RunAnimationPrefix}`;
+  }
+
+  /**
+   * Callback for {@link Event#ItemSlotChange} event.
+   * @param {ItemSlotChangeEventData} data - the data associated with this event
+   */
+  private handleItemSlotChange(data: ItemSlotChangeEventData): void
+  {
+    if (data.currentWeaponAsset)
+    {
+      this.weapon.setModel(WeaponAssetFactory.create(data.currentWeaponAsset));
+      this.weapon.getBody().setEnable(true);
+      this.weapon.setVisible(true);
+      this.weapon.setActive(true);
+    }
+    else
+    {
+      this.weapon.setVisible(false);
+      this.weapon.getBody().setEnable(false);
+      this.weapon.setActive(false);
+    }
   }
 
 }

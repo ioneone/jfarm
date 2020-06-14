@@ -1,9 +1,20 @@
+import { EnemyAssetData } from './../assets/EnemyAsset';
 import { DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import Phaser from 'phaser';
 import Player from './Player';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event } from '../events/Event';
+
+export interface EnemyConfig
+{
+  asset: EnemyAsset;
+  attackDamage: number;
+  knockBackDuration: number;
+  attackInterval: number;
+  vision: number;
+  hitPoints: number;
+}
 
 /**
  * State machine of the enemy. This affects the behavior of {@link Enemy#update}.
@@ -61,18 +72,19 @@ class Enemy extends Phaser.GameObjects.Sprite
    * @param {number} y - y world cooridnate of this object in pixels 
    * @param {EnemyAsset} asset - the spritesheet file path of this object 
    */
-  constructor(scene: Phaser.Scene, x: number, y: number, asset: EnemyAsset)
+  constructor(scene: Phaser.Scene, x: number, y: number, config: EnemyConfig)
   {
-    super(scene, x, y, asset);
+    super(scene, x, y, config.asset);
 
-    this.asset = asset;
-    this.hitPoints = 100;
+    // initialize member variables
+    this.asset = config.asset;
     this.updateState = EnemyUpdateState.Default;
     this.elapsedTime = 0;
-    this.knockBackDuration = 100;
-    this.attackInterval = 800;
-    this.attackDamage = 1;
-    this.vision = 64;
+    this.hitPoints = config.hitPoints;
+    this.knockBackDuration = config.knockBackDuration;
+    this.attackInterval = config.attackInterval;
+    this.attackDamage = config.attackDamage;
+    this.vision = config.vision;
     
     // add enemy to the scene
     this.scene.add.existing(this);
@@ -80,15 +92,25 @@ class Enemy extends Phaser.GameObjects.Sprite
     this.getBody().setCollideWorldBounds(true);
 
     // register animations
-    this.scene.anims.create({ 
-      key: asset + ":idle", 
-      frames: this.scene.anims.generateFrameNames(asset, { prefix: asset + '_idle_anim_f', start: 0, end: 3 }),
+    this.scene.anims.create({
+      key: this.getIdleAnimationKey(), 
+      frames: this.scene.anims.generateFrameNames(this.asset, 
+        {
+          prefix: EnemyAssetData.IdleAnimationPrefix as string,
+          end: EnemyAssetData.IdleAnimationFrameEnd as number,
+        }
+      ),
       frameRate: 8
     });
 
-    this.scene.anims.create({ 
-      key: asset + ":run", 
-      frames: this.scene.anims.generateFrameNames(asset, { prefix: asset + '_run_anim_f', start: 0, end: 3 }),
+    this.scene.anims.create({
+      key: this.getRunAnimationKey(),
+      frames: this.scene.anims.generateFrameNames(this.asset, 
+        { 
+          prefix: EnemyAssetData.RunAnimationPrefix as string,
+          end: EnemyAssetData.RunAnimationFrameEnd as number,
+        }
+      ),
       frameRate: 8
     });
 
@@ -247,12 +269,12 @@ class Enemy extends Phaser.GameObjects.Sprite
     // update frame and physics body
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
     {
-      this.anims.play(this.asset + ":idle", true);
+      this.anims.play(this.getIdleAnimationKey(), true);
       this.getBody().setImmovable(true);
     }
     else
     {
-      this.anims.play(this.asset + ":run", true);
+      this.anims.play(this.getRunAnimationKey(), true);
       this.getBody().setImmovable(false);
     }
 
@@ -368,6 +390,22 @@ class Enemy extends Phaser.GameObjects.Sprite
     const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
 
     return new Phaser.Math.Vector2(ratioX * canvasWidth, ratioY * canvasHeight);
+  }
+
+  /**
+   * Get the key for idle animation.
+   */
+  private getIdleAnimationKey(): string
+  {
+    return `${this.asset}:${EnemyAssetData.IdleAnimationPrefix}`;
+  }
+
+  /**
+   * Get the key for running animation.
+   */
+  private getRunAnimationKey(): string
+  {
+    return `${this.asset}:${EnemyAssetData.RunAnimationPrefix}`;
   }
 
 }

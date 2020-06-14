@@ -1,3 +1,5 @@
+import { WeaponAsset } from '../assets/WeaponAsset';
+
 /**
  * Collection of custom events of the game. Events are useful when you want to 
  * pass data from one scene to another. See {@link EventDispatcher} to learn 
@@ -12,7 +14,9 @@ export enum Event
   // someone has lost hit points
   Damage = "damage",
   // enemy sees player in its vision range
-  EnemyFoundPlayer = "EnemyFoundPlayer"
+  EnemyFoundPlayer = "EnemyFoundPlayer",
+  // the selected item solot has changed
+  ItemSlotChange = "itemslotchange"
 }
 
 /**
@@ -41,6 +45,10 @@ export interface DamageEventData
   color?: number
 }
 
+/**
+ * Data type to be sent when {@link Event#EnemyFoundPlayer} is fired.
+ * @interface
+ */
 export interface EnemyFoundPlayerEventData
 {
   // x world coordinate of the object relative to the canvas position the event occured
@@ -49,4 +57,13 @@ export interface EnemyFoundPlayerEventData
   y: number,
   // height of the object in pixels
   height: number
+}
+
+/**
+ * Data type to be sent when {@link Event#ItemSlotChange} is fired.
+ * @interface
+ */
+export interface ItemSlotChangeEventData
+{
+  currentWeaponAsset?: WeaponAsset
 }

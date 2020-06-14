@@ -1,24 +1,11 @@
 {
     "frames": [
         {
-            "filename": "idle_anim_f2",
-            "frame": {
-                "w": 16,
-                "h": 16,
-                "x": 0,
-                "y": 0
-            },
-            "anchor": {
-                "x": 0.5,
-                "y": 0.5
-            }
-        },
-        {
             "filename": "idle_anim_f0",
             "frame": {
                 "w": 16,
-                "h": 16,
-                "x": 16,
+                "h": 28,
+                "x": 0,
                 "y": 0
             },
             "anchor": {
@@ -30,7 +17,20 @@
             "filename": "idle_anim_f1",
             "frame": {
                 "w": 16,
-                "h": 16,
+                "h": 28,
+                "x": 16,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "idle_anim_f2",
+            "frame": {
+                "w": 16,
+                "h": 28,
                 "x": 32,
                 "y": 0
             },
@@ -40,10 +40,10 @@
             }
         },
         {
-            "filename": "run_anim_f2",
+            "filename": "idle_anim_f3",
             "frame": {
                 "w": 16,
-                "h": 16,
+                "h": 28,
                 "x": 48,
                 "y": 0
             },
@@ -56,22 +56,9 @@
             "filename": "run_anim_f0",
             "frame": {
                 "w": 16,
-                "h": 16,
+                "h": 28,
                 "x": 0,
-                "y": 16
-            },
-            "anchor": {
-                "x": 0.5,
-                "y": 0.5
-            }
-        },
-        {
-            "filename": "idle_anim_f3",
-            "frame": {
-                "w": 16,
-                "h": 16,
-                "x": 16,
-                "y": 16
+                "y": 28
             },
             "anchor": {
                 "x": 0.5,
@@ -82,9 +69,22 @@
             "filename": "run_anim_f1",
             "frame": {
                 "w": 16,
-                "h": 16,
+                "h": 28,
+                "x": 16,
+                "y": 28
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "run_anim_f2",
+            "frame": {
+                "w": 16,
+                "h": 28,
                 "x": 32,
-                "y": 16
+                "y": 28
             },
             "anchor": {
                 "x": 0.5,
@@ -95,9 +95,22 @@
             "filename": "run_anim_f3",
             "frame": {
                 "w": 16,
-                "h": 16,
+                "h": 28,
                 "x": 48,
-                "y": 16
+                "y": 28
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_anim_f0",
+            "frame": {
+                "w": 16,
+                "h": 28,
+                "x": 0,
+                "y": 56
             },
             "anchor": {
                 "x": 0.5,

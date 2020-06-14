@@ -1,7 +1,8 @@
+import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
-import { WeaponAsset } from '../assets/WeaponAsset';
 import Phaser from 'phaser';
 import Player from "./Player";
+import WeaponModel from '~/models/WeaponModel';
 
 /**
  * The weapon the player holds.
@@ -19,6 +20,9 @@ class Weapon extends Phaser.GameObjects.Sprite
 
   // the raidus of the collision circle
   private static readonly COLLISON_CIRCLE_RADIUS = 5;
+  
+  // the model of this weapon
+  private model: WeaponModel;
 
   // the angle in degree from previous frame
   private prevAngle: number;
@@ -28,13 +32,15 @@ class Weapon extends Phaser.GameObjects.Sprite
 
   /**
    * @param {Phaser.Scene} scene - the scene this object belongs to
-   * @param {WeaponAsset} asset - the weapon image file path  
+   * @param {WeaponModel} model - the weapon image file path  
    */
-  constructor(scene: Phaser.Scene, asset: WeaponAsset)
+  constructor(scene: Phaser.Scene, model: WeaponModel)
   {
-    super(scene, 0, 0, asset);
+    super(scene, 0, 0, model.asset);
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
+
+    this.model = model;
 
     // the origin of the rotation is where you grab the weapon
     this.setOrigin(0.5, 1);
@@ -50,7 +56,7 @@ class Weapon extends Phaser.GameObjects.Sprite
   }
 
   /**
-   * This should be called every frame
+   * This should be called every frame. The weapon follows the player.
    * @param {Player} player 
    */
   public update(player: Player)
@@ -117,6 +123,26 @@ class Weapon extends Phaser.GameObjects.Sprite
   {
     return this.body as Phaser.Physics.Arcade.Body;
   }
+
+  /**
+   * Update the model. It also updates the texture based on the model.
+   * @param {WeaponModel} model - the model of the weapon 
+   */
+  public setModel(model: WeaponModel): void
+  {
+    this.model = model;
+    this.setTexture(model.asset);
+  }
+
+  /**
+   * Get the model of this weapon.
+   * @return {WeaponModel} 
+   */
+  public getModel(): WeaponModel
+  {
+    return this.model;
+  }
+  
 }
 
 export default Weapon;

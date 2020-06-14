@@ -17,6 +17,7 @@ import Phaser from 'phaser';
 class EventDispatcher extends Phaser.Events.EventEmitter
 {
 
+  // the singeleton instance of this class
   private static singelton?: EventDispatcher;
 
   private constructor()

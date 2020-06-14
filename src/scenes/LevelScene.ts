@@ -1,17 +1,16 @@
+import { AudioAsset } from './../assets/AudioAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import Weapon from '../objects/Weapon';
-import { AudioAsset } from '../assets/AudioAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
-import { EnemyAsset, EnemyAssetData } from '../assets/EnemyAsset';
-import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
+import { EnemyAsset } from '../assets/EnemyAsset';
+import { PlayerAsset } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import TilemapScene, { TileLayer } from './TilemapScene';
 import Player from '../objects/Player';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
-import OrcWarrior from '../objects/OrcWarrior';
-import IceZombie from '../objects/IceZombie';
-import Chort from '../objects/Chort';
+import PlayerFactory from '../factory/PlayerFactory';
+import EnemyFactory from '../factory/EnemyFactory';
 
 /**
  * The scene for the dugeon.
@@ -53,6 +52,7 @@ class LevelScene extends TilemapScene
   public init(data: any)
   {
     super.init(data);  
+    this.bright = false;
   }
  
   /**
@@ -62,33 +62,18 @@ class LevelScene extends TilemapScene
   public preload()
   {
     super.preload();
-    this.load.spritesheet(PlayerAsset.ElfMale, PlayerAsset.ElfMale, 
-      { frameWidth: PlayerAssetData.FrameWidth, frameHeight: PlayerAssetData.FrameHeight });
-    this.load.atlas({
-      key: EnemyAsset.OrcWarrior,
-      textureURL: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '.png',
-      normalMap: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '_n.png',
-      atlasURL: 'assets/enemies/' + EnemyAsset.OrcWarrior + '/' + EnemyAsset.OrcWarrior + '.json'
-    });
-    this.load.atlas({
-      key: EnemyAsset.IceZombie,
-      textureURL: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '.png',
-      normalMap: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '_n.png',
-      atlasURL: 'assets/enemies/' + EnemyAsset.IceZombie + '/' + EnemyAsset.IceZombie + '.json'
-    });
-    this.load.atlas({
-      key: EnemyAsset.Chort,
-      textureURL: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '.png',
-      normalMap: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '_n.png',
-      atlasURL: 'assets/enemies/' + EnemyAsset.Chort + '/' + EnemyAsset.Chort + '.json'
-    });
-    this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe, WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer, WeaponAsset.Hammer);
-    this.load.audio(AudioAsset.DamagePlayer, AudioAsset.DamagePlayer);
-    this.load.audio(AudioAsset.Swing, AudioAsset.Swing);
-    this.load.audio(AudioAsset.ThreeFootSteps, AudioAsset.ThreeFootSteps);
-    this.load.audio("assets/audio/hit_enemy.wav", "assets/audio/hit_enemy.wav");
+    this.load.atlas(PlayerAsset.ElfFemale);
+    this.load.atlas(PlayerAsset.ElfMale);
+    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.OrcWarrior));
+    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.IceZombie));
+    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.Chort));
+    this.load.image(WeaponAsset.RegularSword);
+    this.load.image(WeaponAsset.Axe);
+    this.load.image(WeaponAsset.Hammer);
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.DamagePlayer));
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Swing));
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.ThreeFootSteps));
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyHit));
   }
 
   /**
@@ -105,22 +90,24 @@ class LevelScene extends TilemapScene
     super.create(data);
 
     // add player to the scene
-    this.player = new Player(this, data.destinationXInTiles * 16, data.destinationYInTiles * 16, PlayerAsset.ElfMale);
+    this.player = PlayerFactory.create(this, 
+      data.destinationXInTiles * 16, data.destinationYInTiles * 16, 
+      PlayerAsset.ElfMale);
 
     // add enemies to the scene
     this.enemies = this.add.group();
     this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(object => {
       if (object.name === "OrcWarrior")
       {
-        this.enemies?.add(new OrcWarrior(this, object.x!, object.y!));
+        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.OrcWarrior));
       }
       else if (object.name === "IceZombie")
       {
-        this.enemies?.add(new IceZombie(this, object.x!, object.y!));
+        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.IceZombie));
       }
       else if (object.name === "Chort")
       {
-        this.enemies?.add(new Chort(this, object.x!, object.y!));
+        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.Chort));
       }
     });
 
@@ -146,8 +133,8 @@ class LevelScene extends TilemapScene
       const enemy = object2 as Enemy;
       const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
       enemy.knockBack(knockBackVelocity);
-      enemy.receiveDamage(10);
-      this.sound.play("assets/audio/hit_enemy.wav");
+      enemy.receiveDamage(weapon.getModel().power);
+      this.sound.play(AudioAsset.EnemyHit);
       this.cameras.main.shake(100, 0.001);
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
@@ -199,36 +186,41 @@ class LevelScene extends TilemapScene
   }
 
   /**
-   * File path to the tilemap of this scene. Assume the tilemap file is located 
-   * at `assets/map/` and the extension is json.
+   * Get the unique key of the tile map. The `key` of a tile map is just its 
+   * file path excluding the extension. If your tile map is located at 
+   * `path/to/tile/map/foo.json`, then the key should be `path/to/tile/map/foo`.
+   * @override
    * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - tile map file path
+   * @return {string} - the tile map key
    */
-  public getTilemapFilePath(data: SceneTransitionData): string
+  public getTilemapKey(data: SceneTransitionData): string
   {
-    return "assets/map/" + data.tilemapFileNamePrefix + data.destinationLevel!.toString() + ".json";
+    return "assets/map/" + data.tilemapFileNamePrefix + data.destinationLevel!.toString();
   }
 
   /**
-   * File path to the tileset for the tilemap. Assume the tileset file is 
-   * located at `assets/map/`
+   * Get the unique key of the tile set. The `key` of a tile set is just its 
+   * file path excluding the extension. If your tile set is located at 
+   * `path/to/tile/set/foo.png`, then the key should be `path/to/tile/set/foo`.
+   * @override
    * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - tile set file path
+   * @return {string} - the tile set key
    */
-  public getTilesetFilePath(data: SceneTransitionData): string
+  public getTilesetKey(data: SceneTransitionData): string
   {
-    return "assets/map/" + data.tilesetFileName + ".png";
+    return "assets/map/" + data.tilesetFileName;
   }
-
-  public getTilesetNormalMapFilePath(data: SceneTransitionData): string
-  {
-    return "assets/map/" + data.tilesetFileName + "_n.png";
-  }
-
+  
+  /**
+   * The graphics shows useful information for debugging when the debug mode 
+   * is turned on.
+   * @override
+   */
   protected toggleDebugMode(): void
   {
     super.toggleDebugMode();
 
+    // turn off the light
     if (this.bright)
     {
       this.enemies?.getChildren().forEach(child => {
@@ -238,6 +230,7 @@ class LevelScene extends TilemapScene
       this.middleLayer?.setPipeline('Light2D');
       this.topLayer?.setPipeline('Light2D');
     }
+    // turn on the light
     else
     {
       this.enemies?.getChildren().forEach(child => {

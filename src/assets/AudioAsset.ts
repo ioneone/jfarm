@@ -1,12 +1,17 @@
 /**
- * Collection of the absolute or relative URLs to load the audio files from.
+ * The unique keys for audio. 
+ * 
+ * If you name your asset `foo`, then you must have audio file located at 
+ * `foo.wav`
+ * 
  * @readonly
  * @enum {string}
  */
 export enum AudioAsset
 {
-  DamagePlayer     = "assets/audio/damage_player.wav",
-  Swing            = "assets/audio/swing.wav",
-  EnemyFoundPlayer = "assets/audio/enemy_found_player.wav",
-  ThreeFootSteps        = "assets/audio/three_foot_steps.wav"
+  DamagePlayer     = "assets/audio/damage_player",
+  Swing            = "assets/audio/swing",
+  EnemyFoundPlayer = "assets/audio/enemy_found_player",
+  ThreeFootSteps   = "assets/audio/three_foot_steps",
+  EnemyHit         = "assets/audio/enemy_hit"
 }

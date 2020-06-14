@@ -3,6 +3,7 @@ import { FontAsset, FontAssetData } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
+import BaseScene from './BaseScene';
 
 /**
  * The first scene the player sees when they start the game.
@@ -11,7 +12,7 @@ import UIScene from './UIScene';
  * It displays the title of the game. This should be the first item in the 
  * game config's scene list.
  */
-class GameStartScene extends Phaser.Scene
+class GameStartScene extends BaseScene
 {
 
   // the unique id of this scene
@@ -45,9 +46,7 @@ class GameStartScene extends Phaser.Scene
   public preload(): void
   {
     // load font
-    this.load.bitmapFont(FontAsset.PressStart2P, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
+    this.load.bitmapFont(FontAsset.PressStart2P);
   }
 
   /**

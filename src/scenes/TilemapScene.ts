@@ -2,6 +2,7 @@ import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Phaser from 'phaser';
 import AnimatedTile, { TilesetTileData } from '../objects/AnimatedTile';
+import BaseScene from './BaseScene';
 
 /**
  * The name of tile layers of the tilemap exported from Tiled program.
@@ -44,13 +45,19 @@ export interface TiledTransitionObject
  * @classdesc
  * The tilemap must have the structure as follows:
  * - TopLayer (non-collidable)
+ * - ObjectLayer
  * - MiddleLayer (collidable)
  * - BottomLayer (collidable)
  * - TransitionLayer
  * The lower layer will be rendered first. Use default name for tileset name. 
  * (e.g. `path/to/file/foo.png` => `foo`)
+ * 
+ * The tile map and tile set files should follow a convention. If the key of the 
+ * map is `foo`, then your tile map file must be located at `foo.json`, 
+ * the tile set file at `foo.png`, and the tile set normal map file at 
+ * `foo_n.png`.
  */
-abstract class TilemapScene extends Phaser.Scene
+abstract class TilemapScene extends BaseScene
 {
 
   // the style config for debug mode
@@ -109,9 +116,11 @@ abstract class TilemapScene extends Phaser.Scene
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
    * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @override
    */
   public init(data: SceneTransitionData): void
   {
+    super.init(data);
     this.animatedTiles = [];
     this.sceneTransitionData = data;
   }
@@ -119,14 +128,18 @@ abstract class TilemapScene extends Phaser.Scene
   /**
    * Scenes can have a preload method, which is always called before the Scenes 
    * create method, allowing you to preload assets that the Scene may need.
+   * @override
    */
 	public preload(): void
 	{
+    super.preload();
+
     // load tileset image
-    this.load.image(this.getTilesetFilePath(this.sceneTransitionData!), 
-      [this.getTilesetFilePath(this.sceneTransitionData!), this.getTilesetNormalMapFilePath(this.sceneTransitionData!)]);
+    this.load.image(this.createDefaultImageFileConfig(
+      this.getTilesetKey(this.sceneTransitionData!)));
+
     // load tilemap json data
-    this.load.tilemapTiledJSON(this.getTilemapFilePath(this.sceneTransitionData!), this.getTilemapFilePath(this.sceneTransitionData!));
+    this.load.tilemapTiledJSON(this.getTilemapKey(this.sceneTransitionData!));
 	}
 
   /**
@@ -137,16 +150,21 @@ abstract class TilemapScene extends Phaser.Scene
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
    * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @override
    */
 	public create(data: SceneTransitionData): void
 	{
-    // parse tilemap json data to phaser tile map object
-    this.tilemap = this.make.tilemap({ key: this.getTilemapFilePath(this.sceneTransitionData!) });
+    super.create(data);
 
+    // parse tilemap json data to phaser tile map object
+    this.tilemap = this.make.tilemap({ 
+      key: this.getTilemapKey(this.sceneTransitionData!)
+    });
+    
     // parse tileset image
-    const tilesetNameInTilemapData = this.getTilesetFilePath(this.sceneTransitionData!).slice(
-      this.getTilesetFilePath(this.sceneTransitionData!).lastIndexOf("/") + 1, this.getTilesetFilePath(this.sceneTransitionData!).lastIndexOf("."));
-    this.tileset = this.tilemap.addTilesetImage(tilesetNameInTilemapData, this.getTilesetFilePath(this.sceneTransitionData!));
+    const tilesetKey = this.getTilesetKey(this.sceneTransitionData!);
+    const tilesetName = this.getDefaultTilesetName(tilesetKey);
+    this.tileset = this.tilemap.addTilesetImage(tilesetName, tilesetKey);
 
     // create transition layer
     this.transitionObjectGroup = this.physics.add.staticGroup();
@@ -210,9 +228,13 @@ abstract class TilemapScene extends Phaser.Scene
    * This method is called once per game step while the scene is running.
    * @param {number} time - the current time
    * @param {number} delta - the delta time in ms since the last frame
+   * @override
    */
   public update(time: number, delta: number): void
 	{
+
+    super.update(time, delta);
+
     // toggle debug mode
     if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
     {
@@ -224,28 +246,51 @@ abstract class TilemapScene extends Phaser.Scene
   }
 
   /**
-   * file path to the tilemap of this scene
+   * Get the unique key of the tile map. The `key` of a tile map is just its 
+   * file path excluding the extension. If your tile map is located at 
+   * `path/to/tile/map/foo.json`, then the key should be `path/to/tile/map/foo`.
    * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - tile map file path
+   * @return {string} - the tile map key
    */
-  public abstract getTilemapFilePath(data: SceneTransitionData): string;
+  public abstract getTilemapKey(data: SceneTransitionData): string;
 
   /**
-   * file path to the tileset for the tilemap
+   * Get the unique key of the tile set. The `key` of a tile set is just its 
+   * file path excluding the extension. If your tile set is located at 
+   * `path/to/tile/set/foo.png`, then the key should be `path/to/tile/set/foo`.
+   * The tile set normal map must be located at `path/to/tile/set/foo_n.png`.
    * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - tile set file path
+   * @return {string} - the tile set key
    */
-  public abstract getTilesetFilePath(data: SceneTransitionData): string;
+  public abstract getTilesetKey(data: SceneTransitionData): string;
 
-  public abstract getTilesetNormalMapFilePath(data: SceneTransitionData): string;
-
+  /**
+   * The graphics shows useful information for debugging when the debug mode 
+   * is turned on.
+   */
   protected toggleDebugMode(): void
   {
-    // built in debug display
+    // toggle built in debug display
     this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
 
-    // custom debug display
+    // toggle custom debug display
     this.debugGraphics!.setVisible(!this.debugGraphics!.visible);
+  }
+
+  /**
+   * By default, Tiled uses the filename of the tileset image to reference the 
+   * tiles in that tileset. See {@link TilemapScene#getTilesetKey} for 
+   * definition of `tilesetKey`.
+   * 
+   * @example
+   * getDefaultTilesetName("path/to/tile/set/foo"); // return "foo"
+   * 
+   * @param {string} tilesetKey - the tile set key 
+   */
+  private getDefaultTilesetName(tilesetKey: string): string
+  {
+    // extract the filename
+    return tilesetKey.slice(tilesetKey.lastIndexOf("/") + 1);
   }
 
 }

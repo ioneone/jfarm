@@ -1,3 +1,4 @@
+import { UIAsset } from './../assets/UIAsset';
 import { PlayerHpChangeEventData } from '../events/Event';
 import EventDispatcher from '../events/EventDispatcher';
 import { FontAsset } from '../assets/FontAsset';
@@ -5,16 +6,25 @@ import Phaser from 'phaser';
 import { Event } from '../events/Event';
 
 /**
- * @classdesc
  * UI for displaying the player's current hit points
- * 
  * @class
+ * @classdesc
+ * This class listens for {@link Event#PlayerHpChange} event and updates the 
+ * UI accordingly.
  */
 class HitPointsBar extends Phaser.GameObjects.Container
 {
+
+  // the font size of the text "HP"
+  private static readonly HP_TEXT_FONT_SIZE = 18;
+
+  // the spacing used for layout
+  private static readonly SPACING = 6;
   
+  // the sprites for the heart
   private heartSprites: Phaser.GameObjects.Sprite[];
 
+  // the reference to the "HP" text
   private hpText: Phaser.GameObjects.BitmapText;
 
   /**
@@ -25,20 +35,30 @@ class HitPointsBar extends Phaser.GameObjects.Container
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y);
+
+    // add this container to the scene
     this.scene.add.existing(this);
 
-    this.hpText = new Phaser.GameObjects.BitmapText(this.scene, 16, 16, FontAsset.PressStart2P, "HP", 12);
+    // initialize memeber variables
+    this.hpText = new Phaser.GameObjects.BitmapText(this.scene, 
+      0, HitPointsBar.SPACING, FontAsset.PressStart2P, "HP", HitPointsBar.HP_TEXT_FONT_SIZE);
 
-    
+    const firstHeart = new Phaser.GameObjects.Sprite(this.scene, 
+      this.hpText.width + HitPointsBar.SPACING, 0, UIAsset.HeartFull)
+      .setOrigin(0, 0).setScale(2);
+    const secondHeart = new Phaser.GameObjects.Sprite(this.scene, 
+      firstHeart.x + firstHeart.getBounds().width, 0, UIAsset.HeartFull)
+      .setOrigin(0, 0).setScale(2);
+    const thirdHeart = new Phaser.GameObjects.Sprite(this.scene, 
+      secondHeart.x + secondHeart.getBounds().width, 0, UIAsset.HeartFull)
+      .setOrigin(0, 0).setScale(2);
+    const fourthHeart = new Phaser.GameObjects.Sprite(this.scene, 
+      thirdHeart.x + thirdHeart.getBounds().width, 0, UIAsset.HeartFull)
+      .setOrigin(0, 0).setScale(2);
+    this.heartSprites = [firstHeart, secondHeart, thirdHeart, fourthHeart];
 
+    // add ui components to container
     this.add(this.hpText);
-
-    this.heartSprites = [];
-    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 32, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 64, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 96, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-    this.heartSprites.push(new Phaser.GameObjects.Sprite(this.scene, 16 + 128, 8, "assets/ui/ui_heart.png", 2).setOrigin(0, 0).setScale(2));
-
     this.add(this.heartSprites);
 
     // event handling
@@ -66,21 +86,22 @@ class HitPointsBar extends Phaser.GameObjects.Container
     {
       if (i < numFullHearts)
       {
-        this.heartSprites[i].setFrame(2);
+        this.heartSprites[i].setTexture(UIAsset.HeartFull);
       }
       else
       {
         if (i === numFullHearts && hasHalfHeart)
         {
-          this.heartSprites[i].setFrame(1);
+          this.heartSprites[i].setTexture(UIAsset.HeartHalf);
         }
         else
         {
-          this.heartSprites[i].setFrame(0); 
+          this.heartSprites[i].setTexture(UIAsset.HeartEmpty); 
         }
       } 
     }
 
+    // flash animation
     this.scene.tweens.addCounter({
       duration: 50,
       from: 255,

@@ -7,26 +7,20 @@
  */
 export enum PlayerAsset
 {
-  ElfFemale    = "assets/players/elf_f.png",
-  ElfMale      = "assets/players/elf_m.png",
-  KnightFemale = "assets/players/knight_f.png",
-  KnightMale   = "assets/players/knight_m.png"
+  ElfFemale = "assets/players/elf_f/elf_f",
+  ElfMale   = "assets/players/elf_m/elf_m",
 }
 
 /**
- * Every player spritesheet must have 3 rows and 4 colmuns of 16x28 frames.
- * Frames 0 ... 3 are for idle animation. Frames 4 ... 7 are for run animation.
- * Frames 8 is for hit animation.
+ * Common attributes for {@link PlayerAsset}
  * @readonly
- * @enum {number}
+ * @enum {string | number}
  */
 export enum PlayerAssetData
 {
-  FrameWidth              = 16,
-  FrameHeight             = 28,
-  IdleAnimationFrameStart = 0,
-  IdleAnimationFrameEnd   = 3,
-  RunAnimationFrameStart  = 4,
-  RunAnimationFrameEnd    = 7,
-  HitFrame                = 8
+  IdleAnimationPrefix   = "idle_anim_f",
+  RunAnimationPrefix    = "run_anim_f",
+  IdleAnimationFrameEnd = 3,
+  RunAnimationFrameEnd  = 3,
+  HitFrameKey           = "hit_anim_f0"
 }

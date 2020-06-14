@@ -1,10 +1,13 @@
-import { WeaponAsset } from './../assets/WeaponAsset';
-import { FontAsset, FontAssetData } from '../assets/FontAsset';
+import { UIAsset } from '../assets/UIAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event, PlayerHpChangeEventData, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
+import { Event, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import HitPointsBar from '../ui/HitPointsBar';
 import Inventory from '../ui/Inventory';
+import BaseScene from './BaseScene';
 
 /**
  * The user interface scene.
@@ -15,7 +18,7 @@ import Inventory from '../ui/Inventory';
  * should be rendered on top of any other scene, and thus should be placed 
  * as the last item of the scene list in the game config.
  */
-class UIScene extends Phaser.Scene
+class UIScene extends BaseScene
 {
 
   // the unique id of this scene
@@ -30,9 +33,17 @@ class UIScene extends Phaser.Scene
   // duration for showing the damage text in ms
   private static readonly DAMAGE_LIFE_DURATION_IN_MS = 400;
 
-  // the visualization of the player's current hit points
+  // spacing between bottom of the canvas and the inventory ui in pixels
+  private static readonly INVENTORY_BOTTOM_SPACING = 16;
+
+  // the offsets of the hit points bar from the canvas's top left corner
+  private static readonly HIT_POINTS_BAR_OFFSET_X = 16;
+  private static readonly HIT_POINTS_BAR_OFFSET_Y = 8;
+
+  // the ui of the player's current hit points
   private hitPointsBar?: HitPointsBar;
 
+  // the ui of the player's inventory
   private inventory?: Inventory;
 
   constructor()
@@ -51,6 +62,7 @@ class UIScene extends Phaser.Scene
    */
   public init(data: any): void
   {
+    super.init(data);
   }
 
   /**
@@ -59,20 +71,16 @@ class UIScene extends Phaser.Scene
    */
   public preload(): void
   {
-    // load image
-    this.load.image("assets/ui/item_slot_bordered.png", "assets/ui/item_slot_bordered.png");
-    this.load.spritesheet("assets/ui/ui_heart.png", "assets/ui/ui_heart.png", { frameWidth: 16, frameHeight: 16 });
-    this.load.image(WeaponAsset.RegularSword, WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe, WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer, WeaponAsset.Hammer);
-
-    // load font
-    this.load.bitmapFont(FontAsset.PressStart2P, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.png`, 
-      `${FontAssetData.FilePathPrefix}/${FontAsset.PressStart2P}/${FontAsset.PressStart2P}.fnt`);
-
-    // load audio
-    this.load.audio("assets/audio/enemy_found_player.wav", "assets/audio/enemy_found_player.wav");
+    super.preload();
+    this.load.image(UIAsset.ItemSlotBordered);
+    this.load.image(UIAsset.HeartEmpty);
+    this.load.image(UIAsset.HeartFull);
+    this.load.image(UIAsset.HeartHalf);
+    this.load.image(WeaponAsset.RegularSword);
+    this.load.image(WeaponAsset.Axe);
+    this.load.image(WeaponAsset.Hammer);
+    this.load.bitmapFont(FontAsset.PressStart2P);
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyFoundPlayer));
   }
 
   /**
@@ -86,24 +94,29 @@ class UIScene extends Phaser.Scene
    */
   public create(data: any): void
   {
-    this.hitPointsBar = new HitPointsBar(this, 0, 0);
+    super.create(data);
 
+    // create hit points bar ui
+    this.hitPointsBar = new HitPointsBar(this, 
+      UIScene.HIT_POINTS_BAR_OFFSET_X, UIScene.HIT_POINTS_BAR_OFFSET_Y);
+
+    // create inventoey ui
     this.inventory = new Inventory(this, this.cameras.main.centerX, this.cameras.main.height);
     const inventoryBounds = this.inventory.getBounds();
     this.inventory.setPosition(
       this.inventory.x - inventoryBounds.width / 2,
-      this.inventory.y - inventoryBounds.height - 16
+      this.inventory.y - inventoryBounds.height - UIScene.INVENTORY_BOTTOM_SPACING
     );
 
+    // listen for custom events
     EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
     EventDispatcher.getInstance().on(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
  
-    // clean up listeners when removed
+    // clean up listeners when the scene is removed
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
       EventDispatcher.getInstance().off(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
     });
-  
   }
 
   /**
@@ -113,6 +126,7 @@ class UIScene extends Phaser.Scene
    */
   public update(time: number, delta: number): void
   {
+    super.update(time, delta);
     this.inventory?.update();
   }
 
@@ -148,9 +162,12 @@ class UIScene extends Phaser.Scene
         damageText.destroy();
       }
     });
-
   }
 
+  /**
+   * Callback for receiving {@link Event#EnemyFoundPlayer} event.
+   * @param {EnemyFoundPlayerEventData} data - the data associated with the event
+   */
   private handleEnemyFoundPlayer(data: EnemyFoundPlayerEventData)
   {
     const notificationText = this.add.bitmapText(data.x, data.y - data.height, 
@@ -165,9 +182,8 @@ class UIScene extends Phaser.Scene
       }
     });
 
-    this.sound.play("assets/audio/enemy_found_player.wav", { volume: 0.5 });
+    this.sound.play(AudioAsset.EnemyFoundPlayer, { volume: 0.5 });
   }
-
 }
 
 export default UIScene;

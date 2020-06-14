@@ -1,10 +1,19 @@
 import Phaser from 'phaser';
 
 /**
+ * A pipeline for drawing a grayscaled image.
+ * @class 
+ * @classdesc
+ * Modification of {@link Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline}.
+ * 
+ * @see {@link https://github.com/photonstorm/phaser/blob/v3.22.0/src/renderer/webgl/shaders/TextureTint-frag.js}
  * @see {@link https://www.dynetisgames.com/2018/12/09/shaders-phaser-3/}
  */
 class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
 {
+  /**
+   * @param {Phaser.Game} game - the controller of the game instance
+   */
   constructor(game: Phaser.Game)
   {
     super({

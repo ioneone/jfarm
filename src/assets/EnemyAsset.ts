@@ -8,22 +8,20 @@
  */
 export enum EnemyAsset
 {
-  OrcWarrior = "orc_warrior",
-  IceZombie  = "ice_zombie",
-  Chort      = "chort"
+  OrcWarrior = "assets/enemies/orc_warrior/orc_warrior",
+  IceZombie  = "assets/enemies/ice_zombie/ice_zombie",
+  Chort      = "assets/enemies/chort/chort"
 }
 
 /**
- * Collection of the data common to all {@link EnemyAsset}
- * Frames 0 ... 3 are for idle animation.
- * Frames 4 ... 7 are for run animation.
+ * Common attributes for {@link EnemyAsset}
  * @readonly
- * @enum {number}
+ * @enum {string | number}
  */
 export enum EnemyAssetData
 {
-  IdleAnimationFrameStart = 0,
-  IdleAnimationFrameEnd   = 3,
-  RunAnimationFrameStart  = 4,
-  RunAnimationFrameEnd    = 7
+  IdleAnimationPrefix   = "idle_anim_f",
+  RunAnimationPrefix    = "run_anim_f",
+  IdleAnimationFrameEnd = 3,
+  RunAnimationFrameEnd  = 3
 }
