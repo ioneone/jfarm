@@ -61,6 +61,8 @@ class Player extends Phaser.GameObjects.Sprite
   // current hit points
   private hitPoints: number; 
 
+  private attackEnabled: boolean;
+
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
     super(scene, x, y, config.asset);
@@ -69,6 +71,7 @@ class Player extends Phaser.GameObjects.Sprite
     this.asset = config.asset;
     this.hitPoints = Player.MAX_HIT_POINTS;
     this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
+    this.attackEnabled = true;
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -243,7 +246,7 @@ class Player extends Phaser.GameObjects.Sprite
    */
   public isActivatingWeapon(): boolean
   {
-    return Phaser.Input.Keyboard.JustDown(this.keyJ);
+    return this.attackEnabled && Phaser.Input.Keyboard.JustDown(this.keyJ);
   }
 
   /**
@@ -275,6 +278,11 @@ class Player extends Phaser.GameObjects.Sprite
       this.getBody().y + this.getBody().height / 2
     );
   }
+
+  public setAttackEnabled(enabled: boolean): void
+  {
+    this.attackEnabled = enabled;
+  } 
 
   /**
    * Get the key for idle animation.
@@ -312,6 +320,7 @@ class Player extends Phaser.GameObjects.Sprite
       this.weapon.setActive(false);
     }
   }
+  
 
 }
 

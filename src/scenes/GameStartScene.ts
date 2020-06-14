@@ -73,8 +73,16 @@ class GameStartScene extends BaseScene
     const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, 
       this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
     this.add.bitmapText(this.cameras.main.centerX, 
-      titleBitmapText.y + titleBitmapText.height / 2 + spacingBetweenTitleAndHelperText, 
+      this.cameras.main.centerY + 180, 
       FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
+
+    this.add.bitmapText(this.cameras.main.centerX, 
+      this.cameras.main.centerY + 100, FontAsset.PressStart2P, "Press W/A/S/D to move", helperTextFontSize).setOrigin(0.5, 0.5);
+    this.add.bitmapText(this.cameras.main.centerX, 
+      this.cameras.main.centerY + 120, FontAsset.PressStart2P, "Press J to attack", helperTextFontSize).setOrigin(0.5, 0.5);
+
+      this.add.bitmapText(this.cameras.main.centerX, 
+        this.cameras.main.centerY + 140, FontAsset.PressStart2P, "Press SPACE to change weapon", helperTextFontSize).setOrigin(0.5, 0.5);
   }
 
   /**
