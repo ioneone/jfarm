@@ -1,8 +1,7 @@
-import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
 import Phaser from 'phaser';
 import Player from "./Player";
-import WeaponModel from '~/models/WeaponModel';
+import WeaponModel from '../models/WeaponModel';
 
 /**
  * The weapon the player holds.

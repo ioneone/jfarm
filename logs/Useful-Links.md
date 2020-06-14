@@ -32,3 +32,6 @@ These are some useful links I haven't figured out where to put in the dev logs y
 
 - https://www.dynetisgames.com/2018/12/09/shaders-phaser-3/
 
+- https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-1/
+
+- https://www.sebastianklier.com/javascript/node/gamedev/phaser/2019/03/05/multiplayer-game-typescript-node-express-socketio-phaser.html

@@ -1,12 +1,15 @@
-import { FontAsset } from './../assets/FontAsset';
-import { AudioAsset } from './../assets/AudioAsset';
-import { WeaponAsset } from '~/assets/WeaponAsset';
-import { PlayerAsset } from './../assets/PlayerAsset';
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
+import { FontAsset } from '../assets/FontAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { PlayerAsset } from '../assets/PlayerAsset';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import TilemapScene from './TilemapScene';
-import PlayerFactory from '~/factory/PlayerFactory';
-import Player from '~/objects/Player';
+import PlayerFactory from '../factory/PlayerFactory';
+import Player from '../objects/Player';
 
+/**
+ * TODO: Work In Progress.
+ */
 class BaseCampScene extends TilemapScene
 {
 
@@ -67,7 +70,7 @@ class BaseCampScene extends TilemapScene
     this.topLayer?.setDepth(1);
 
     // need at least one light source
-    this.light = this.lights.addLight(0, 0, 0);
+    // this.light = this.lights.addLight(0, 0, 0);
 
     this.lights.enable().setAmbientColor(0xffffff);
 

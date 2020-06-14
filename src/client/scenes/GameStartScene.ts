@@ -1,28 +1,30 @@
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import { FontAsset, FontAssetData } from '../assets/FontAsset';
+import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
 import BaseScene from './BaseScene';
+import Connection from '../socket/Connection';
 
 /**
- * The scene the player sees when died. 
+ * The first scene the player sees when they start the game.
  * @class
  * @classdesc
- * Prompts the player to restart the game.
+ * It displays the title of the game. This should be the first item in the 
+ * game config's scene list.
  */
-class GameOverScene extends BaseScene
+class GameStartScene extends BaseScene
 {
 
   // the unique id of this scene
-  public static readonly KEY = "GameOverScene";
+  public static readonly KEY = "GameStartScene";
 
-  // reference to the ENTER key for restarting the game
+  // reference to the ENTER key for starting the game
   private keyEnter?: Phaser.Input.Keyboard.Key;
 
   constructor()
   {
-    super(GameOverScene.KEY);
+    super(GameStartScene.KEY);
   }
 
   /**
@@ -61,17 +63,20 @@ class GameOverScene extends BaseScene
   {
     this.keyEnter = this.input.keyboard.addKey('ENTER');
 
-    const title = "GAME OVER";
+    const title = "SHINING SOUL J";
     const titleFontSize = 24;
 
-    const helperText = "Press Enter to Restart";
+    const helperText = "Press W/A/S/D to move\nPress J to attack\n\n\nPress SPACE to change weapon";
     const helperTextFontSize = 12;
-
     const spacingBetweenTitleAndHelperText = 24;
 
-    // add texts in the center of the screen
-    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, titleBitmapText.y + titleBitmapText.height / 2 + spacingBetweenTitleAndHelperText, FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
+    // draw texts on the center of the screen
+    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, 
+      this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
+    this.add.bitmapText(this.cameras.main.centerX, 
+      titleBitmapText.y + titleBitmapText.height + spacingBetweenTitleAndHelperText, 
+      FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0);
+
   }
 
   /**
@@ -94,6 +99,7 @@ class GameOverScene extends BaseScene
       this.scene.start(UIScene.KEY);
     }
   }
+
 }
 
-export default GameOverScene;
+export default GameStartScene;

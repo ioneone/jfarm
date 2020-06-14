@@ -10,6 +10,7 @@ import Weapon from './Weapon';
 import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
+import Connection from '../socket/Connection';
 
 export interface PlayerConfig
 {
@@ -234,6 +235,11 @@ class Player extends Phaser.GameObjects.Sprite
     {
       this.weapon.update(this);
     }
+
+    Connection.getInstance().socket.emit('PlayerMovement', { 
+      velocityX: this.getBody().velocity.x, 
+      velocityY: this.getBody().velocity.y
+    });
     
   }
 

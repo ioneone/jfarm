@@ -1,29 +1,28 @@
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import { FontAsset, FontAssetData } from '../assets/FontAsset';
+import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
 import BaseScene from './BaseScene';
 
 /**
- * The first scene the player sees when they start the game.
+ * The scene the player sees when died. 
  * @class
  * @classdesc
- * It displays the title of the game. This should be the first item in the 
- * game config's scene list.
+ * Prompts the player to restart the game.
  */
-class GameStartScene extends BaseScene
+class GameOverScene extends BaseScene
 {
 
   // the unique id of this scene
-  public static readonly KEY = "GameStartScene";
+  public static readonly KEY = "GameOverScene";
 
-  // reference to the ENTER key for starting the game
+  // reference to the ENTER key for restarting the game
   private keyEnter?: Phaser.Input.Keyboard.Key;
 
   constructor()
   {
-    super(GameStartScene.KEY);
+    super(GameOverScene.KEY);
   }
 
   /**
@@ -62,27 +61,17 @@ class GameStartScene extends BaseScene
   {
     this.keyEnter = this.input.keyboard.addKey('ENTER');
 
-    const title = "SHINING SOUL J";
+    const title = "GAME OVER";
     const titleFontSize = 24;
 
-    const helperText = "Press Enter to Start";
+    const helperText = "Press Enter to Restart";
     const helperTextFontSize = 12;
+
     const spacingBetweenTitleAndHelperText = 24;
 
-    // draw texts on the center of the screen
-    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 180, 
-      FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
-
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 100, FontAsset.PressStart2P, "Press W/A/S/D to move", helperTextFontSize).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 120, FontAsset.PressStart2P, "Press J to attack", helperTextFontSize).setOrigin(0.5, 0.5);
-
-      this.add.bitmapText(this.cameras.main.centerX, 
-        this.cameras.main.centerY + 140, FontAsset.PressStart2P, "Press SPACE to change weapon", helperTextFontSize).setOrigin(0.5, 0.5);
+    // add texts in the center of the screen
+    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
+    this.add.bitmapText(this.cameras.main.centerX, titleBitmapText.y + titleBitmapText.height / 2 + spacingBetweenTitleAndHelperText, FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
   }
 
   /**
@@ -105,7 +94,6 @@ class GameStartScene extends BaseScene
       this.scene.start(UIScene.KEY);
     }
   }
-
 }
 
-export default GameStartScene;
+export default GameOverScene;

@@ -11,6 +11,7 @@ import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
 import PlayerFactory from '../factory/PlayerFactory';
 import EnemyFactory from '../factory/EnemyFactory';
+import Connection from '../socket/Connection';
 
 /**
  * The scene for the dugeon.
@@ -29,6 +30,9 @@ class LevelScene extends TilemapScene
   // the player to control
   protected player?: Player;
 
+  // other players
+  protected players: {[key: string]: Player};
+
   // the group of enemies in the scene
   protected enemies?: Phaser.GameObjects.Group;
 
@@ -38,6 +42,7 @@ class LevelScene extends TilemapScene
   {
     super(LevelScene.KEY);
     this.bright = false;
+    this.players = {};
   }
 
   /**
@@ -53,6 +58,7 @@ class LevelScene extends TilemapScene
   {
     super.init(data);  
     this.bright = false;
+    this.players = {};
   }
  
   /**
@@ -90,9 +96,9 @@ class LevelScene extends TilemapScene
     super.create(data);
 
     // add player to the scene
-    this.player = PlayerFactory.create(this, 
-      data.destinationXInTiles * 16, data.destinationYInTiles * 16, 
-      PlayerAsset.ElfMale);
+    // this.player = PlayerFactory.create(this, 
+    //   data.destinationXInTiles * 16, data.destinationYInTiles * 16, 
+    //   PlayerAsset.ElfMale);
 
     // add enemies to the scene
     this.enemies = this.add.group();
@@ -111,63 +117,91 @@ class LevelScene extends TilemapScene
       }
     });
 
-    // add collision detection between player and collidable layer
-    this.physics.add.collider(this.player!, this.middleLayer!);
-    this.physics.add.collider(this.player!, this.bottomLayer!);
-    
     // add collision detection between enemy and collidable layer
     this.physics.add.collider(this.enemies!, this.middleLayer!);
     this.physics.add.collider(this.enemies!, this.bottomLayer!);
  
-    // add collision detection between player and enemy
-    this.physics.add.collider(this.player!, this.enemies!, (_, object2) => {
-      const enemy = object2 as Enemy;
-      enemy.setUpdateState(EnemyUpdateState.AttackPlayer);
-      // prevent enemy from pushing the player
-      enemy.getBody().setVelocity(0, 0);
-    });
-
-    // add overlap detection between player attack and enemy
-    this.physics.add.overlap(this.player.getWeapon(), this.enemies, (object1, object2) => {
-      const weapon = object1 as Weapon;
-      const enemy = object2 as Enemy;
-      const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
-      enemy.knockBack(knockBackVelocity);
-      enemy.receiveDamage(weapon.getModel().power);
-      this.sound.play(AudioAsset.EnemyHit);
-      this.cameras.main.shake(100, 0.001);
-    }, (object1, object2) => {
-      const weapon = object1 as Weapon;
-      const enemy = object2 as Enemy;
-      return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
-    });
-
-    // add overlap detection between player and transition objects
-    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
-      const player = object1 as Player;
-      player.getBody().setEnable(false);
-      const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
-      this.sound.play(AudioAsset.ThreeFootSteps);
-      this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
-        if (progress === 1)
-        {
-          this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
-        }
-      });
-    });
-
-    // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, true, 0.1, 0.1);
-    
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene.
     this.topLayer?.setDepth(1);
 
-    // lights
+    // @ts-ignore
     this.light = this.lights.addLight(0, 0, 150);
 
     this.lights.enable().setAmbientColor(0x404040);
+
+    Connection.getInstance().socket.on('CurrentPlayers', (players) => {
+      console.log(players);
+
+      Object.keys(players).forEach((id) => {
+        
+        if (Connection.getInstance().socket.id === id)
+        {
+          console.log('player created');
+          this.player = PlayerFactory.create(this, 
+            players[id].x, players[id].y, PlayerAsset.ElfMale);
+
+          // add collision detection between player and collidable layer
+          this.physics.add.collider(this.player!, this.middleLayer!);
+          this.physics.add.collider(this.player!, this.bottomLayer!);
+
+          // add overlap detection between player attack and enemy
+          this.physics.add.overlap(this.player.getWeapon(), this.enemies!, (object1, object2) => {
+            const weapon = object1 as Weapon;
+            const enemy = object2 as Enemy;
+            const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
+            enemy.knockBack(knockBackVelocity);
+            enemy.receiveDamage(weapon.getModel().power);
+            this.sound.play(AudioAsset.EnemyHit);
+            this.cameras.main.shake(100, 0.001);
+          }, (object1, object2) => {
+            const weapon = object1 as Weapon;
+            const enemy = object2 as Enemy;
+            return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
+          });
+
+          // add collision detection between player and enemy
+          this.physics.add.collider(this.player!, this.enemies!, (_, object2) => {
+            const enemy = object2 as Enemy;
+            enemy.setUpdateState(EnemyUpdateState.AttackPlayer);
+            // prevent enemy from pushing the player
+            enemy.getBody().setVelocity(0, 0);
+          });
+
+          // add overlap detection between player and transition objects
+          this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
+            const player = object1 as Player;
+            player.getBody().setEnable(false);
+            const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
+            this.sound.play(AudioAsset.ThreeFootSteps);
+            this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
+              if (progress === 1)
+              {
+                this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
+              }
+            });
+          });
+
+          // configure the camera to follow the player
+          this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        }
+        else
+        {
+          this.players[id] = PlayerFactory.create(this, 
+            players[id].x, players[id].y, PlayerAsset.ElfMale);
+        }
+      })
+    });
+
+    Connection.getInstance().socket.on('NewPlayer', (player) => {
+      this.players[player.id] = PlayerFactory.create(this, 
+        player.x, player.y, PlayerAsset.ElfMale);
+    });
+
+    Connection.getInstance().socket.on('PlayerMoved', (player) => {
+      this.players[player.id].getBody().setVelocity(player.velocityX, player.velocityY);
+    });
 
   }
 
@@ -181,8 +215,12 @@ class LevelScene extends TilemapScene
     super.update(time, delta);
     this.player?.update();
     this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
+    //@ts-ignore
     this.light.x = this.player?.x;
-    this.light.y = this.player.y;
+    //@ts-ignore
+    this.light.y = this.player?.y;
+
+    Object.values(this.players).forEach(player => player.update());
   }
 
   /**

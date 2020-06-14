@@ -99,6 +99,7 @@ class BaseScene extends Phaser.Scene
   {
     return {
       key: key,
+      // @ts-ignore
       url: `${key}.wav`
     };
   } 
