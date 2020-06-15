@@ -35,3 +35,5 @@ These are some useful links I haven't figured out where to put in the dev logs y
 - https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-1/
 
 - https://www.sebastianklier.com/javascript/node/gamedev/phaser/2019/03/05/multiplayer-game-typescript-node-express-socketio-phaser.html
+
+- https://www.freecodecamp.org/news/how-to-enable-es6-and-beyond-syntax-with-node-and-express-68d3e11fe1ab/

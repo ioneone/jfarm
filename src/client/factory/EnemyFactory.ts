@@ -1,4 +1,3 @@
-import { EnemyConfig } from '../objects/Enemy';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import Enemy from "../objects/Enemy";
 

@@ -1,7 +1,5 @@
-import { ItemSlotChangeEventData } from './../events/Event';
 import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
-import { PlayerHpChangeEventData, DamageEventData } from '../events/Event';
 import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
@@ -11,6 +9,7 @@ import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
 import Connection from '../socket/Connection';
+import { EventData } from '../events/Event';
 
 export interface PlayerConfig
 {
@@ -62,7 +61,7 @@ class Player extends Phaser.GameObjects.Sprite
   // current hit points
   private hitPoints: number; 
 
-  private attackEnabled: boolean;
+  private light: Phaser.GameObjects.Light;
 
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
@@ -72,7 +71,7 @@ class Player extends Phaser.GameObjects.Sprite
     this.asset = config.asset;
     this.hitPoints = Player.MAX_HIT_POINTS;
     this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
-    this.attackEnabled = true;
+    this.light = this.scene.lights.addLight(x, y, 150);
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -152,10 +151,10 @@ class Player extends Phaser.GameObjects.Sprite
     const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
 
     EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as DamageEventData);
+      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as EventData.Damage);
     
     EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
-      { currentHitPoints: this.hitPoints } as PlayerHpChangeEventData);
+      { currentHitPoints: this.hitPoints } as EventData.PlayerHpChange);
 
   }
 
@@ -206,7 +205,7 @@ class Player extends Phaser.GameObjects.Sprite
     {
       this.getBody().setVelocity(0, 0);
     }
-
+    
     // update flip x
     if (this.getBody().velocity.x > 0)
     {
@@ -236,11 +235,33 @@ class Player extends Phaser.GameObjects.Sprite
       this.weapon.update(this);
     }
 
-    Connection.getInstance().socket.emit('PlayerMovement', { 
-      velocityX: this.getBody().velocity.x, 
-      velocityY: this.getBody().velocity.y
+    this.light.setPosition(this.x, this.y);
+
+    Connection.getInstance().socket.emit(Event.PlayerMoved, { 
+      x: this.x,
+      y: this.y,
+      flipX: this.flipX,
+      frameName: this.frame.name,
+      weaponAngle: this.weapon.angle
     });
     
+  }
+
+  /**
+   * Called every callback. Slighly less frequent than update().
+   */
+  public updateSnapshot(player: any)
+  {
+    this.setPosition(player.x, player.y);
+    this.setFlipX(player.flipX);
+    this.setFrame(player.frameName);
+    this.light.setPosition(player.x, player.y);
+    this.weapon.updateSnapshot(player);
+  }
+
+  public getLight(): Phaser.GameObjects.Light
+  {
+    return this.light;
   }
 
   /**
@@ -252,7 +273,7 @@ class Player extends Phaser.GameObjects.Sprite
    */
   public isActivatingWeapon(): boolean
   {
-    return this.attackEnabled && Phaser.Input.Keyboard.JustDown(this.keyJ);
+    return Phaser.Input.Keyboard.JustDown(this.keyJ);
   }
 
   /**
@@ -285,11 +306,6 @@ class Player extends Phaser.GameObjects.Sprite
     );
   }
 
-  public setAttackEnabled(enabled: boolean): void
-  {
-    this.attackEnabled = enabled;
-  } 
-
   /**
    * Get the key for idle animation.
    */
@@ -308,9 +324,9 @@ class Player extends Phaser.GameObjects.Sprite
 
   /**
    * Callback for {@link Event#ItemSlotChange} event.
-   * @param {ItemSlotChangeEventData} data - the data associated with this event
+   * @param {EventData.ItemSlotChange} data - the data associated with this event
    */
-  private handleItemSlotChange(data: ItemSlotChangeEventData): void
+  private handleItemSlotChange(data: EventData.ItemSlotChange): void
   {
     if (data.currentWeaponAsset)
     {

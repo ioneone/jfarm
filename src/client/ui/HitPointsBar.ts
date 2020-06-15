@@ -1,9 +1,8 @@
 import { UIAsset } from './../assets/UIAsset';
-import { PlayerHpChangeEventData } from '../events/Event';
 import EventDispatcher from '../events/EventDispatcher';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
-import { Event } from '../events/Event';
+import { Event, EventData } from '../events/Event';
 
 /**
  * UI for displaying the player's current hit points
@@ -72,9 +71,9 @@ class HitPointsBar extends Phaser.GameObjects.Container
 
   /**
    * Callback for receiving {@link Event#PlayerHpChange} event.
-   * @param {DamageEventData} data - the data associated with the event
+   * @param {EventData.PlayerHpChange} data - the data associated with the event
    */
-  private handlePlayerHpChangeEvent(data: PlayerHpChangeEventData): void
+  private handlePlayerHpChangeEvent(data: EventData.PlayerHpChange): void
   {
 
     const currentHitPoints = data.currentHitPoints;

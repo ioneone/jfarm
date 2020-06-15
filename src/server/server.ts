@@ -1,12 +1,14 @@
-const express = require('express');
-const http = require('http');
-const path = require('path');
-const socketIO = require('socket.io');
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import SocketIO from 'socket.io';
+import { AddressInfo } from 'net';
+import { Event, EventData } from '../client/events/Event';
 
 const app = express();
-const server = http.Server(app);
+const server = new http.Server(app);
 
-const io = socketIO.listen(server);
+const io = SocketIO.listen(server);
 
 const players = {};
 
@@ -18,25 +20,25 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
 
-  console.log('A use connected: ', socket.id);
-
   players[socket.id] = {
-    x: 100,
-    y: 100,
+    level: 0,
+    x: 0,
+    y: 0,
+    flipX: false,
+    frameName: "",
+    weaponAngle: 0,
     id: socket.id
   };
 
   // send the players object to the new socket
-  socket.emit('CurrentPlayers', players);
+  socket.emit(Event.VisitGame, players);
 
   // send the new player object to all the other sockets
-  socket.broadcast.emit('NewPlayer', players[socket.id]);
+  socket.broadcast.emit(Event.NewPlayer, players[socket.id]);
 
   // when a player disconnects, remove them from players
   socket.on('disconnect', () => {
 
-    console.log('user disconnected: ', socket.id);
-    
     delete players[socket.id];
 
     // emit a message to all sockets to remove this player
@@ -45,15 +47,19 @@ io.on('connection', (socket) => {
   });
 
   // when a player moves update the player data
-  socket.on('PlayerMovement', (movementData) => {
-    players[socket.id].velocityX = movementData.velocityX;
-    players[socket.id].velocityY = movementData.velocityY;
+  socket.on(Event.PlayerMoved, (data) => {
+    const movementData = data as EventData.PlayerMoved;
+    players[socket.id].x = movementData.x;
+    players[socket.id].y = movementData.y;
+    players[socket.id].flipX = movementData.flipX;
+    players[socket.id].frameName = movementData.frameName;
+    players[socket.id].weaponAngle = movementData.weaponAngle;
 
     // emit a message to all the other sockets that this player has moved
-    socket.broadcast.emit('PlayerMoved', players[socket.id]);
+    socket.broadcast.emit(Event.PlayerMoved, players[socket.id]);
   })
 });
 
 server.listen(8000, () => {
-  console.log(`Listening on ${server.address().port}`);
+  console.log(`Listening on ${(server.address() as AddressInfo).port}`);
 });

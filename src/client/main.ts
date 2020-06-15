@@ -4,6 +4,9 @@ import UIScene from './scenes/UIScene';
 import GameStartScene from './scenes/GameStartScene';
 import LevelScene from './scenes/LevelScene';
 import BaseCampScene from './scenes/BaseCampScene';
+import Connection from './socket/Connection';
+
+Connection.getInstance();
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,

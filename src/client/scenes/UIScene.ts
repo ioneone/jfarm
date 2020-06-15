@@ -4,10 +4,10 @@ import { WeaponAsset } from '../assets/WeaponAsset';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import HitPointsBar from '../ui/HitPointsBar';
 import Inventory from '../ui/Inventory';
 import BaseScene from './BaseScene';
+import { Event, EventData } from '../events/Event';
 
 /**
  * The user interface scene.
@@ -132,9 +132,9 @@ class UIScene extends BaseScene
 
   /**
    * Callback for receiving {@link Event#Damage} event.
-   * @param {DamageEventData} data - the data associated with the event
+   * @param {EventData.Damage} data - the data associated with the event
    */
-  private handleDamageEvent(data: DamageEventData): void
+  private handleDamageEvent(data: EventData.Damage): void
   {
     const damageText = this.add.bitmapText(data.x, data.y, FontAsset.PressStart2P, data.damage.toString(), UIScene.DAMAGE_FONT_SIZE);
     
@@ -166,9 +166,9 @@ class UIScene extends BaseScene
 
   /**
    * Callback for receiving {@link Event#EnemyFoundPlayer} event.
-   * @param {EnemyFoundPlayerEventData} data - the data associated with the event
+   * @param {EventData.EnemyFoundPlayer} data - the data associated with the event
    */
-  private handleEnemyFoundPlayer(data: EnemyFoundPlayerEventData)
+  private handleEnemyFoundPlayer(data: EventData.EnemyFoundPlayer)
   {
     const notificationText = this.add.bitmapText(data.x, data.y - data.height, 
       FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);

@@ -1,36 +1,6 @@
-// {
-// 	"compilerOptions": {
-// 		"target": "es2016",
-// 		"module": "es6",
-// 		"strict": true,
-// 		"noImplicitAny": false,
-// 		"noEmit": true,
-// 		"allowJs": true,
-// 		"jsx": "preserve",
-// 		"importHelpers": true,
-// 		"moduleResolution": "node",
-// 		"experimentalDecorators": true,
-// 		"esModuleInterop": true,
-// 		"allowSyntheticDefaultImports": true,
-//     "sourceMap": true,
-//     "outDir": "buidl",
-// 		"baseUrl": "./src",
-// 		"paths": {
-// 		  "~/*": ["./*"]
-// 		},
-// 		"typeRoots": [
-// 			"node_modules/@types",
-// 			"node_module/phaser/types"
-// 		],
-// 		"types": [
-//       "phaser",
-//       "node"
-// 		]
-// 	},
-// }
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
     "moduleResolution": "node",
@@ -44,6 +14,6 @@
     }
   },
   "include": [
-      "src/**/*"
+    "src/**/*"
   ]
 }

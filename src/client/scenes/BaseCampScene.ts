@@ -55,7 +55,7 @@ class BaseCampScene extends TilemapScene
 
     // add player to the scene
     this.player = PlayerFactory.create(this, 100, 100, PlayerAsset.ElfMale);
-    this.player.setAttackEnabled(false);
+    // this.player.setAttackEnabled(false);
 
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);

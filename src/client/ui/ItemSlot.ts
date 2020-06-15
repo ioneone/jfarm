@@ -1,10 +1,10 @@
-import { ItemSlotChangeEventData } from '../events/Event';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { UIAsset } from '../assets/UIAsset';
 import Phaser from 'phaser';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import EventDispatcher from '../events/EventDispatcher';
 import { Event } from '../events/Event';
+import { EventData } from '../events/Event';
 
 /**
  * UI for an item slot.
@@ -72,7 +72,7 @@ class ItemSlot extends Phaser.GameObjects.Container
     {
       this.slot.resetPipeline();
       this.setAlpha(1);
-      EventDispatcher.getInstance().emit(Event.ItemSlotChange, { currentWeaponAsset: this.weaponAsset } as ItemSlotChangeEventData);
+      EventDispatcher.getInstance().emit(Event.ItemSlotChange, { currentWeaponAsset: this.weaponAsset } as EventData.ItemSlotChange);
     }
     else
     {

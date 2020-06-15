@@ -1,4 +1,3 @@
-import { PlayerConfig } from '../objects/Player';
 import Phaser from 'phaser';
 import { PlayerAsset } from '../assets/PlayerAsset';
 import Player from '../objects/Player';

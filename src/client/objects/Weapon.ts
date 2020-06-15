@@ -114,6 +114,20 @@ class Weapon extends Phaser.GameObjects.Sprite
     this.prevFlipX = this.flipX;
   }
 
+  public updateSnapshot(player)
+  {
+    this.setFlipX(player.flipX);
+    if (this.flipX)
+    {
+      this.setPosition(player.x - Player.HANDS_OFFSET_X, player.y + Player.HANDS_OFFSET_Y)
+    }
+    else
+    {
+      this.setPosition(player.x + Player.HANDS_OFFSET_X, player.y + Player.HANDS_OFFSET_Y)
+    }
+    this.angle = player.weaponAngle;
+  }
+
   /**
    * Get the physics body
    * @return {Phaser.Physics.Arcade.Body} - the physics body
