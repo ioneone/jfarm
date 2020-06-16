@@ -36,6 +36,7 @@ class GameOverScene extends BaseScene
    */
   public init(data: any): void
   {
+    super.init(data);
   }
 
   /**
@@ -44,8 +45,7 @@ class GameOverScene extends BaseScene
    */
   public preload(): void
   {
-    // load font
-    this.load.bitmapFont(FontAsset.PressStart2P);
+    super.preload();
   }
 
   /**
@@ -59,6 +59,8 @@ class GameOverScene extends BaseScene
    */
   public create(data: any): void
   {
+    super.create(data);
+    
     this.keyEnter = this.input.keyboard.addKey('ENTER');
 
     const title = "GAME OVER";

@@ -109,6 +109,9 @@ abstract class TilemapScene extends BaseScene
 
   protected isDark?: boolean;
 
+  // press 'I' key to toggle debug mode
+  protected keyI?: Phaser.Input.Keyboard.Key;
+
   /**
    * This is called only once when you start the game. Every time a scene is 
    * created using methods like `scene.start()`, `constructor()` will not be 
@@ -215,6 +218,9 @@ abstract class TilemapScene extends BaseScene
       })
     }
 
+    // get reference to the keyboard key
+    this.keyI = this.input.keyboard.addKey('I');
+
     // setup debug mode
     this.debugGraphics = this.add.graphics().setAlpha(0.5).setVisible(false);
     this.bottomLayer.renderDebug(this.debugGraphics!, TilemapScene.RENDER_DEBUG_CONFIG);
@@ -237,6 +243,9 @@ abstract class TilemapScene extends BaseScene
       this.sceneLight = this.lights.addLight();
       this.lights.enable().setAmbientColor(0x404040);
     }
+
+    // by default don't show built-in debug graphics
+    this.physics.world.debugGraphic.setVisible(false);
     
   }
   
@@ -249,6 +258,12 @@ abstract class TilemapScene extends BaseScene
   public update(time: number, delta: number): void
 	{
     super.update(time, delta);
+
+    if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
+    {
+      this.toggleDebugMode(); 
+    }
+
     this.animatedTiles.forEach(tile => tile.update(delta));
   }
 
@@ -279,7 +294,8 @@ abstract class TilemapScene extends BaseScene
    */
   protected toggleDebugMode(): void
   {
-    super.toggleDebugMode();
+    // toggle built in debug display
+    this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
 
     // toggle custom debug display
     this.debugGraphics!.setVisible(this.physics.world.debugGraphic.visible);

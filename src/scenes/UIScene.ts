@@ -72,15 +72,6 @@ class UIScene extends BaseScene
   public preload(): void
   {
     super.preload();
-    this.load.image(UIAsset.ItemSlotBordered);
-    this.load.image(UIAsset.HeartEmpty);
-    this.load.image(UIAsset.HeartFull);
-    this.load.image(UIAsset.HeartHalf);
-    this.load.image(WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer);
-    this.load.bitmapFont(FontAsset.PressStart2P);
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyFoundPlayer));
   }
 
   /**

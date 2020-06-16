@@ -45,18 +45,6 @@ class LevelScene extends CombatScene
   public preload()
   {
     super.preload();
-    this.load.atlas(PlayerAsset.ElfFemale);
-    this.load.atlas(PlayerAsset.ElfMale);
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.OrcWarrior));
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.IceZombie));
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.Chort));
-    this.load.image(WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer);
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.DamagePlayer));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Swing));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.ThreeFootSteps));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyHit));
   }
 
   /**

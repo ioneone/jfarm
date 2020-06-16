@@ -1,13 +1,9 @@
-import { FontAsset } from '../assets/FontAsset';
-import { AudioAsset } from '../assets/AudioAsset';
-import { WeaponAsset } from '../assets/WeaponAsset';
-import { PlayerAsset } from '../assets/PlayerAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
 
 class BasecampScene extends PlayerScene
 {
-
+  
   public static readonly KEY = "BasecampScene";
 
   constructor()
@@ -22,14 +18,6 @@ class BasecampScene extends PlayerScene
   public preload()
   {
     super.preload();
-    this.load.atlas(PlayerAsset.ElfFemale);
-    this.load.atlas(PlayerAsset.ElfMale);
-    this.load.image(WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer);
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Swing));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.ThreeFootSteps));
-    this.load.bitmapFont(FontAsset.PressStart2P);
   }
 
   /**

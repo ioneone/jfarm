@@ -9,9 +9,6 @@ import Phaser from 'phaser';
 class BaseScene extends Phaser.Scene
 {
 
-  // press 'I' key to toggle debug mode
-  protected keyI?: Phaser.Input.Keyboard.Key;
-
   /**
    * This is called only once when you start the game. Every time a scene is 
    * created using methods like `scene.start()`, `constructor()` will not be 
@@ -55,11 +52,6 @@ class BaseScene extends Phaser.Scene
    */
   public create(data: any)
   {
-    // get reference to the keyboard key
-    this.keyI = this.input.keyboard.addKey('I');
-
-    // by default don't show debug graphics
-    this.physics.world.debugGraphic.setVisible(false);
   }
 
   /**
@@ -69,21 +61,6 @@ class BaseScene extends Phaser.Scene
    */
   public update(time: number, delta: number)
   {
-    if (Phaser.Input.Keyboard.JustDown(this.keyI!)) 
-    {
-      this.toggleDebugMode(); 
-    }
-  }
-
-  /**
-   * The graphics shows useful information for debugging when the debug mode 
-   * is turned on. In `update()`, it checks whether a debug key (assigned in 
-   * {@link BaseScene}) is pressed, and if it is, call this function.
-   */
-  protected toggleDebugMode(): void
-  {
-    // toggle built in debug display
-    this.physics.world.debugGraphic.setVisible(!this.physics.world.debugGraphic.visible);
   }
 
   /**
@@ -127,7 +104,7 @@ class BaseScene extends Phaser.Scene
       key: key,
       url: `${key}.wav`
     };
-  } 
+  }
 
 }
 
