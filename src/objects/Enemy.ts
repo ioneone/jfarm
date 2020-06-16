@@ -1,4 +1,4 @@
-import { EnemyAssetData } from './../assets/EnemyAsset';
+import { EnemyAssetData } from '../assets/EnemyAsset';
 import Phaser from 'phaser';
 import Player from './Player';
 import { EnemyAsset } from '../assets/EnemyAsset';

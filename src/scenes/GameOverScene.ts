@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
 import BaseScene from './BaseScene';
-import LevelSceneTransitionObject, { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
+import { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
 
 /**
  * The scene the player sees when died. 
