@@ -3,9 +3,9 @@ import { EnemyAsset } from '../assets/EnemyAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from "./PlayerScene";
 import { TileLayer } from './TilemapScene';
-import EnemyFactory from '~/factory/EnemyFactory';
-import Enemy, { EnemyUpdateState } from '~/objects/Enemy';
-import Weapon from '~/objects/Weapon';
+import EnemyFactory from '../factory/EnemyFactory';
+import Enemy, { EnemyUpdateState } from '../objects/Enemy';
+import Weapon from '../objects/Weapon';
 
 /**
  * A scene with enemies in it.

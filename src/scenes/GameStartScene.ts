@@ -1,4 +1,4 @@
-import { LevelSceneTransitionData } from './../objects/LevelSceneTransitionObject';
+import { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';

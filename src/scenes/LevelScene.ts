@@ -1,14 +1,8 @@
-import { AudioAsset } from './../assets/AudioAsset';
-import Weapon from '../objects/Weapon';
+import { AudioAsset } from '../assets/AudioAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import { PlayerAsset } from '../assets/PlayerAsset';
-import Phaser from 'phaser';
-import TilemapScene, { TileLayer } from './TilemapScene';
-import Enemy, { EnemyUpdateState } from '../objects/Enemy';
-import EnemyFactory from '../factory/EnemyFactory';
-import PlayerScene from './PlayerScene';
-import { LevelSceneTransitionData } from '~/objects/LevelSceneTransitionObject';
+import { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
 import CombatScene from './CombatScene';
 
 /**
