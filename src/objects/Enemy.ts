@@ -1,10 +1,9 @@
 import { EnemyAssetData } from './../assets/EnemyAsset';
-import { DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import Phaser from 'phaser';
 import Player from './Player';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event } from '../events/Event';
+import { Events } from '../events/Events';
 
 export interface EnemyConfig
 {
@@ -138,8 +137,8 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     const canvasViewPosition = this.computeCanvasViewPosition();
 
-    EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: canvasViewPosition.x, y: canvasViewPosition.y } as DamageEventData);
+    EventDispatcher.getInstance().emit(Events.Event.Damage, 
+      { damage: damage, x: canvasViewPosition.x, y: canvasViewPosition.y } as Events.Data.Damage);
     
     // enemey flash effect
     this.scene.tweens.add({
@@ -195,8 +194,8 @@ class Enemy extends Phaser.GameObjects.Sprite
     else if (this.updateState === EnemyUpdateState.FoundPlayer)
     {
       const canvasViewPosition = this.computeCanvasViewPosition();
-      EventDispatcher.getInstance().emit(Event.EnemyFoundPlayer, 
-        { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height } as EnemyFoundPlayerEventData);
+      EventDispatcher.getInstance().emit(Events.Event.EnemyFoundPlayer, 
+        { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height } as Events.Data.EnemyFoundPlayer);
       this.updateState = EnemyUpdateState.ChasePlayer;
       this.elapsedTime = 0;
     }

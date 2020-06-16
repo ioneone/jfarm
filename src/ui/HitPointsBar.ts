@@ -1,15 +1,14 @@
 import { UIAsset } from './../assets/UIAsset';
-import { PlayerHpChangeEventData } from '../events/Event';
 import EventDispatcher from '../events/EventDispatcher';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
-import { Event } from '../events/Event';
+import { Events } from "../events/Events";
 
 /**
  * UI for displaying the player's current hit points
  * @class
  * @classdesc
- * This class listens for {@link Event#PlayerHpChange} event and updates the 
+ * This class listens for {@link Events.Event#PlayerHpChange} event and updates the 
  * UI accordingly.
  */
 class HitPointsBar extends Phaser.GameObjects.Container
@@ -62,19 +61,19 @@ class HitPointsBar extends Phaser.GameObjects.Container
     this.add(this.heartSprites);
 
     // event handling
-    EventDispatcher.getInstance().on(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
+    EventDispatcher.getInstance().on(Events.Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
 
     // clean up listeners when removed
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off(Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
+      EventDispatcher.getInstance().off(Events.Event.PlayerHpChange, this.handlePlayerHpChangeEvent, this);
     });
   }
 
   /**
-   * Callback for receiving {@link Event#PlayerHpChange} event.
-   * @param {DamageEventData} data - the data associated with the event
+   * Callback for receiving {@link Events.Event#PlayerHpChange} event.
+   * @param {Events.Data.PlayerHpChange} data - the data associated with the event
    */
-  private handlePlayerHpChangeEvent(data: PlayerHpChangeEventData): void
+  private handlePlayerHpChangeEvent(data: Events.Data.PlayerHpChange): void
   {
 
     const currentHitPoints = data.currentHitPoints;

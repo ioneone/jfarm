@@ -1,11 +1,9 @@
-import { ItemSlotChangeEventData } from './../events/Event';
 import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
-import { PlayerHpChangeEventData, DamageEventData } from '../events/Event';
 import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event } from '../events/Event';
+import { Events } from '../events/Events';
 import Weapon from './Weapon';
 import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
@@ -113,11 +111,11 @@ class Player extends Phaser.GameObjects.Sprite
     this.getBody().setOffset(config.bodyOffsetX, config.bodyOffsetY);
 
     // initialize event handlings
-    EventDispatcher.getInstance().on(Event.ItemSlotChange, this.handleItemSlotChange, this);
+    EventDispatcher.getInstance().on(Events.Event.ItemSlotChange, this.handleItemSlotChange, this);
 
     // remove event listener when the scene is removed
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off(Event.ItemSlotChange, this.handleItemSlotChange, this);
+      EventDispatcher.getInstance().off(Events.Event.ItemSlotChange, this.handleItemSlotChange, this);
     });
 
   }
@@ -150,11 +148,11 @@ class Player extends Phaser.GameObjects.Sprite
     const canvasWidth = this.scene.cameras.main.width * this.scene.cameras.main.zoom;
     const canvasHeight = this.scene.cameras.main.height * this.scene.cameras.main.zoom;
 
-    EventDispatcher.getInstance().emit(Event.Damage, 
-      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as DamageEventData);
+    EventDispatcher.getInstance().emit(Events.Event.Damage, 
+      { damage: damage, x: ratioX * canvasWidth, y: ratioY * canvasHeight, color: 0xff0000 } as Events.Data.Damage);
     
-    EventDispatcher.getInstance().emit(Event.PlayerHpChange, 
-      { currentHitPoints: this.hitPoints } as PlayerHpChangeEventData);
+    EventDispatcher.getInstance().emit(Events.Event.PlayerHpChange, 
+      { currentHitPoints: this.hitPoints } as Events.Data.PlayerHpChange);
 
   }
 
@@ -301,10 +299,10 @@ class Player extends Phaser.GameObjects.Sprite
   }
 
   /**
-   * Callback for {@link Event#ItemSlotChange} event.
-   * @param {ItemSlotChangeEventData} data - the data associated with this event
+   * Callback for {@link Events.Event#ItemSlotChange} event.
+   * @param {Events.Data.ItemSlotChange} data - the data associated with this event
    */
-  private handleItemSlotChange(data: ItemSlotChangeEventData): void
+  private handleItemSlotChange(data: Events.Data.ItemSlotChange): void
   {
     if (data.currentWeaponAsset)
     {

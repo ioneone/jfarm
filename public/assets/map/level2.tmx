@@ -407,16 +407,16 @@
   </tile>
  </tileset>
  <tileset firstgid="79" name="orc_warrior" tilewidth="16" tileheight="20" tilecount="8" columns="4">
-  <image source="../enemies/orc_warrior.png" width="64" height="40"/>
+  <image source="../enemies/orc_warrior/orc_warrior.png" width="64" height="40"/>
  </tileset>
  <tileset firstgid="87" name="ice_zombie" tilewidth="16" tileheight="16" tilecount="8" columns="4">
-  <image source="../enemies/ice_zombie.png" width="64" height="32"/>
+  <image source="../enemies/ice_zombie/ice_zombie.png" width="64" height="32"/>
  </tileset>
  <tileset firstgid="95" name="chort" tilewidth="16" tileheight="24" tilecount="8" columns="4">
-  <image source="../enemies/chort.png" width="64" height="48"/>
+  <image source="../enemies/chort/chort.png" width="64" height="48"/>
  </tileset>
  <tileset firstgid="103" name="elf_m" tilewidth="16" tileheight="28" tilecount="12" columns="4">
-  <image source="../players/elf_m.png" width="64" height="84"/>
+  <image source="../players/elf_m/elf_m.png" width="64" height="84"/>
  </tileset>
  <objectgroup id="4" name="TransitionLayer"/>
  <layer id="2" name="BottomLayer" width="64" height="64">
@@ -556,7 +556,6 @@
 </data>
  </layer>
  <objectgroup id="5" name="ObjectLayer">
-  <object id="6" name="Player" gid="103" x="128.142" y="906.576" width="16" height="28"/>
   <object id="7" name="Chort" gid="95" x="289.899" y="862.364" width="16" height="24"/>
   <object id="12" name="Chort" gid="95" x="239.368" y="798.59" width="16" height="24"/>
   <object id="14" name="IceZombie" gid="87" x="143.841" y="601.496" width="16" height="16"/>

@@ -1,23 +1,18 @@
-import { FontAsset } from './../assets/FontAsset';
-import { AudioAsset } from './../assets/AudioAsset';
-import { WeaponAsset } from '~/assets/WeaponAsset';
-import { PlayerAsset } from './../assets/PlayerAsset';
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
-import TilemapScene from './TilemapScene';
-import PlayerFactory from '~/factory/PlayerFactory';
-import Player from '~/objects/Player';
+import { FontAsset } from '../assets/FontAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { PlayerAsset } from '../assets/PlayerAsset';
+import { SceneTransitionData } from '../objects/SceneTransitionObject';
+import PlayerScene from './PlayerScene';
 
-class BaseCampScene extends TilemapScene
+class BasecampScene extends PlayerScene
 {
 
-  public static readonly KEY = "BaseCampScene";
-
-  // the player to control
-  protected player?: Player;
+  public static readonly KEY = "BasecampScene";
 
   constructor()
   {
-    super(BaseCampScene.KEY);
+    super(BasecampScene.KEY);
   }
 
   /**
@@ -44,33 +39,11 @@ class BaseCampScene extends TilemapScene
    * The data is passed when the scene is started/launched by the scene manager.
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
-   * @param {any} data - the data being passed when the scene manager starts this scene
+   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
    */
-  public create(data: any)
+  public create(data: SceneTransitionData)
   {
     super.create(data);
-
-    // add player to the scene
-    this.player = PlayerFactory.create(this, 100, 100, PlayerAsset.ElfMale);
-    this.player.setAttackEnabled(false);
-
-    // add collision detection between player and collidable layer
-    this.physics.add.collider(this.player!, this.middleLayer!);
-    this.physics.add.collider(this.player!, this.bottomLayer!);
-
-    // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, true, 0.1, 0.1);
-    
-    // Bring top layer to the front.
-    // Depth is 0 (unsorted) by default, which perform the rendering 
-    // in the order it was added to the scene.
-    this.topLayer?.setDepth(1);
-
-    // need at least one light source
-    this.light = this.lights.addLight(0, 0, 0);
-
-    this.lights.enable().setAmbientColor(0xffffff);
-
   }
 
   /**
@@ -81,7 +54,6 @@ class BaseCampScene extends TilemapScene
   public update(time: number, delta: number)
   {
     super.update(time, delta);
-    this.player?.update();
   }
 
   /**
@@ -110,4 +82,4 @@ class BaseCampScene extends TilemapScene
   }
 }
 
-export default BaseCampScene;
+export default BasecampScene;

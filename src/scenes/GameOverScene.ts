@@ -1,9 +1,9 @@
-import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import { FontAsset, FontAssetData } from '../assets/FontAsset';
+import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
 import BaseScene from './BaseScene';
+import LevelSceneTransitionObject, { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
 
 /**
  * The scene the player sees when died. 
@@ -83,14 +83,16 @@ class GameOverScene extends BaseScene
   {
     if (Phaser.Input.Keyboard.JustDown(this.keyEnter!))
     {
-      this.scene.start(LevelScene.KEY, {
+      const levelSceneTranstionData: LevelSceneTransitionData = {
         destinationScene: LevelScene.KEY,
-        destinationXInTiles: 9,
-        destinationYInTiles: 16,
+        destinationX: 168,
+        destinationY: 263,
         destinationLevel: 1,
         tilemapFileNamePrefix: "level",
-        tilesetFileName: "tiles"
-      } as SceneTransitionData);
+        tilesetFileName: "tiles",
+        isDark: true
+      };
+      this.scene.start(LevelScene.KEY, levelSceneTranstionData);
       this.scene.start(UIScene.KEY);
     }
   }

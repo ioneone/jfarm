@@ -8,11 +8,9 @@ import { TiledTransitionObject } from '../scenes/TilemapScene';
 export interface SceneTransitionData
 {
   destinationScene: string;
-  destinationXInTiles: number;
-  destinationYInTiles: number;
-  destinationLevel: number;
-  tilemapFileNamePrefix: string;
-  tilesetFileName: string;
+  destinationX: number;
+  destinationY: number;
+  isDark: boolean;
 }
 
 /**
@@ -25,22 +23,15 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 {
 
   // the id of the scene to transition into
-  private destinationScene?: string;
+  protected destinationScene?: string;
 
   // the x coordinate in tiles to spawn the player in the next scene
-  private destinationXInTiles?: number;
+  protected destinationX?: number;
 
   // the y coordinate in tiles to spawn the player in the next scene
-  private destinationYInTiles?: number;
+  protected destinationY?: number;
 
-  // the level of the dungeon in the next scene
-  private destinationLevel?: number
-
-  // file name prefix for the tilemap
-  private tilemapFileNamePrefix?: string;
-
-  // file name of the tileset for the tilemap
-  private tilesetFileName?: string;
+  protected isDark?: boolean;
 
   /**
    * @param {Phaser.Scene} scene - The scene this object belongs to
@@ -49,52 +40,43 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   constructor(scene: Phaser.Scene, tiledTransitionObject: TiledTransitionObject)
   {
     super(scene, tiledTransitionObject.x, tiledTransitionObject.y);
-    tiledTransitionObject.properties.forEach(property =>{
-      if (property.name === "DestinationLevel")
-      {
-        this.destinationLevel = property.value as number;
-      }
-      else if (property.name === "DestinationScene")
+    this.setOrigin(0);
+    this.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
+
+    tiledTransitionObject.properties.forEach(property => {
+      if (property.name === "DestinationScene")
       {
         this.destinationScene = property.value as string;
       }
-      else if (property.name === "DestinationXInTiles")
+      else if (property.name === "DestinationX")
       {
-        this.destinationXInTiles = property.value as number;
+        this.destinationX = property.value as number;
       }
-      else if (property.name === "DestinationYInTiles")
+      else if (property.name === "DestinationY")
       {
-        this.destinationYInTiles = property.value as number;
+        this.destinationY = property.value as number;
       }
-      else if (property.name === "TilemapFileNamePrefix")
+      else if (property.name === "IsDark")
       {
-        this.tilemapFileNamePrefix = property.value as string;
-      }
-      else if (property.name === "TilesetFileName")
-      {
-        this.tilesetFileName = property.value as string;
+        this.isDark = property.value as boolean;
       }
     });
-    this.setOrigin(0);
-    this.setSize(tiledTransitionObject.width, tiledTransitionObject.height);
   }
 
   /**
    * Get the data needed for starting next scene
    * @return {SceneTransitionData} - the data representation of this object
    */
-  public toData(): SceneTransitionData
+  public toSceneTransitionData(): SceneTransitionData
   {
     return {
-      destinationScene: this.destinationScene || "",
-      destinationXInTiles: this.destinationXInTiles || 0,
-      destinationYInTiles: this.destinationYInTiles || 0,
-      destinationLevel: this.destinationLevel || 0,
-      tilemapFileNamePrefix: this.tilemapFileNamePrefix || "",
-      tilesetFileName: this.tilesetFileName || ""
+      destinationScene: this.destinationScene!,
+      destinationX: this.destinationX!,
+      destinationY: this.destinationY!,
+      isDark: this.isDark!
     };
   }
-
+  
 }
 
 export default SceneTransitionObject;

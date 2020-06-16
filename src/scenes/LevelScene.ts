@@ -1,16 +1,15 @@
 import { AudioAsset } from './../assets/AudioAsset';
-import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import Weapon from '../objects/Weapon';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import { PlayerAsset } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import TilemapScene, { TileLayer } from './TilemapScene';
-import Player from '../objects/Player';
-import SceneTransitionObject from '../objects/SceneTransitionObject';
 import Enemy, { EnemyUpdateState } from '../objects/Enemy';
-import PlayerFactory from '../factory/PlayerFactory';
 import EnemyFactory from '../factory/EnemyFactory';
+import PlayerScene from './PlayerScene';
+import { LevelSceneTransitionData } from '~/objects/LevelSceneTransitionObject';
+import CombatScene from './CombatScene';
 
 /**
  * The scene for the dugeon.
@@ -20,24 +19,15 @@ import EnemyFactory from '../factory/EnemyFactory';
  * exported from Tiled program has all the properties specified in {@link SceneTransitionData}.
  * Then it automatically takes care of loading the next level scene.
  */
-class LevelScene extends TilemapScene
+class LevelScene extends CombatScene
 {
 
   // the unique id of this scene
   public static readonly KEY = "LevelScene";
 
-  // the player to control
-  protected player?: Player;
-
-  // the group of enemies in the scene
-  protected enemies?: Phaser.GameObjects.Group;
-
-  protected bright: boolean;
-
   constructor()
   {
     super(LevelScene.KEY);
-    this.bright = false;
   }
 
   /**
@@ -47,12 +37,11 @@ class LevelScene extends TilemapScene
    * The data is passed when the scene is started/launched by the scene manager.
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
-   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @param {LevelSceneTransitionData} data - the data being passed when the scene manager starts this scene
    */
-  public init(data: any)
+  public init(data: LevelSceneTransitionData)
   {
     super.init(data);  
-    this.bright = false;
   }
  
   /**
@@ -83,92 +72,11 @@ class LevelScene extends TilemapScene
    * The data is passed when the scene is started/launched by the scene manager.
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
-   * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @param {LevelSceneTransitionData} data - the data being passed when the scene manager starts this scene
    */
-  public create(data: SceneTransitionData)
+  public create(data: LevelSceneTransitionData)
   {
     super.create(data);
-
-    // add player to the scene
-    this.player = PlayerFactory.create(this, 
-      data.destinationXInTiles * 16, data.destinationYInTiles * 16, 
-      PlayerAsset.ElfMale);
-
-    // add enemies to the scene
-    this.enemies = this.add.group();
-    this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(object => {
-      if (object.name === "OrcWarrior")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.OrcWarrior));
-      }
-      else if (object.name === "IceZombie")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.IceZombie));
-      }
-      else if (object.name === "Chort")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.Chort));
-      }
-    });
-
-    // add collision detection between player and collidable layer
-    this.physics.add.collider(this.player!, this.middleLayer!);
-    this.physics.add.collider(this.player!, this.bottomLayer!);
-    
-    // add collision detection between enemy and collidable layer
-    this.physics.add.collider(this.enemies!, this.middleLayer!);
-    this.physics.add.collider(this.enemies!, this.bottomLayer!);
- 
-    // add collision detection between player and enemy
-    this.physics.add.collider(this.player!, this.enemies!, (_, object2) => {
-      const enemy = object2 as Enemy;
-      enemy.setUpdateState(EnemyUpdateState.AttackPlayer);
-      // prevent enemy from pushing the player
-      enemy.getBody().setVelocity(0, 0);
-    });
-
-    // add overlap detection between player attack and enemy
-    this.physics.add.overlap(this.player.getWeapon(), this.enemies, (object1, object2) => {
-      const weapon = object1 as Weapon;
-      const enemy = object2 as Enemy;
-      const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
-      enemy.knockBack(knockBackVelocity);
-      enemy.receiveDamage(weapon.getModel().power);
-      this.sound.play(AudioAsset.EnemyHit);
-      this.cameras.main.shake(100, 0.001);
-    }, (object1, object2) => {
-      const weapon = object1 as Weapon;
-      const enemy = object2 as Enemy;
-      return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
-    });
-
-    // add overlap detection between player and transition objects
-    this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
-      const player = object1 as Player;
-      player.getBody().setEnable(false);
-      const nextSceneTransitionData = (object2 as SceneTransitionObject).toData();
-      this.sound.play(AudioAsset.ThreeFootSteps);
-      this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
-        if (progress === 1)
-        {
-          this.scene.start(nextSceneTransitionData.destinationScene, nextSceneTransitionData);
-        }
-      });
-    });
-
-    // configure the camera to follow the player
-    this.cameras.main.startFollow(this.player!, true, 0.1, 0.1);
-    
-    // Bring top layer to the front.
-    // Depth is 0 (unsorted) by default, which perform the rendering 
-    // in the order it was added to the scene.
-    this.topLayer?.setDepth(1);
-
-    // lights
-    this.light = this.lights.addLight(0, 0, 150);
-
-    this.lights.enable().setAmbientColor(0x404040);
-
   }
 
   /**
@@ -179,10 +87,6 @@ class LevelScene extends TilemapScene
   public update(time: number, delta: number)
   {
     super.update(time, delta);
-    this.player?.update();
-    this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
-    this.light.x = this.player?.x;
-    this.light.y = this.player.y;
   }
 
   /**
@@ -190,10 +94,10 @@ class LevelScene extends TilemapScene
    * file path excluding the extension. If your tile map is located at 
    * `path/to/tile/map/foo.json`, then the key should be `path/to/tile/map/foo`.
    * @override
-   * @param {SceneTransitionData} data - the data the scene received for initialization
+   * @param {LevelSceneTransitionData} data - the data the scene received for initialization
    * @return {string} - the tile map key
    */
-  public getTilemapKey(data: SceneTransitionData): string
+  public getTilemapKey(data: LevelSceneTransitionData): string
   {
     return "assets/map/" + data.tilemapFileNamePrefix + data.destinationLevel!.toString();
   }
@@ -203,48 +107,14 @@ class LevelScene extends TilemapScene
    * file path excluding the extension. If your tile set is located at 
    * `path/to/tile/set/foo.png`, then the key should be `path/to/tile/set/foo`.
    * @override
-   * @param {SceneTransitionData} data - the data the scene received for initialization
+   * @param {LevelSceneTransitionData} data - the data the scene received for initialization
    * @return {string} - the tile set key
    */
-  public getTilesetKey(data: SceneTransitionData): string
+  public getTilesetKey(data: LevelSceneTransitionData): string
   {
     return "assets/map/" + data.tilesetFileName;
   }
   
-  /**
-   * The graphics shows useful information for debugging when the debug mode 
-   * is turned on.
-   * @override
-   */
-  protected toggleDebugMode(): void
-  {
-    super.toggleDebugMode();
-
-    // turn off the light
-    if (this.bright)
-    {
-      this.enemies?.getChildren().forEach(child => {
-        (child as Enemy).setPipeline('Light2D');
-      });
-      this.bottomLayer?.setPipeline('Light2D');
-      this.middleLayer?.setPipeline('Light2D');
-      this.topLayer?.setPipeline('Light2D');
-    }
-    // turn on the light
-    else
-    {
-      this.enemies?.getChildren().forEach(child => {
-        (child as Enemy).resetPipeline();
-      });
-      this.bottomLayer?.resetPipeline();
-      this.middleLayer?.resetPipeline();
-      this.topLayer?.resetPipeline();
-    }
-
-    this.bright = !this.bright;
-    
-  }
-
 }
 
 export default LevelScene;

@@ -4,10 +4,10 @@ import { WeaponAsset } from '../assets/WeaponAsset';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Event, DamageEventData, EnemyFoundPlayerEventData } from '../events/Event';
 import HitPointsBar from '../ui/HitPointsBar';
 import Inventory from '../ui/Inventory';
 import BaseScene from './BaseScene';
+import { Events } from '../events/Events';
 
 /**
  * The user interface scene.
@@ -109,13 +109,13 @@ class UIScene extends BaseScene
     );
 
     // listen for custom events
-    EventDispatcher.getInstance().on(Event.Damage, this.handleDamageEvent, this);
-    EventDispatcher.getInstance().on(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
+    EventDispatcher.getInstance().on(Events.Event.Damage, this.handleDamageEvent, this);
+    EventDispatcher.getInstance().on(Events.Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
  
     // clean up listeners when the scene is removed
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      EventDispatcher.getInstance().off(Event.Damage, this.handleDamageEvent, this);
-      EventDispatcher.getInstance().off(Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
+      EventDispatcher.getInstance().off(Events.Event.Damage, this.handleDamageEvent, this);
+      EventDispatcher.getInstance().off(Events.Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
     });
   }
 
@@ -132,9 +132,9 @@ class UIScene extends BaseScene
 
   /**
    * Callback for receiving {@link Event#Damage} event.
-   * @param {DamageEventData} data - the data associated with the event
+   * @param {Events.Data.Damage} data - the data associated with the event
    */
-  private handleDamageEvent(data: DamageEventData): void
+  private handleDamageEvent(data: Events.Data.Damage): void
   {
     const damageText = this.add.bitmapText(data.x, data.y, FontAsset.PressStart2P, data.damage.toString(), UIScene.DAMAGE_FONT_SIZE);
     
@@ -166,9 +166,9 @@ class UIScene extends BaseScene
 
   /**
    * Callback for receiving {@link Event#EnemyFoundPlayer} event.
-   * @param {EnemyFoundPlayerEventData} data - the data associated with the event
+   * @param {Events.Data.EnemyFoundPlayer} data - the data associated with the event
    */
-  private handleEnemyFoundPlayer(data: EnemyFoundPlayerEventData)
+  private handleEnemyFoundPlayer(data: Events.Data.EnemyFoundPlayer)
   {
     const notificationText = this.add.bitmapText(data.x, data.y - data.height, 
       FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);

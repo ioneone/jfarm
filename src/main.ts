@@ -3,7 +3,7 @@ import GameOverScene from './scenes/GameOverScene';
 import UIScene from './scenes/UIScene';
 import GameStartScene from './scenes/GameStartScene';
 import LevelScene from './scenes/LevelScene';
-import BaseCampScene from './scenes/BaseCampScene';
+import BasecampScene from './scenes/BasecampScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
@@ -30,7 +30,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   // GameStartScene is the scene the player sees when the game starts. 
   // UIScene should be on top of LevelScene.
-	scene: [GameStartScene, GameOverScene, BaseCampScene, LevelScene, UIScene]
+	scene: [GameStartScene, GameOverScene, BasecampScene, LevelScene, UIScene]
 }
 
 export default new Phaser.Game(config);

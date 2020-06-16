@@ -6,7 +6,7 @@ import ItemSlot from './ItemSlot';
  * UI for the player's inventory displayed at the bottom of {@link UIScene}.
  * @class
  * @classdesc
- * This class emits {@link Event#ItemSlotChange} event when the current item 
+ * This class emits {@link Events.Event#ItemSlotChange} event when the current item 
  * slot changes.
  */
 class Inventory extends Phaser.GameObjects.Container
