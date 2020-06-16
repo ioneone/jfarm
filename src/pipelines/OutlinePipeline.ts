@@ -4,9 +4,14 @@ import Phaser from 'phaser';
  * A pipeline for drawing image with outline.
  * @class 
  * @classdesc
+ * Modification of {@link Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline}. 
  * Use this pipeline to the NPC to indicate that the player can talk to the NPC.
  * 
  * @see {@link https://www.youtube.com/watch?time_continue=55&v=FvQFhkS90nI&feature=emb_title}
+ * @see {@link https://www.youtube.com/watch?v=vqDOirux0Es&t=782s}
+ * @see {@link https://webglfundamentals.org/webgl/lessons/webgl-image-processing.html}
+ * @see {@link https://www.daniel-buckley.com/blog/2017/12/6/dev-diary-research-report-2d-sprite-outline-shaders}
+ * @see {@link https://www.dynetisgames.com/2018/12/09/shaders-phaser-3/}
  */
 class OutlinePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
 {
@@ -54,7 +59,7 @@ class OutlinePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipelin
           float downAlpha = texture2D(uMainSampler, outTexCoord + vec2(0.0, -onePixel.y)).a;
           float rightAlpha = texture2D(uMainSampler, outTexCoord + vec2(onePixel.x, 0.0)).a;
 
-          if (texture.a == 0.0 && max(max(upAlpha, leftAlpha), max(downAlpha, rightAlpha)) == 1.0) 
+          if (texture.a == 0.0 && max(max(upAlpha, downAlpha), max(leftAlpha, rightAlpha)) == 1.0) 
           {
             color = vec4(1.0, 1.0, 1.0, 1.0);
           }

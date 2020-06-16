@@ -197,7 +197,7 @@ abstract class TilemapScene extends BaseScene
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene.
-    this.topLayer.setDepth(1);
+    this.topLayer.setDepth(999999);
 
     // create animated tiles
     // loop through every tile and check if its id is animated tile's id

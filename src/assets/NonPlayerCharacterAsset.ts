@@ -1,9 +1,17 @@
-enum NonPlayerCharacterAsset
+export enum NonPlayerCharacterAsset
 {
-  Male   = "assets/npcs/male",
-  Female = "assets/npcs/female",
-  King   = "assets/npcs/king",
-  Queen  = "assets/npcs/queen"
+  TownsfolkMale = "assets/npcs/townsfolk_m/townsfolk_m"
 }
 
-export default NonPlayerCharacterAsset;
+/**
+ * Common attributes for {@link NonPlayerCharacterAsset}
+ * @readonly
+ * @enum {string | number}
+ */
+export enum NonPlayerCharacterAssetData
+{
+  IdleAnimationPrefix   = "idle_",
+  RunAnimationPrefix    = "walk_",
+  IdleAnimationFrameEnd = 3,
+  RunAnimationFrameEnd  = 3
+}

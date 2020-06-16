@@ -1,4 +1,4 @@
-import NonPlayerCharacterAsset from '../assets/NonPlayerCharacterAsset';
+import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
 import NonPlayerCharacter from '../objects/NonPlayerCharacter';
@@ -9,11 +9,29 @@ class BasecampScene extends PlayerScene
   public static readonly KEY = "BasecampScene";
 
   // group npcs together for collision detection
-  protected npcs?: Phaser.GameObjects.Group;
+  protected npcGroup?: Phaser.GameObjects.Group;
+
+  protected npcs: NonPlayerCharacter[];
 
   constructor()
   {
     super(BasecampScene.KEY);
+    this.npcs = [];
+  }
+
+  /**
+   * Scenes can have a init method, which is always called before the Scenes
+   * preload method, allowing you to initialize data that the Scene may need.
+   * 
+   * The data is passed when the scene is started/launched by the scene manager.
+   * 
+   * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
+   * @param {any} data - the data being passed when the scene manager starts this scene
+   */
+  public init(data: any): void
+  {
+    super.init(data);
+    this.npcs = [];
   }
 
   /**
@@ -38,17 +56,17 @@ class BasecampScene extends PlayerScene
   {
     super.create(data);
 
-    this.npcs = this.add.group();
-    const npc = new NonPlayerCharacter(this, 100, 100, NonPlayerCharacterAsset.Male).setPipeline('Outline')
-    this.npcs.add(npc);
-
-    npc.pipeline.setFloat2('uTextureSize', npc.texture.getSourceImage().width, npc.texture.getSourceImage().height);
-    // this.npcs.add(new NonPlayerCharacter(this, 100, 200, NonPlayerCharacterAsset.Female).setPipeline('Outline'));
-    // this.npcs.add(new NonPlayerCharacter(this, 100, 400, NonPlayerCharacterAsset.King).setPipeline('Outline'));
-    // this.npcs.add(new NonPlayerCharacter(this, 200, 300, NonPlayerCharacterAsset.Queen).setPipeline('Outline'));
+    this.npcGroup = this.add.group();
+    this.npcs.push(new NonPlayerCharacter(this, 100, 100, NonPlayerCharacterAsset.TownsfolkMale));
+    this.npcs.push(new NonPlayerCharacter(this, 140, 100, NonPlayerCharacterAsset.TownsfolkMale));
+    this.npcs.push(new NonPlayerCharacter(this, 100, 140, NonPlayerCharacterAsset.TownsfolkMale));
+    this.npcs.push(new NonPlayerCharacter(this, 180, 180, NonPlayerCharacterAsset.TownsfolkMale));
+    this.npcGroup.addMultiple(this.npcs);
 
     // add collision detection between player and collidable layer
-    this.physics.add.collider(this.player!, this.npcs);
+    this.physics.add.collider(this.npcGroup!, this.middleLayer!);
+    this.physics.add.collider(this.npcGroup!, this.bottomLayer!);
+    
   }
 
   /**
@@ -59,6 +77,31 @@ class BasecampScene extends PlayerScene
   public update(time: number, delta: number)
   {
     super.update(time, delta);
+
+    const closestNPC = this.physics.closest(this.player, this.npcs) as NonPlayerCharacter;
+
+    if (this.player!.getCenter().distance(closestNPC.getCenter()) < 64)
+    {
+      if (this.player?.getClosestNPCInRange() !== closestNPC)
+      {
+        this.player?.getClosestNPCInRange()?.resetPipeline();
+        closestNPC.setOutlinePipeline();
+        this.player?.setClosestNPCInRange(closestNPC);
+      }
+    }
+    else
+    {
+      closestNPC.resetPipeline();
+      this.player?.setClosestNPCInRange(undefined);
+    }
+
+    this.player!.depth = this.player!.y + this.player!.height / 2;
+
+    this.npcs.forEach(npc => {
+      npc.depth = npc.y + npc.height / 2;
+      npc.update();
+    });
+
   }
 
   /**

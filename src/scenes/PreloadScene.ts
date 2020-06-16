@@ -6,9 +6,9 @@ import { WeaponAsset } from '../assets/WeaponAsset';
 import { UIAsset } from '../assets/UIAsset';
 import BaseScene from './BaseScene';
 import GameStartScene from './GameStartScene';
-import NonPlayerCharacterAsset from '~/assets/NonPlayerCharacterAsset';
-import GrayscalePipeline from '~/pipelines/GrayscalePipeline';
-import OutlinePipeline from '~/pipelines/OutlinePipeline';
+import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
+import GrayscalePipeline from '../pipelines/GrayscalePipeline';
+import OutlinePipeline from '../pipelines/OutlinePipeline';
 
 /**
  * This scenes preloads all the static assets needed for the game.
@@ -129,10 +129,7 @@ class PreloadScene extends BaseScene
     this.load.atlas(PlayerAsset.ElfMale);
 
     // load npc asset
-    this.load.image(NonPlayerCharacterAsset.Male);
-    this.load.image(NonPlayerCharacterAsset.Female);
-    this.load.image(NonPlayerCharacterAsset.King);
-    this.load.image(NonPlayerCharacterAsset.Queen);
+    this.load.atlas(NonPlayerCharacterAsset.TownsfolkMale);
 
     // load weapon asset
     this.load.image(WeaponAsset.RegularSword);

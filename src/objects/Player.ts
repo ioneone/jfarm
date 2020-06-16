@@ -8,6 +8,7 @@ import Weapon from './Weapon';
 import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
+import NonPlayerCharacter from './NonPlayerCharacter';
 
 export interface PlayerConfig
 {
@@ -60,6 +61,8 @@ class Player extends Phaser.GameObjects.Sprite
   private hitPoints: number; 
 
   private attackEnabled: boolean;
+
+  private closestNPCInRange?: NonPlayerCharacter;
 
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
@@ -228,9 +231,18 @@ class Player extends Phaser.GameObjects.Sprite
       this.getBody().setImmovable(false);
     }
 
-    if (this.weapon.active)
+    // if (this.attackEnabled && this.weapon.active)
+    // {
+    //   this.weapon.update(this);
+    // }
+
+    if (Phaser.Input.Keyboard.JustDown(this.keyJ))
     {
-      this.weapon.update(this);
+      if (this.closestNPCInRange)
+      {
+        console.log('talk');
+      }
+      
     }
     
   }
@@ -319,6 +331,15 @@ class Player extends Phaser.GameObjects.Sprite
     }
   }
   
+  public setClosestNPCInRange(npc: NonPlayerCharacter | undefined)
+  {
+    this.closestNPCInRange = npc;
+  }
+
+  public getClosestNPCInRange()
+  {
+    return this.closestNPCInRange;
+  }
 
 }
 
