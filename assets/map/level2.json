@@ -51,8 +51,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":128.141686667218,
-                 "y":906.576346933709
+                 "x":128.142,
+                 "y":906.576
                 }, 
                 {
                  "gid":95,
@@ -63,8 +63,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":289.898566542875,
-                 "y":862.363942409185
+                 "x":289.899,
+                 "y":862.364
                 }, 
                 {
                  "gid":95,
@@ -75,8 +75,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":239.367883062455,
-                 "y":798.589798630277
+                 "x":239.368,
+                 "y":798.59
                 }, 
                 {
                  "gid":87,
@@ -87,8 +87,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":143.840809817652,
-                 "y":601.496498647993
+                 "x":143.841,
+                 "y":601.496
                 }, 
                 {
                  "gid":87,
@@ -99,8 +99,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":175.734313249671,
-                 "y":573.016432087638
+                 "x":175.734,
+                 "y":573.016
                 }, 
                 {
                  "gid":79,
@@ -111,8 +111,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":511.309436316994,
-                 "y":683.230257228039
+                 "x":511.309,
+                 "y":683.23
                 }, 
                 {
                  "gid":79,
@@ -123,8 +123,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":656.910212854469,
-                 "y":668.776953477085
+                 "x":656.91,
+                 "y":668.777
                 }, 
                 {
                  "gid":95,
@@ -135,8 +135,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":751.897386119393,
-                 "y":780.484226582542
+                 "x":751.897,
+                 "y":780.484
                 }, 
                 {
                  "gid":87,
@@ -147,8 +147,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":783.790889551411,
-                 "y":651.363516605422
+                 "x":783.791,
+                 "y":651.364
                 }, 
                 {
                  "gid":79,
@@ -159,8 +159,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":414.935588989808,
-                 "y":473.949247729321
+                 "x":414.936,
+                 "y":473.949
                 }, 
                 {
                  "gid":87,
@@ -171,8 +171,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":545.282950842404,
-                 "y":392.748803993621
+                 "x":545.283,
+                 "y":392.749
                 }, 
                 {
                  "gid":95,
@@ -183,8 +183,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":560.536365527283,
-                 "y":203.627816681689
+                 "x":560.536,
+                 "y":203.628
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -956,7 +956,7 @@
         {
          "columns":4,
          "firstgid":79,
-         "image":"..\/enemies\/orc_warrior.png",
+         "image":"..\/enemies\/orc_warrior\/orc_warrior.png",
          "imageheight":40,
          "imagewidth":64,
          "margin":0,
@@ -969,7 +969,7 @@
         {
          "columns":4,
          "firstgid":87,
-         "image":"..\/enemies\/ice_zombie.png",
+         "image":"..\/enemies\/ice_zombie\/ice_zombie.png",
          "imageheight":32,
          "imagewidth":64,
          "margin":0,
@@ -982,7 +982,7 @@
         {
          "columns":4,
          "firstgid":95,
-         "image":"..\/enemies\/chort.png",
+         "image":"..\/enemies\/chort\/chort.png",
          "imageheight":48,
          "imagewidth":64,
          "margin":0,
@@ -995,7 +995,7 @@
         {
          "columns":4,
          "firstgid":103,
-         "image":"..\/players\/elf_m.png",
+         "image":"..\/players\/elf_m\/elf_m.png",
          "imageheight":84,
          "imagewidth":64,
          "margin":0,

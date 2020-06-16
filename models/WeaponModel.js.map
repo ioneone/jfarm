@@ -1,1 +1,0 @@
-{"version":3,"file":"WeaponModel.js","sourceRoot":"","sources":["../../../src/client/models/WeaponModel.ts"],"names":[],"mappings":";;AAEA;;;;;;;;GAQG;AACH,MAAM,WAAW;IASf;;;OAGG;IACH,YAAY,KAAkB,EAAE,KAAa;QAE3C,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IACrB,CAAC;CACF;AAED,kBAAe,WAAW,CAAC"}
