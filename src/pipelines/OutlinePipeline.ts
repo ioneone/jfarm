@@ -1,15 +1,14 @@
 import Phaser from 'phaser';
 
 /**
- * A pipeline for drawing a grayscaled image.
+ * A pipeline for drawing image with outline.
  * @class 
  * @classdesc
- * Modification of {@link Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline}.
+ * Use this pipeline to the NPC to indicate that the player can talk to the NPC.
  * 
- * @see {@link https://github.com/photonstorm/phaser/blob/v3.22.0/src/renderer/webgl/shaders/TextureTint-frag.js}
- * @see {@link https://www.dynetisgames.com/2018/12/09/shaders-phaser-3/}
+ * @see {@link https://www.youtube.com/watch?time_continue=55&v=FvQFhkS90nI&feature=emb_title}
  */
-class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
+class OutlinePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
 {
   /**
    * @param {Phaser.Game} game - the controller of the game instance
@@ -23,17 +22,18 @@ class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipel
         precision mediump float;
 
         uniform sampler2D uMainSampler;
+        uniform vec2 uTextureSize;
 
         varying vec2 outTexCoord;
         varying float outTintEffect;
         varying vec4 outTint;
-        
+
         void main(void) 
         {
           vec4 texture = texture2D(uMainSampler, outTexCoord);
           vec4 texel = vec4(outTint.rgb * outTint.a, outTint.a);
           vec4 color = texture;
-          
+
           if (outTintEffect == 0.0)
           {
             color = texture * texel;
@@ -48,13 +48,22 @@ class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipel
             color = texel;
           }
 
-          float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+          vec2 onePixel = vec2(1.0, 1.0) / uTextureSize;
+          float upAlpha = texture2D(uMainSampler, outTexCoord + vec2(0.0, onePixel.y)).a;
+          float leftAlpha = texture2D(uMainSampler, outTexCoord + vec2(-onePixel.x, 0.0)).a;
+          float downAlpha = texture2D(uMainSampler, outTexCoord + vec2(0.0, -onePixel.y)).a;
+          float rightAlpha = texture2D(uMainSampler, outTexCoord + vec2(onePixel.x, 0.0)).a;
 
-          gl_FragColor = vec4(vec3(gray), color.a);
+          if (texture.a == 0.0 && max(max(upAlpha, leftAlpha), max(downAlpha, rightAlpha)) == 1.0) 
+          {
+            color = vec4(1.0, 1.0, 1.0, 1.0);
+          }
+
+          gl_FragColor = color;
         }
       `
     });
   }
 }
 
-export default GrayscalePipeline;
+export default OutlinePipeline;

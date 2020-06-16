@@ -414,8 +414,9 @@
    <properties>
     <property name="DestinationLevel" type="int" value="2"/>
     <property name="DestinationScene" value="LevelScene"/>
-    <property name="DestinationX" type="float" value="135"/>
-    <property name="DestinationY" type="float" value="907"/>
+    <property name="DestinationX" type="float" value="166"/>
+    <property name="DestinationY" type="float" value="893"/>
+    <property name="IsDark" type="bool" value="true"/>
     <property name="TilemapFileNamePrefix" value="level"/>
     <property name="TilesetFileName" value="tiles"/>
    </properties>

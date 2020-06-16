@@ -3,7 +3,8 @@
     {
      "export":
         {
-         "format":"json"
+         "format":"json",
+         "target":"."
         }
     },
  "height":32,
@@ -32,12 +33,12 @@
                         {
                          "name":"DestinationX",
                          "type":"float",
-                         "value":135
+                         "value":166
                         }, 
                         {
                          "name":"DestinationY",
                          "type":"float",
-                         "value":907
+                         "value":893
                         }, 
                         {
                          "name":"IsDark",
@@ -80,11 +81,6 @@
                          "name":"DestinationY",
                          "type":"float",
                          "value":451
-                        }, 
-                        {
-                         "name":"IsDark",
-                         "type":"bool",
-                         "value":false
                         }],
                  "rotation":0,
                  "type":"",

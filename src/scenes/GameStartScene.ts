@@ -1,9 +1,11 @@
+import { SceneTransitionData } from './../objects/SceneTransitionObject';
 import { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import LevelScene from './LevelScene';
 import UIScene from './UIScene';
 import BaseScene from './BaseScene';
+import BasecampScene from './BasecampScene';
 
 /**
  * The first scene the player sees when they start the game.
@@ -61,7 +63,7 @@ class GameStartScene extends BaseScene
   public create(data: any): void
   {
     super.create(data);
-    
+
     this.keyEnter = this.input.keyboard.addKey('ENTER');
 
     const title = "SHINING SOUL J";
@@ -105,7 +107,14 @@ class GameStartScene extends BaseScene
         tilesetFileName: "tiles",
         isDark: true
       };
-      this.scene.start(LevelScene.KEY, levelSceneTranstionData);
+      const basecampSceneTransitionData: SceneTransitionData = {
+        destinationScene: BasecampScene.KEY,
+        destinationX: 168,
+        destinationY: 263,
+        isDark: false
+      };
+      // this.scene.start(LevelScene.KEY, levelSceneTranstionData);
+      this.scene.start(BasecampScene.KEY, basecampSceneTransitionData);
       this.scene.start(UIScene.KEY);
     }
   }

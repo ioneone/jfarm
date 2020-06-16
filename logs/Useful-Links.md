@@ -35,3 +35,5 @@ These are some useful links I haven't figured out where to put in the dev logs y
 - https://mazekin.itch.io/mazekin
 
 - https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
+
+- https://www.youtube.com/watch?v=oP2aj995Go4&list=PLokUXxE68Y2nQ5ufDEnEi4fqgSqY1mrxX&index=3

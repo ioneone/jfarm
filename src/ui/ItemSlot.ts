@@ -36,12 +36,6 @@ class ItemSlot extends Phaser.GameObjects.Container
     // add the container to the scene
     this.scene.add.existing(this);
 
-    // register a custom pipeline if webGL is enabled
-    if (this.scene.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)
-    {
-      this.scene.game.renderer.addPipeline('Grayscale', new GrayscalePipeline(this.scene.game));
-    }
-
     // initilaize memeber variables
     this.weaponAsset = weaponAsset;
     this.selected = false;

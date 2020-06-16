@@ -1,10 +1,15 @@
+import NonPlayerCharacterAsset from '../assets/NonPlayerCharacterAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
+import NonPlayerCharacter from '../objects/NonPlayerCharacter';
 
 class BasecampScene extends PlayerScene
 {
-  
+
   public static readonly KEY = "BasecampScene";
+
+  // group npcs together for collision detection
+  protected npcs?: Phaser.GameObjects.Group;
 
   constructor()
   {
@@ -32,6 +37,18 @@ class BasecampScene extends PlayerScene
   public create(data: SceneTransitionData)
   {
     super.create(data);
+
+    this.npcs = this.add.group();
+    const npc = new NonPlayerCharacter(this, 100, 100, NonPlayerCharacterAsset.Male).setPipeline('Outline')
+    this.npcs.add(npc);
+
+    npc.pipeline.setFloat2('uTextureSize', npc.texture.getSourceImage().width, npc.texture.getSourceImage().height);
+    // this.npcs.add(new NonPlayerCharacter(this, 100, 200, NonPlayerCharacterAsset.Female).setPipeline('Outline'));
+    // this.npcs.add(new NonPlayerCharacter(this, 100, 400, NonPlayerCharacterAsset.King).setPipeline('Outline'));
+    // this.npcs.add(new NonPlayerCharacter(this, 200, 300, NonPlayerCharacterAsset.Queen).setPipeline('Outline'));
+
+    // add collision detection between player and collidable layer
+    this.physics.add.collider(this.player!, this.npcs);
   }
 
   /**

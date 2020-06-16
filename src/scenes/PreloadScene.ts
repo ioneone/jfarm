@@ -1,11 +1,14 @@
-import { EnemyAsset } from './../assets/EnemyAsset';
-import { PlayerAsset } from './../assets/PlayerAsset';
-import { AudioAsset } from './../assets/AudioAsset';
-import { FontAsset } from './../assets/FontAsset';
-import { WeaponAsset } from './../assets/WeaponAsset';
-import { UIAsset } from './../assets/UIAsset';
+import { EnemyAsset } from '../assets/EnemyAsset';
+import { PlayerAsset } from '../assets/PlayerAsset';
+import { AudioAsset } from '../assets/AudioAsset';
+import { FontAsset } from '../assets/FontAsset';
+import { WeaponAsset } from '../assets/WeaponAsset';
+import { UIAsset } from '../assets/UIAsset';
 import BaseScene from './BaseScene';
 import GameStartScene from './GameStartScene';
+import NonPlayerCharacterAsset from '~/assets/NonPlayerCharacterAsset';
+import GrayscalePipeline from '~/pipelines/GrayscalePipeline';
+import OutlinePipeline from '~/pipelines/OutlinePipeline';
 
 /**
  * This scenes preloads all the static assets needed for the game.
@@ -125,6 +128,12 @@ class PreloadScene extends BaseScene
     this.load.atlas(PlayerAsset.ElfFemale);
     this.load.atlas(PlayerAsset.ElfMale);
 
+    // load npc asset
+    this.load.image(NonPlayerCharacterAsset.Male);
+    this.load.image(NonPlayerCharacterAsset.Female);
+    this.load.image(NonPlayerCharacterAsset.King);
+    this.load.image(NonPlayerCharacterAsset.Queen);
+
     // load weapon asset
     this.load.image(WeaponAsset.RegularSword);
     this.load.image(WeaponAsset.Axe);
@@ -157,6 +166,12 @@ class PreloadScene extends BaseScene
    */
   public create(data: any)
   {
+    // register custom pipelines if webGL is enabled
+    if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)
+    {
+      this.game.renderer.addPipeline('Grayscale', new GrayscalePipeline(this.game));
+      this.game.renderer.addPipeline('Outline', new OutlinePipeline(this.game));
+    }
   }
 
   /**
