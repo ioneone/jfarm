@@ -425,7 +425,7 @@
     <property name="DestinationX" type="float" value="250"/>
     <property name="DestinationY" type="float" value="451"/>
     <property name="TilemapKey" value="assets/map/basecamp"/>
-    <property name="TilesetKey" value="assets/map/tiles"/>
+    <property name="TilesetKey" value="assets/map/basecamp"/>
    </properties>
   </object>
  </objectgroup>
