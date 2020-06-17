@@ -418,7 +418,7 @@
  <objectgroup id="4" name="TransitionLayer">
   <object id="27" x="128" y="896" width="16" height="16">
    <properties>
-    <property name="DestinationScene" value="LevelScene"/>
+    <property name="DestinationScene" value="CombatScene"/>
     <property name="DestinationX" type="float" value="330"/>
     <property name="DestinationY" type="float" value="295"/>
     <property name="TilemapKey" value="assets/map/level1"/>

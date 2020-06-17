@@ -23,7 +23,7 @@
                         {
                          "name":"DestinationScene",
                          "type":"string",
-                         "value":"LevelScene"
+                         "value":"CombatScene"
                         }, 
                         {
                          "name":"DestinationX",
