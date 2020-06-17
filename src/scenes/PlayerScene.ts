@@ -86,7 +86,6 @@ abstract class PlayerScene extends TilemapScene
       player.getBody().setEnable(false);
       const sceneTranstionData = (object2 as SceneTransitionObject).getSceneTransitionData();
       this.sound.play(AudioAsset.ThreeFootSteps);
-      console.log(sceneTranstionData);
       this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
         if (progress === 1)
         {

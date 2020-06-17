@@ -25,7 +25,7 @@ class EnemyFactory
         knockBackDuration: 200,
         attackInterval: 800,
         vision: 64,
-        hitPoints: 100
+        maxHitPoints: 100
       });
     }
     else if (tiledObject.name === "IceZombie")
@@ -36,7 +36,7 @@ class EnemyFactory
         knockBackDuration: 200,
         attackInterval: 800,
         vision: 64,
-        hitPoints: 100
+        maxHitPoints: 100
       });
     }
     else if (tiledObject.name === "Chort")
@@ -47,7 +47,7 @@ class EnemyFactory
         knockBackDuration: 200,
         attackInterval: 800,
         vision: 64,
-        hitPoints: 100
+        maxHitPoints: 100
       });
     }
     
