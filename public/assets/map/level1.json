@@ -3,8 +3,7 @@
     {
      "export":
         {
-         "format":"json",
-         "target":"."
+         "format":"json"
         }
     },
  "height":32,
@@ -80,7 +79,7 @@
                         {
                          "name":"TilesetKey",
                          "type":"string",
-                         "value":"assets\/map\/tiles"
+                         "value":"assets\/map\/basecamp"
                         }],
                  "rotation":0,
                  "type":"",

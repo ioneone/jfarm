@@ -96,7 +96,7 @@ class SceneTransitionManager
       destinationX: 168,
       destinationY: 263,
       tilemapKey: "assets/map/basecamp",
-      tilesetKey: "assets/map/tiles"
+      tilesetKey: "assets/map/basecamp"
     };
 
     // this.scene.start(LevelScene.KEY, levelSceneTranstionData);
