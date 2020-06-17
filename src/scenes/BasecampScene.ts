@@ -1,9 +1,11 @@
+import { Events } from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
-import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
 import NonPlayerCharacter, { NonPlayerCharacterState } from '../objects/NonPlayerCharacter';
 import { PlayerState } from '~/objects/Player';
+import { TileLayer } from './TilemapScene';
+import NonPlayerCharacterFactory from '~/factory/NonPlayerCharacterFactory';
 
 class BasecampScene extends PlayerScene
 {
@@ -64,23 +66,16 @@ class BasecampScene extends PlayerScene
 
     this.player?.setAttackEnabled(false);
 
+    // add npcs to the scene
     this.npcGroup = this.add.group();
-    this.npcs.push(new NonPlayerCharacter(this, 100, 100, NonPlayerCharacterAsset.TownsfolkMale));
-    this.npcs.push(new NonPlayerCharacter(this, 140, 100, NonPlayerCharacterAsset.TownsfolkMale));
-    this.npcs.push(new NonPlayerCharacter(this, 100, 140, NonPlayerCharacterAsset.TownsfolkMale));
-    this.npcs.push(new NonPlayerCharacter(this, 180, 180, NonPlayerCharacterAsset.TownsfolkMale));
+    this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(tiledObject => {
+      this.npcs.push(NonPlayerCharacterFactory.create(this, tiledObject));
+    });
     this.npcGroup.addMultiple(this.npcs);
 
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.npcGroup!, this.middleLayer!);
     this.physics.add.collider(this.npcGroup!, this.bottomLayer!);
-
-    EventDispatcher.getInstance().on('dialogends', (data) => {
-      this.time.delayedCall(160, () => {
-        this.player?.setCurrentState(PlayerState.Default);
-        (data.npc as NonPlayerCharacter).setCurrentState(NonPlayerCharacterState.Default);
-      });
-    });
     
   }
 
@@ -107,7 +102,7 @@ class BasecampScene extends PlayerScene
         {
           this.player.setCurrentState(PlayerState.Talking);
           closestNPC.setCurrentState(NonPlayerCharacterState.Talking);
-          EventDispatcher.getInstance().emit('playertalkstonpc', { scene: this, player: this.player!, npc: closestNPC });
+          EventDispatcher.getInstance().emit(Events.Event.PlayerTalksToNPC, { scene: this, player: this.player!, npc: closestNPC });
         }
 
       }
@@ -125,30 +120,6 @@ class BasecampScene extends PlayerScene
 
   }
 
-  /**
-   * Get the unique key of the tile map. The `key` of a tile map is just its 
-   * file path excluding the extension. If your tile map is located at 
-   * `path/to/tile/map/foo.json`, then the key should be `path/to/tile/map/foo`.
-   * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - the tile map key
-   */
-  public getTilemapKey(data: SceneTransitionData): string
-  {
-    return "assets/map/basecamp";
-  }
-
-  /**
-   * Get the unique key of the tile set. The `key` of a tile set is just its 
-   * file path excluding the extension. If your tile set is located at 
-   * `path/to/tile/set/foo.png`, then the key should be `path/to/tile/set/foo`.
-   * The tile set normal map must be located at `path/to/tile/set/foo_n.png`.
-   * @param {SceneTransitionData} data - the data the scene received for initialization
-   * @return {string} - the tile set key
-   */
-  public getTilesetKey(data: SceneTransitionData): string
-  {
-    return "assets/map/tiles";
-  }
 }
 
 export default BasecampScene;

@@ -9,12 +9,13 @@ import BaseScene from "./BaseScene";
  * @classdesc
  * This class listens for {@link Events.Event} and play appropriate audio 
  * for that event. This scene acts as the central hub handling game audio so 
- * no other scene needs to worry about when to play sound effects or switching 
- * background music.
+ * no other scene needs to worry about what sound effect to player or when to 
+ * switch background music.
  */
 class AudioScene extends BaseScene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "AudioScene";
 
   /**
@@ -59,7 +60,8 @@ class AudioScene extends BaseScene
    */
   public create(data: any)
   {
-    const music = this.sound.add(AudioAsset.FieldsOfIce, { volume: 0.1, loop: true });
+    const music = this.sound.add(AudioAsset.FieldsOfIce, { volume: 0.4, loop: true });
+    const textAudio = this.sound.add(AudioAsset.Text, { volume: 0.2 });
     
     EventDispatcher.getInstance().on(Events.Event.StartGame, () => {
       music.play();
@@ -67,6 +69,17 @@ class AudioScene extends BaseScene
 
     EventDispatcher.getInstance().on(Events.Event.PlayerDies, () => {
       music.stop();
+    });
+    
+    EventDispatcher.getInstance().on(Events.Event.NPCTalking, () => {
+      if (!textAudio.isPlaying)
+      {
+        textAudio.play();
+      }
+    });
+
+    EventDispatcher.getInstance().on(Events.Event.NPCStopsTalking, () => {
+      textAudio.stop();
     });
 
   }
@@ -79,6 +92,7 @@ class AudioScene extends BaseScene
   public update(time: number, delta: number)
   {
   }
+
 }
 
 export default AudioScene;

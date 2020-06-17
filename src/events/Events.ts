@@ -1,5 +1,7 @@
+import NonPlayerCharacter from '../objects/NonPlayerCharacter';
 import Phaser from 'phaser';
 import { WeaponAsset } from '../assets/WeaponAsset';
+import Player from '../objects/Player';
 
 export namespace Events
 {
@@ -26,7 +28,15 @@ export namespace Events
     // when preload scene preloaded all the assets
     PreloadComplete = "preloadcomplete",
     // when the player's hp is 0
-    PlayerDies = "playerdies"
+    PlayerDies = "playerdies",
+    // when the player initiates the conversation with a npc
+    PlayerTalksToNPC = 'playertalkstonpc',
+    // when the player finishes conversation with a npc
+    DialogEnds = 'dialogends',
+    // when the npc talks and thus the text is animating
+    NPCTalking = 'npctalking',
+    // when the npc stops talking and thus the text is not animating
+    NPCStopsTalking = 'npcstopstalking'
   }
 
   /**
@@ -108,6 +118,26 @@ export namespace Events
      * @interface
      */
     export interface PlayerDies
+    {
+      scene: Phaser.Scene
+    }
+
+    /**
+     * Data type to be sent when {@link Events.Event#PlayerTalksToNPC} is fired.
+     * @interface
+     */
+    export interface PlayerTalksToNPC
+    {
+      scene: Phaser.Scene,
+      player: Player,
+      npc: NonPlayerCharacter
+    }
+
+    /**
+     * Data type to be sent when {@link Events.Event#DialogEnds} is fired.
+     * @interface
+     */
+    export interface DialogEnds
     {
       scene: Phaser.Scene
     }

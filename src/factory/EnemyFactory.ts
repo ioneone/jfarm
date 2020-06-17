@@ -5,7 +5,7 @@ import Enemy from "../objects/Enemy";
  * A factory for {@link Enemy}.
  * @class
  * @classdesc
- * Create a {@link Enemy} from {@link EnemyAsset} with `create()`. This 
+ * Create a {@link Enemy} from {@link Phaser.Types.Tilemaps.TiledObject} with `create()`. This 
  * makes the construction of enemy easy without worry about what {@link EnemyConfig} 
  * to pass in.
  */
@@ -15,12 +15,12 @@ class EnemyFactory
    * Constructs enemy
    * @param {EnemyAsset} asset - the asset to create the enemy from
    */
-  public static create(scene: Phaser.Scene, x: number, y: number, asset: EnemyAsset): Enemy
+  public static create(scene: Phaser.Scene, tiledObject: Phaser.Types.Tilemaps.TiledObject): Enemy
   {
-    if (asset === EnemyAsset.OrcWarrior)
+    if (tiledObject.name === "OrcWarrior")
     {
-      return new Enemy(scene, x, y, {
-        asset: asset,
+      return new Enemy(scene, tiledObject.x!, tiledObject.y!, {
+        asset: EnemyAsset.OrcWarrior,
         attackDamage: 1,
         knockBackDuration: 200,
         attackInterval: 800,
@@ -28,10 +28,10 @@ class EnemyFactory
         hitPoints: 100
       });
     }
-    else if (asset === EnemyAsset.IceZombie)
+    else if (tiledObject.name === "IceZombie")
     {
-      return new Enemy(scene, x, y, {
-        asset: asset,
+      return new Enemy(scene, tiledObject.x!, tiledObject.y!, {
+        asset: EnemyAsset.IceZombie,
         attackDamage: 1,
         knockBackDuration: 200,
         attackInterval: 800,
@@ -39,10 +39,10 @@ class EnemyFactory
         hitPoints: 100
       });
     }
-    else if (asset === EnemyAsset.Chort)
+    else if (tiledObject.name === "Chort")
     {
-      return new Enemy(scene, x, y, {
-        asset: asset,
+      return new Enemy(scene, tiledObject.x!, tiledObject.y!, {
+        asset: EnemyAsset.Chort,
         attackDamage: 1,
         knockBackDuration: 200,
         attackInterval: 800,
@@ -50,10 +50,9 @@ class EnemyFactory
         hitPoints: 100
       });
     }
-    else
-    {
-      throw new Error(`Failed to create enemy from asset ${asset}`)
-    }
+    
+    throw new Error(`Failed to create enemy from tiled object ${tiledObject}`)
+
   }
 }
 

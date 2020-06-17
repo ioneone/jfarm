@@ -5,11 +5,10 @@ import BaseScene from './BaseScene';
 import EventDispatcher from '../events/EventDispatcher';
 
 /**
- * The first scene the player sees when they start the game.
+ * The scene that shows game title.
  * @class
  * @classdesc
- * It displays the title of the game. This should be the first item in the 
- * game config's scene list.
+ * This scene promps the player to start the game.
  */
 class GameStartScene extends BaseScene
 {
@@ -17,13 +16,14 @@ class GameStartScene extends BaseScene
   // the unique id of this scene
   public static readonly KEY = "GameStartScene";
 
-  // how often the helper text `press Enter to start` blinks
+  // how often the helper text `press Enter to start` blinks in ms
   private static readonly BLINK_INTERVAL_IN_MS = 600;
 
   // reference to the ENTER key for starting the game
   private keyEnter?: Phaser.Input.Keyboard.Key;
 
-  // elapsed time since the helper text's visibility changed
+  // Elapsed time since the helper text's visibility changed.
+  // This is used to check when to blink the helper text.
   private elapsedTime: number;
 
   // the helper text that prompts the user to press enter to start the game

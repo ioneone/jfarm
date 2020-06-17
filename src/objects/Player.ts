@@ -5,16 +5,13 @@ import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import Weapon from './Weapon';
-import UIScene from '../scenes/UIScene';
-import GameOverScene from '../scenes/GameOverScene';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
-import NonPlayerCharacter, { NonPlayerCharacterState } from './NonPlayerCharacter';
-import AudioScene from '~/scenes/AudioScene';
 
 export enum PlayerState
 {
   Default,
-  Talking
+  Talking,
+  FinishTalking
 }
 
 export interface PlayerConfig
@@ -72,6 +69,9 @@ class Player extends Phaser.GameObjects.Sprite
   // change update behavior based on current state
   private currentState: PlayerState;
 
+  // the time elapsed since current state has been set
+  private elapsedTime: number;
+
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
     super(scene, x, y, config.asset);
@@ -82,6 +82,7 @@ class Player extends Phaser.GameObjects.Sprite
     this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
     this.attackEnabled = true;
     this.currentState = PlayerState.Default;
+    this.elapsedTime = 0;
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -170,7 +171,7 @@ class Player extends Phaser.GameObjects.Sprite
   /**
    * This should be called every frame.
    */
-  public update(): void
+  public update(delta: number): void
   {
     
     if (this.currentState === PlayerState.Default)
@@ -221,6 +222,13 @@ class Player extends Phaser.GameObjects.Sprite
     {
       this.getBody().setVelocity(0, 0);
     }
+    else if (this.currentState === PlayerState.FinishTalking)
+    {
+      if (this.elapsedTime > 200)
+      {
+        this.currentState = PlayerState.Default;
+      }
+    }
 
     // update flip x
     if (this.getBody().velocity.x > 0)
@@ -247,6 +255,8 @@ class Player extends Phaser.GameObjects.Sprite
     }
 
     this.weapon.update(this, this.attackEnabled);
+
+    this.elapsedTime += delta;
 
   }
 
@@ -335,6 +345,7 @@ class Player extends Phaser.GameObjects.Sprite
   public setCurrentState(state: PlayerState)
   {
     this.currentState = state;
+    this.elapsedTime = 0;
   }
 
   public getCurrentState()

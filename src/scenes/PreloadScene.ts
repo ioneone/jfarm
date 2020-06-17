@@ -1,4 +1,3 @@
-import { FontAsset } from './../assets/FontAsset';
 import { Events } from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
 import { AudioAsset } from './../assets/AudioAsset';
@@ -11,7 +10,7 @@ import BaseScene from './BaseScene';
 import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import OutlinePipeline from '../pipelines/OutlinePipeline';
-import SceneManager from '../manager/SceneManager';
+import SceneTransitionManager from '../manager/SceneTransitionManager';
 
 /**
  * This scenes preloads all the static assets needed for the game.
@@ -25,14 +24,19 @@ import SceneManager from '../manager/SceneManager';
 class PreloadScene extends BaseScene
 {
 
+  // the unique id of this scene
   public static readonly KEY = "PreloadScene";
 
+  // the progress bar to show how much of the assets have been loaded
   private progressBar?: Phaser.GameObjects.Graphics;
 
+  // the percentage of the assets that have been loaded out of all the assets
   private percentText?: Phaser.GameObjects.Text;
 
+  // the text that shows the asset currently loading
   private assetText?: Phaser.GameObjects.Text; 
 
+  // whether all the assets has been loaded and is ready to go to next scene
   private ready: boolean;
 
   /**
@@ -62,11 +66,11 @@ class PreloadScene extends BaseScene
     // register custom pipelines if webGL is enabled
     if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)
     {
-      this.game.renderer.addPipeline('Grayscale', new GrayscalePipeline(this.game));
-      this.game.renderer.addPipeline('Outline', new OutlinePipeline(this.game));
+      this.game.renderer.addPipeline(GrayscalePipeline.KEY, new GrayscalePipeline(this.game));
+      this.game.renderer.addPipeline(OutlinePipeline.KEY, new OutlinePipeline(this.game));
     }
 
-    SceneManager.getInstance().init();
+    SceneTransitionManager.getInstance().init();
   }
 
   /**
@@ -75,66 +79,8 @@ class PreloadScene extends BaseScene
    */
   public preload()
   {
-    // setup loading ui
-    const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
-    const centerX = this.cameras.main.centerX;
-    const centerY = this.cameras.main.centerY;
-    const spacingBetweenProgressBarAndBox = 10;
-    const progressBoxWidth = 320;
-    const progressBoxHeight = 50;
-
-    this.load.on('progress', (value) => {
-      this.progressBar?.clear();
-      this.progressBar?.fillStyle(0xffffff, 1);
-      this.progressBar?.fillRect(
-        centerX + spacingBetweenProgressBarAndBox - progressBoxWidth / 2, 
-        centerY + spacingBetweenProgressBarAndBox, 
-        (progressBoxWidth - spacingBetweenProgressBarAndBox * 2) * value, 
-        progressBoxHeight - spacingBetweenProgressBarAndBox * 2
-      );
-      this.percentText?.setText(Math.floor(value * 100).toString() + '%');
-    });
-                
-    this.load.on('fileprogress', (file) => {
-      this.assetText?.setText('Loading asset: ' + file.key);
-    });
-    
-    this.load.on('complete', () => {
-      this.ready = true;
-    });
-
-    this.progressBar = this.add.graphics();
-    const progressBox = this.add.graphics();
-
-    // Draw progress box roughly around the center.
-    // Top left corner of the box is located at center vertically.
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(centerX - progressBoxWidth / 2, centerY, 
-      progressBoxWidth, progressBoxHeight);
-    
-    // draw loading text just above progress box
-    const loadingText = this.make.text({
-      x: width / 2,
-      y: 0,
-      text: 'Loading...'
-    }).setOrigin(0.5, 0.5);
-    loadingText.setY(centerY - loadingText.height);
-
-    // draw percent text at the center of the progress box
-    this.percentText = this.make.text({
-      x: width / 2,
-      y: height / 2 + progressBoxHeight / 2,
-      text: '0%'
-    }).setOrigin(0.5, 0.5);
-
-    // draw asset text just below progress box
-    this.assetText = this.make.text({
-      x: width / 2,
-      y: 0,
-      text: ''
-    }).setOrigin(0.5, 0.5);
-    this.assetText.setY(centerY + progressBoxHeight + this.assetText.height);
+    // setup asset loading progress bar
+    this.setUpProgressUI();
 
     // load ui asset
     this.load.image(UIAsset.ItemSlotBordered);
@@ -170,7 +116,6 @@ class PreloadScene extends BaseScene
 
     // load font asset
     this.load.bitmapFont(FontAsset.PressStart2P);
-    // this.game.cache.bitmapFont.get(FontAsset.PressStart2P).font.lineHeight = 10;
   }
 
   /**
@@ -197,6 +142,73 @@ class PreloadScene extends BaseScene
     {
       EventDispatcher.getInstance().emit(Events.Event.PreloadComplete, { scene: this });
     }
+  }
+
+  private setUpProgressUI()
+  {
+    // constants for ui
+    const width = this.cameras.main.width;
+    const height = this.cameras.main.height;
+    const centerX = this.cameras.main.centerX;
+    const centerY = this.cameras.main.centerY;
+    const spacingBetweenProgressBarAndBox = 10;
+    const progressBoxWidth = 320;
+    const progressBoxHeight = 50;
+
+    // when the current file's loading progress changes
+    this.load.on('progress', (value) => {
+      this.progressBar?.clear();
+      this.progressBar?.fillStyle(0xffffff, 1);
+      this.progressBar?.fillRect(
+        centerX + spacingBetweenProgressBarAndBox - progressBoxWidth / 2, 
+        centerY + spacingBetweenProgressBarAndBox, 
+        (progressBoxWidth - spacingBetweenProgressBarAndBox * 2) * value, 
+        progressBoxHeight - spacingBetweenProgressBarAndBox * 2
+      );
+      this.percentText?.setText(Math.floor(value * 100).toString() + '%');
+    });
+                
+    // when the file to load has changed
+    this.load.on('fileprogress', (file) => {
+      this.assetText?.setText('Loading asset: ' + file.key);
+    });
+    
+    // when all the assets are loaded
+    this.load.on('complete', () => {
+      this.ready = true;
+    });
+
+    this.progressBar = this.add.graphics();
+    const progressBox = this.add.graphics();
+
+    // Draw progress box roughly around the center.
+    // Top left corner of the box is located at center vertically.
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(centerX - progressBoxWidth / 2, centerY, 
+      progressBoxWidth, progressBoxHeight);
+    
+    // draw loading text just above progress box
+    const loadingText = this.make.text({
+      x: width / 2,
+      y: 0,
+      text: 'Loading...'
+    }).setOrigin(0.5, 0.5);
+    loadingText.setY(centerY - loadingText.height);
+
+    // draw percent text at the center of the progress box
+    this.percentText = this.make.text({
+      x: width / 2,
+      y: height / 2 + progressBoxHeight / 2,
+      text: '0%'
+    }).setOrigin(0.5, 0.5);
+
+    // draw asset text just below progress box
+    this.assetText = this.make.text({
+      x: width / 2,
+      y: 0,
+      text: ''
+    }).setOrigin(0.5, 0.5);
+    this.assetText.setY(centerY + progressBoxHeight + this.assetText.height);
   }
 
 }

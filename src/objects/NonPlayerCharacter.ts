@@ -1,7 +1,15 @@
 import { NonPlayerCharacterAssetData } from './../assets/NonPlayerCharacterAsset';
 import { NonPlayerCharacterAsset } from '~/assets/NonPlayerCharacterAsset';
 import Phaser from 'phaser';
-import Player from './Player';
+import OutlinePipeline from '~/pipelines/OutlinePipeline';
+
+export interface NonPlayerCharacterConfig
+{
+  asset: NonPlayerCharacterAsset;
+  paragraph1: string;
+  paragraph2?: string;
+  paragraph3?: string;
+}
 
 export enum NonPlayerCharacterState
 {
@@ -22,15 +30,15 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
 
   private static readonly MOVE_SPEED = 64;
 
-  private asset: NonPlayerCharacterAsset;
+  private config: NonPlayerCharacterConfig;
 
   public currentState = NonPlayerCharacterState.Default;
-
-  constructor(scene: Phaser.Scene, x: number, y: number, asset: NonPlayerCharacterAsset)
+  
+  constructor(scene: Phaser.Scene, x: number, y: number, config: NonPlayerCharacterConfig)
   {
-    super(scene, x, y, asset);
+    super(scene, x, y, config.asset);
 
-    this.asset = asset;
+    this.config = config;
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
@@ -39,7 +47,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
     // register animations
     this.scene.anims.create({
       key: this.getIdleAnimationKey(), 
-      frames: this.scene.anims.generateFrameNames(this.asset, 
+      frames: this.scene.anims.generateFrameNames(this.config.asset, 
         {
           prefix: NonPlayerCharacterAssetData.IdleAnimationPrefix as string,
           end: NonPlayerCharacterAssetData.IdleAnimationFrameEnd as number,
@@ -50,7 +58,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
 
     this.scene.anims.create({
       key: this.getRunAnimationKey(),
-      frames: this.scene.anims.generateFrameNames(this.asset, 
+      frames: this.scene.anims.generateFrameNames(this.config.asset, 
         { 
           prefix: NonPlayerCharacterAssetData.RunAnimationPrefix as string,
           end: NonPlayerCharacterAssetData.RunAnimationFrameEnd as number,
@@ -128,7 +136,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
    */
   private getIdleAnimationKey(): string
   {
-    return `${this.asset}:${NonPlayerCharacterAssetData.IdleAnimationPrefix}`;
+    return `${this.config.asset}:${NonPlayerCharacterAssetData.IdleAnimationPrefix}`;
   }
 
   /**
@@ -136,16 +144,15 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
    */
   private getRunAnimationKey(): string
   {
-    return `${this.asset}:${NonPlayerCharacterAssetData.RunAnimationPrefix}`;
+    return `${this.config.asset}:${NonPlayerCharacterAssetData.RunAnimationPrefix}`;
   }
 
   public setOutlinePipeline(): void
   {
-    this.setPipeline('Outline');
+    this.setPipeline(OutlinePipeline.KEY);
     this.pipeline.setFloat2('uTextureSize', this.texture.getSourceImage().width, this.texture.getSourceImage().height);
   }
   
-
   /**
    * Get the physics body.
    * @return {Phaser.Physics.Arcade.Body} - the physics body
@@ -158,6 +165,14 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
   public setCurrentState(state: NonPlayerCharacterState)
   {
     this.currentState = state;
+  }
+
+  public getParagraphs()
+  {
+    let paragraphs = [this.config.paragraph1];
+    if (this.config.paragraph2) paragraphs.push(this.config.paragraph2);
+    if (this.config.paragraph3) paragraphs.push(this.config.paragraph3);
+    return paragraphs;
   }
 
 }

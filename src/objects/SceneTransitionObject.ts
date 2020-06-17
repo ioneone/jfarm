@@ -8,11 +8,16 @@ import { TiledTransitionObject } from '../scenes/TilemapScene';
  */
 export interface SceneTransitionData
 {
-  destinationScene: string;
-  destinationX: number;
-  destinationY: number;
-  tilemapKey: string;
-  tilesetKey: string;
+  // the id of the scene to transition into
+  destinationScene?: string;
+  // the x coordinate in tiles to spawn the player in the next scene
+  destinationX?: number;
+  // the y coordinate in tiles to spawn the player in the next scene
+  destinationY?: number;
+  // the key of the tilemap to load
+  tilemapKey?: string;
+  // the key of the tileset to load
+  tilesetKey?: string;
 }
 
 /**
@@ -25,20 +30,7 @@ export interface SceneTransitionData
 class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 {
 
-  // the id of the scene to transition into
-  protected destinationScene?: string;
-
-  // the x coordinate in tiles to spawn the player in the next scene
-  protected destinationX?: number;
-
-  // the y coordinate in tiles to spawn the player in the next scene
-  protected destinationY?: number;
-
-  // the key of the tilemap to load
-  protected tilemapKey?: string;
-
-  // the key of the tileset to load
-  protected tilesetKey?: string;
+  private sceneTransitionData: SceneTransitionData;
 
   /**
    * @param {Phaser.Scene} scene - The scene this object belongs to
@@ -47,6 +39,8 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   constructor(scene: Phaser.Scene, tiledTransitionObject: TiledTransitionObject)
   {
     super(scene, tiledTransitionObject.x, tiledTransitionObject.y);
+
+    this.sceneTransitionData = {};
 
     // Tiled uses top left corner as the origin
     this.setOrigin(0);
@@ -57,23 +51,23 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
     tiledTransitionObject.properties.forEach(property => {
       if (property.name === "DestinationScene")
       {
-        this.destinationScene = property.value as string;
+        this.sceneTransitionData.destinationScene = property.value as string;
       }
       else if (property.name === "DestinationX")
       {
-        this.destinationX = property.value as number;
+        this.sceneTransitionData.destinationX = property.value as number;
       }
       else if (property.name === "DestinationY")
       {
-        this.destinationY = property.value as number;
+        this.sceneTransitionData.destinationY = property.value as number;
       }
       else if (property.name === "TilemapKey")
       {
-        this.tilemapKey = property.value as string;
+        this.sceneTransitionData.tilemapKey = property.value as string;
       }
       else if (property.name === "TilesetKey")
       {
-        this.tilesetKey = property.value as string;
+        this.sceneTransitionData.tilesetKey = property.value as string;
       }
     });
   }
@@ -83,15 +77,9 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
    * for a scene's initialization.
    * @return {SceneTransitionData} - the data representation of this object
    */
-  public toSceneTransitionData(): SceneTransitionData
+  public getSceneTransitionData(): SceneTransitionData
   {
-    return {
-      destinationScene: this.destinationScene!,
-      destinationX: this.destinationX!,
-      destinationY: this.destinationY!,
-      tilemapKey: this.tilemapKey!,
-      tilesetKey: this.tilesetKey!
-    };
+    return this.sceneTransitionData;
   }
   
 }

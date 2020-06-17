@@ -8,11 +8,16 @@ import { Events } from '../events/Events';
 export interface EnemyConfig
 {
   asset: EnemyAsset;
+  // the amount of damage this enemy deals
   attackDamage: number;
+  // how long the enemy gets knocked back in ms
   knockBackDuration: number;
+  // how often the enemy attacks player in ms
   attackInterval: number;
+  // how far the enemy can see to find the player in pixels
   vision: number;
-  hitPoints: number;
+  // the max hit points of the enemy
+  maxHitPoints: number;
 }
 
 /**
@@ -20,7 +25,7 @@ export interface EnemyConfig
  * @readonly
  * @enum {number}
  */
-export enum EnemyUpdateState
+export enum EnemyState
 {
   Default,
   FoundPlayer,
@@ -41,29 +46,15 @@ class Enemy extends Phaser.GameObjects.Sprite
   // how fast the enemy moves
   private static readonly MOVE_SPEED = 48;
 
-  // the spritesheet file path
-  private asset: EnemyAsset;
+  // current state of the enemy
+  private currentState: EnemyState;
 
-  // the hit points of the enemy
-  private hitPoints: number;
+  private currentHitPoints: number;
 
-  // current update state of the enemy
-  private updateState: EnemyUpdateState;
-
-  // the time elapsed since current update state has been set
+  // the time elapsed since current state has been set
   private elapsedTime: number;
 
-  // how long the enemy gets knocked back in ms
-  private knockBackDuration: number;
-
-  // how often the enemy attacks player in ms
-  private attackInterval: number;
-
-  // the amount of damage this enemy deals
-  private attackDamage: number;
-
-  // how far the enemy can see to find the player in pixels
-  private vision: number;
+  private config: EnemyConfig;
 
   /**
    * @param {Phaser.Scene} scene - the sceen this object belongs to 
@@ -76,14 +67,10 @@ class Enemy extends Phaser.GameObjects.Sprite
     super(scene, x, y, config.asset);
 
     // initialize member variables
-    this.asset = config.asset;
-    this.updateState = EnemyUpdateState.Default;
+    this.currentState = EnemyState.Default;
     this.elapsedTime = 0;
-    this.hitPoints = config.hitPoints;
-    this.knockBackDuration = config.knockBackDuration;
-    this.attackInterval = config.attackInterval;
-    this.attackDamage = config.attackDamage;
-    this.vision = config.vision;
+    this.config = config;
+    this.currentHitPoints = config.maxHitPoints;
     
     // add enemy to the scene
     this.scene.add.existing(this);
@@ -93,7 +80,7 @@ class Enemy extends Phaser.GameObjects.Sprite
     // register animations
     this.scene.anims.create({
       key: this.getIdleAnimationKey(), 
-      frames: this.scene.anims.generateFrameNames(this.asset, 
+      frames: this.scene.anims.generateFrameNames(this.config.asset, 
         {
           prefix: EnemyAssetData.IdleAnimationPrefix as string,
           end: EnemyAssetData.IdleAnimationFrameEnd as number,
@@ -104,7 +91,7 @@ class Enemy extends Phaser.GameObjects.Sprite
 
     this.scene.anims.create({
       key: this.getRunAnimationKey(),
-      frames: this.scene.anims.generateFrameNames(this.asset, 
+      frames: this.scene.anims.generateFrameNames(this.config.asset, 
         { 
           prefix: EnemyAssetData.RunAnimationPrefix as string,
           end: EnemyAssetData.RunAnimationFrameEnd as number,
@@ -112,8 +99,6 @@ class Enemy extends Phaser.GameObjects.Sprite
       ),
       frameRate: 8
     });
-
-    this.setPipeline('Light2D');
 
   }
 
@@ -123,7 +108,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   public attackPlayer(player: Player): void
   {
-    player.receiveDamage(this.attackDamage);
+    player.receiveDamage(this.config.attackDamage);
   }
 
   /**
@@ -133,7 +118,7 @@ class Enemy extends Phaser.GameObjects.Sprite
   public receiveDamage(damage: number): void
   {
 
-    this.hitPoints = Math.max(0, this.hitPoints - damage);
+    this.currentHitPoints = Math.max(0, this.currentHitPoints - damage);
 
     const canvasViewPosition = this.computeCanvasViewPosition();
 
@@ -149,7 +134,7 @@ class Enemy extends Phaser.GameObjects.Sprite
     });
 
     // die
-    if (this.hitPoints === 0)
+    if (this.currentHitPoints === 0)
     {
       this.destroy();
     }
@@ -163,7 +148,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   public knockBack(velocity: Phaser.Math.Vector2): void
   {
-    this.updateState = EnemyUpdateState.KnockBack;
+    this.currentState = EnemyState.KnockBack;
     this.elapsedTime = 0;
     this.getBody().setVelocity(velocity.x, velocity.y);
   }
@@ -176,13 +161,13 @@ class Enemy extends Phaser.GameObjects.Sprite
   public update(player: Player, delta: number): void
   {
 
-    if (this.updateState === EnemyUpdateState.Default)
+    if (this.currentState === EnemyState.Default)
     {
       const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-      if (distanceToPlayer < this.vision)
+      if (distanceToPlayer < this.config.vision)
       {
-        this.updateState = EnemyUpdateState.FoundPlayer;
+        this.currentState = EnemyState.FoundPlayer;
         this.elapsedTime = 0;
       }
       else
@@ -191,52 +176,52 @@ class Enemy extends Phaser.GameObjects.Sprite
       }
 
     }
-    else if (this.updateState === EnemyUpdateState.FoundPlayer)
+    else if (this.currentState === EnemyState.FoundPlayer)
     {
       const canvasViewPosition = this.computeCanvasViewPosition();
       EventDispatcher.getInstance().emit(Events.Event.EnemyFoundPlayer, 
         { x: canvasViewPosition.x, y: canvasViewPosition.y, height: this.height } as Events.Data.EnemyFoundPlayer);
-      this.updateState = EnemyUpdateState.ChasePlayer;
+      this.currentState = EnemyState.ChasePlayer;
       this.elapsedTime = 0;
     }
-    else if (this.updateState === EnemyUpdateState.ChasePlayer)
+    else if (this.currentState === EnemyState.ChasePlayer)
     {
       const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-      if (distanceToPlayer < this.vision)
+      if (distanceToPlayer < this.config.vision)
       {
         this.chasePlayer(player);
       }
       else
       {
-        this.updateState = EnemyUpdateState.Default;
+        this.currentState = EnemyState.Default;
         this.elapsedTime = 0;
         this.getBody().setVelocity(0, 0);
       }
     }
-    else if (this.updateState === EnemyUpdateState.KnockBack)
+    else if (this.currentState === EnemyState.KnockBack)
     {
-      if (this.elapsedTime > this.knockBackDuration)
+      if (this.elapsedTime > this.config.knockBackDuration)
       {
         const distanceToPlayer = this.getCenter().distance(player.getCenter());
 
-        if (distanceToPlayer < this.vision)
+        if (distanceToPlayer < this.config.vision)
         {
-          this.updateState = EnemyUpdateState.ChasePlayer;
+          this.currentState = EnemyState.ChasePlayer;
         }
         else
         {
-          this.updateState = EnemyUpdateState.Default;
+          this.currentState = EnemyState.Default;
 
         }
         this.elapsedTime = 0;
         this.getBody().setVelocity(0, 0);
       }
     }
-    else if (this.updateState === EnemyUpdateState.AttackPlayer)
+    else if (this.currentState === EnemyState.AttackPlayer)
     {
       
-      if (this.elapsedTime > this.attackInterval)
+      if (this.elapsedTime > this.config.attackInterval)
       {
         const distanceToPlayer = this.getCenter().distance(player.getBodyCenter());
 
@@ -249,15 +234,15 @@ class Enemy extends Phaser.GameObjects.Sprite
         if (distanceToPlayer < attackRadius)
         {
           this.attackPlayer(player);
-          this.updateState = EnemyUpdateState.AttackPlayer;
+          this.currentState = EnemyState.AttackPlayer;
         }
-        else if (distanceToPlayer < this.vision)
+        else if (distanceToPlayer < this.config.vision)
         {
-          this.updateState = EnemyUpdateState.ChasePlayer;
+          this.currentState = EnemyState.ChasePlayer;
         }
         else
         {
-          this.updateState = EnemyUpdateState.Default;
+          this.currentState = EnemyState.Default;
         }
         
         this.elapsedTime = 0;
@@ -291,21 +276,21 @@ class Enemy extends Phaser.GameObjects.Sprite
   }
 
   /**
-   * Get current update state of the enemy.
-   * @return {EnemyUpdateState} - the current update state
+   * Get current state of the enemy.
+   * @return {EnemyState} - the current update state
    */
-  public getUpdateState(): EnemyUpdateState
+  public getCurrentState(): EnemyState
   {
-    return this.updateState;
+    return this.currentState;
   }
 
   /**
-   * Set the current update state of the enemy.
-   * @param {EnemyUpdateState} state - the state to update to 
+   * Set the current update state of the enemy to change its behavior in `enemy.update()`.
+   * @param {EnemyState} state - the state to update to 
    */
-  public setUpdateState(state: EnemyUpdateState): void
+  public setCurrentState(state: EnemyState): void
   {
-    this.updateState = state;
+    this.currentState = state;
   } 
 
   /**
@@ -396,7 +381,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   private getIdleAnimationKey(): string
   {
-    return `${this.asset}:${EnemyAssetData.IdleAnimationPrefix}`;
+    return `${this.config.asset}:${EnemyAssetData.IdleAnimationPrefix}`;
   }
 
   /**
@@ -404,7 +389,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   private getRunAnimationKey(): string
   {
-    return `${this.asset}:${EnemyAssetData.RunAnimationPrefix}`;
+    return `${this.config.asset}:${EnemyAssetData.RunAnimationPrefix}`;
   }
 
 }

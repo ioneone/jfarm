@@ -11,6 +11,9 @@ import Phaser from 'phaser';
  */
 class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
 {
+
+  public static readonly KEY = 'Grayscale';
+
   /**
    * @param {Phaser.Game} game - the controller of the game instance
    */

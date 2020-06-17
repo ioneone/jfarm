@@ -74,7 +74,7 @@ abstract class PlayerScene extends TilemapScene
 	{
     super.create(data);
 
-    this.player = PlayerFactory.create(this, data.destinationX, data.destinationY, PlayerAsset.ElfMale);
+    this.player = PlayerFactory.create(this, data.destinationX!, data.destinationY!, PlayerAsset.ElfMale);
 
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
@@ -84,8 +84,9 @@ abstract class PlayerScene extends TilemapScene
     this.physics.add.overlap(this.player!, this.transitionObjectGroup!, (object1, object2) => {
       const player = object1 as Player;
       player.getBody().setEnable(false);
-      const sceneTranstionData = (object2 as SceneTransitionObject).toSceneTransitionData();
+      const sceneTranstionData = (object2 as SceneTransitionObject).getSceneTransitionData();
       this.sound.play(AudioAsset.ThreeFootSteps);
+      console.log(sceneTranstionData);
       this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
         if (progress === 1)
         {
@@ -108,13 +109,8 @@ abstract class PlayerScene extends TilemapScene
   public update(time: number, delta: number): void
 	{
     super.update(time, delta);
-
-    this.player?.update();
-
-    // configure the scene light to follow the player
-    this.sceneLight?.setPosition(this.player!.x, this.player!.y);
+    this.player?.update(delta);
   }
-
 
 }
 

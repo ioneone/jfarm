@@ -1,9 +1,9 @@
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { UIAsset } from '../assets/UIAsset';
 import Phaser from 'phaser';
-import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import EventDispatcher from '../events/EventDispatcher';
 import { Events } from '../events/Events';
+import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 
 /**
  * UI for an item slot.
@@ -69,7 +69,7 @@ class ItemSlot extends Phaser.GameObjects.Container
     }
     else
     {
-      this.slot.setPipeline('Grayscale');
+      this.slot.setPipeline(GrayscalePipeline.KEY);
       this.setAlpha(0.5);
     }
   }

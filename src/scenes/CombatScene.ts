@@ -1,10 +1,9 @@
 import { AudioAsset } from '../assets/AudioAsset';
-import { EnemyAsset } from '../assets/EnemyAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from "./PlayerScene";
 import { TileLayer } from './TilemapScene';
 import EnemyFactory from '../factory/EnemyFactory';
-import Enemy, { EnemyUpdateState } from '../objects/Enemy';
+import Enemy, { EnemyState } from '../objects/Enemy';
 import Weapon from '../objects/Weapon';
 
 /**
@@ -16,6 +15,9 @@ import Weapon from '../objects/Weapon';
  */
 abstract class CombatScene extends PlayerScene
 {
+
+  // the unique id of this scene
+  public static readonly KEY = "CombatScene";
 
   // light enabled objects need at least one light source to exibit ambient color
   protected sceneLight?: Phaser.GameObjects.Light;
@@ -31,7 +33,7 @@ abstract class CombatScene extends PlayerScene
    */
   constructor(key: string)
   {
-    super(key);
+    super(CombatScene.KEY);
   }
 
   /**
@@ -42,6 +44,7 @@ abstract class CombatScene extends PlayerScene
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
    * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @override
    */
   public init(data: SceneTransitionData)
   {
@@ -51,6 +54,7 @@ abstract class CombatScene extends PlayerScene
   /**
    * Scenes can have a preload method, which is always called before the Scenes 
    * create method, allowing you to preload assets that the Scene may need.
+   * @override
    */
   public preload()
   {
@@ -65,6 +69,7 @@ abstract class CombatScene extends PlayerScene
    * 
    * @see {@link https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html}
    * @param {SceneTransitionData} data - the data being passed when the scene manager starts this scene
+   * @override
    */
   public create(data: SceneTransitionData)
   {
@@ -72,19 +77,8 @@ abstract class CombatScene extends PlayerScene
 
     // add enemies to the scene
     this.enemies = this.add.group();
-    this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(object => {
-      if (object.name === "OrcWarrior")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.OrcWarrior));
-      }
-      else if (object.name === "IceZombie")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.IceZombie));
-      }
-      else if (object.name === "Chort")
-      {
-        this.enemies?.add(EnemyFactory.create(this, object.x!, object.y!, EnemyAsset.Chort));
-      }
+    this.tilemap?.getObjectLayer(TileLayer.Object).objects.forEach(tiledObject => {
+      this.enemies?.add(EnemyFactory.create(this, tiledObject));
     });
     
     // add collision detection between enemy and collidable layer
@@ -94,7 +88,7 @@ abstract class CombatScene extends PlayerScene
     // add collision detection between player and enemy
     this.physics.add.collider(this.player!, this.enemies!, (_, object2) => {
       const enemy = object2 as Enemy;
-      enemy.setUpdateState(EnemyUpdateState.AttackPlayer);
+      enemy.setCurrentState(EnemyState.AttackPlayer);
       // prevent enemy from pushing the player
       enemy.getBody().setVelocity(0, 0);
     });
@@ -111,13 +105,14 @@ abstract class CombatScene extends PlayerScene
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
       const enemy = object2 as Enemy;
-      return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
+      return weapon.getBody().angularVelocity !== 0 && enemy.getCurrentState() !== EnemyState.KnockBack;
     });
 
     // enable lights
     this.bottomLayer!.setPipeline('Light2D');
     this.middleLayer!.setPipeline('Light2D');
     this.topLayer!.setPipeline('Light2D');
+    this.enemies.getChildren().forEach(child => (child as Enemy).setPipeline('Light2D'));
     this.sceneLight = this.lights.addLight();
     this.lights.enable().setAmbientColor(0x404040);
 
@@ -127,10 +122,15 @@ abstract class CombatScene extends PlayerScene
    * This method is called once per game step while the scene is running.
    * @param {number} time - the current time
    * @param {number} delta - the delta time in ms since the last frame
+   * @override
    */
   public update(time: number, delta: number)
   {
     super.update(time, delta);
+
+    // configure the scene light to follow the player
+    this.sceneLight?.setPosition(this.player!.x, this.player!.y);
+
     this.enemies?.getChildren().forEach(child => (child as Enemy).update(this.player!, delta));
   }
   

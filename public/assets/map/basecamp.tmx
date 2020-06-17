@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="20">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="23">
  <editorsettings>
   <export target="." format="json"/>
  </editorsettings>
@@ -406,10 +406,13 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="79" name="townsfolk_m" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="../npcs/townsfolk_m/townsfolk_m.png" width="128" height="64"/>
+ </tileset>
  <objectgroup id="4" name="TransitionLayer">
   <object id="18" x="208" y="496" width="96" height="16">
    <properties>
-    <property name="DestinationScene" value="LevelScene"/>
+    <property name="DestinationScene" value="CombatScene"/>
     <property name="DestinationX" type="float" value="331"/>
     <property name="DestinationY" type="float" value="249"/>
     <property name="TilemapKey" value="assets/map/level1"/>
@@ -489,7 +492,26 @@
 63,8,8,8,8,8,8,8,8,8,8,8,64,0,0,0,0,0,0,63,8,8,8,8,8,8,8,8,8,8,8,64
 </data>
  </layer>
- <objectgroup id="5" name="ObjectLayer"/>
+ <objectgroup id="5" name="ObjectLayer">
+  <object id="20" name="TownsfolkMale" gid="79" x="104.322" y="236.036" width="32" height="32">
+   <properties>
+    <property name="Paragraph1" value="How's going? I don't know why everyone looks just the same..."/>
+    <property name="Paragraph2" value="Anyways, you can walk down and enter the dungeon."/>
+   </properties>
+  </object>
+  <object id="21" name="TownsfolkMale" gid="79" x="376.209" y="172.219" width="32" height="32">
+   <properties>
+    <property name="Paragraph1" value="You can't attack in this area. You can attack in the dungeon though."/>
+    <property name="Paragraph2" value="Press J to attack, SPACE to change item slot, and WASD to move."/>
+    <property name="Paragraph3" value="Good luck!"/>
+   </properties>
+  </object>
+  <object id="22" name="TownsfolkMale" gid="79" x="311.062" y="316.472" width="32" height="32">
+   <properties>
+    <property name="Paragraph1" value="Hey there! I don't talk much..."/>
+   </properties>
+  </object>
+ </objectgroup>
  <layer id="3" name="TopLayer" width="32" height="32">
   <data encoding="csv">
 45,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,46,

@@ -1,7 +1,9 @@
 /**
- * Collection of the absolute or relative URLs to load the player spritesheets from.
- * Every player spritesheet must follow a specific requirement. See {@link PlayerAssetData}
- * for more details.
+ * The unique keys for players. 
+ * 
+ * If you name your asset `foo`, then you must have the player texture 
+ * located at `foo.png` and atlas at `foo.json`.
+ * 
  * @readonly
  * @enum {string}
  */

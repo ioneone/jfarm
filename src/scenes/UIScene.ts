@@ -1,6 +1,4 @@
-import { UIAsset } from '../assets/UIAsset';
 import { AudioAsset } from '../assets/AudioAsset';
-import { WeaponAsset } from '../assets/WeaponAsset';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
