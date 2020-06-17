@@ -3,7 +3,8 @@
     {
      "export":
         {
-         "format":"json"
+         "format":"json",
+         "target":"."
         }
     },
  "height":32,
@@ -20,11 +21,6 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"DestinationLevel",
-                         "type":"int",
-                         "value":2
-                        }, 
-                        {
                          "name":"DestinationScene",
                          "type":"string",
                          "value":"LevelScene"
@@ -32,27 +28,22 @@
                         {
                          "name":"DestinationX",
                          "type":"float",
-                         "value":135
+                         "value":166
                         }, 
                         {
                          "name":"DestinationY",
                          "type":"float",
-                         "value":907
+                         "value":893
                         }, 
                         {
-                         "name":"IsDark",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"TilemapFileNamePrefix",
+                         "name":"TilemapKey",
                          "type":"string",
-                         "value":"level"
+                         "value":"assets\/map\/level2"
                         }, 
                         {
-                         "name":"TilesetFileName",
+                         "name":"TilesetKey",
                          "type":"string",
-                         "value":"tiles"
+                         "value":"assets\/map\/tiles"
                         }],
                  "rotation":0,
                  "type":"",
@@ -82,9 +73,14 @@
                          "value":451
                         }, 
                         {
-                         "name":"IsDark",
-                         "type":"bool",
-                         "value":false
+                         "name":"TilemapKey",
+                         "type":"string",
+                         "value":"assets\/map\/basecamp"
+                        }, 
+                        {
+                         "name":"TilesetKey",
+                         "type":"string",
+                         "value":"assets\/map\/tiles"
                         }],
                  "rotation":0,
                  "type":"",

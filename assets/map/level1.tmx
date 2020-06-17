@@ -412,12 +412,11 @@
  <objectgroup id="4" name="TransitionLayer">
   <object id="5" x="352" y="288" width="16" height="16">
    <properties>
-    <property name="DestinationLevel" type="int" value="2"/>
     <property name="DestinationScene" value="LevelScene"/>
-    <property name="DestinationX" type="float" value="135"/>
-    <property name="DestinationY" type="float" value="907"/>
-    <property name="TilemapFileNamePrefix" value="level"/>
-    <property name="TilesetFileName" value="tiles"/>
+    <property name="DestinationX" type="float" value="166"/>
+    <property name="DestinationY" type="float" value="893"/>
+    <property name="TilemapKey" value="assets/map/level2"/>
+    <property name="TilesetKey" value="assets/map/tiles"/>
    </properties>
   </object>
   <object id="19" x="352" y="240" width="16" height="16">
@@ -425,6 +424,8 @@
     <property name="DestinationScene" value="BasecampScene"/>
     <property name="DestinationX" type="float" value="250"/>
     <property name="DestinationY" type="float" value="451"/>
+    <property name="TilemapKey" value="assets/map/basecamp"/>
+    <property name="TilesetKey" value="assets/map/tiles"/>
    </properties>
   </object>
  </objectgroup>

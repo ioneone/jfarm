@@ -3,8 +3,7 @@
     {
      "export":
         {
-         "format":"json",
-         "target":"."
+         "format":"json"
         }
     },
  "height":32,
@@ -14,7 +13,44 @@
          "draworder":"topdown",
          "id":4,
          "name":"TransitionLayer",
-         "objects":[],
+         "objects":[
+                {
+                 "height":16,
+                 "id":18,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"DestinationScene",
+                         "type":"string",
+                         "value":"LevelScene"
+                        }, 
+                        {
+                         "name":"DestinationX",
+                         "type":"float",
+                         "value":331
+                        }, 
+                        {
+                         "name":"DestinationY",
+                         "type":"float",
+                         "value":249
+                        }, 
+                        {
+                         "name":"TilemapKey",
+                         "type":"string",
+                         "value":"assets\/map\/level1"
+                        }, 
+                        {
+                         "name":"TilesetKey",
+                         "type":"string",
+                         "value":"assets\/map\/tiles"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":208,
+                 "y":496
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -69,7 +105,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":16,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.3.4",
