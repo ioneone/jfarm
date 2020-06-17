@@ -1,14 +1,21 @@
+import { Events } from './../events/Events';
 import { WeaponAsset } from './../assets/WeaponAsset';
 import { AudioAsset } from '../assets/AudioAsset';
 import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Events } from '../events/Events';
 import Weapon from './Weapon';
 import UIScene from '../scenes/UIScene';
 import GameOverScene from '../scenes/GameOverScene';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
-import NonPlayerCharacter from './NonPlayerCharacter';
+import NonPlayerCharacter, { NonPlayerCharacterState } from './NonPlayerCharacter';
+import AudioScene from '~/scenes/AudioScene';
+
+export enum PlayerState
+{
+  Default,
+  Talking
+}
 
 export interface PlayerConfig
 {
@@ -51,7 +58,7 @@ class Player extends Phaser.GameObjects.Sprite
   // keyboard key for moving right
   private keyD: Phaser.Input.Keyboard.Key;
 
-  // keyboard key for attacking 
+  // keyboard key for action (attack or talk) 
   private keyJ: Phaser.Input.Keyboard.Key;
 
   // weapon the player is currently holding
@@ -62,7 +69,8 @@ class Player extends Phaser.GameObjects.Sprite
 
   private attackEnabled: boolean;
 
-  private closestNPCInRange?: NonPlayerCharacter;
+  // change update behavior based on current state
+  private currentState: PlayerState;
 
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
@@ -73,6 +81,7 @@ class Player extends Phaser.GameObjects.Sprite
     this.hitPoints = Player.MAX_HIT_POINTS;
     this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
     this.attackEnabled = true;
+    this.currentState = PlayerState.Default;
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -138,8 +147,7 @@ class Player extends Phaser.GameObjects.Sprite
     // game over
     if (this.hitPoints === 0)
     {
-      this.scene.scene.stop(UIScene.KEY);
-      this.scene.scene.start(GameOverScene.KEY);
+      EventDispatcher.getInstance().emit(Events.Event.PlayerDies, { scene: this.scene });
     }
 
     const cameraTopLeftX = this.scene.cameras.main.worldView.x;
@@ -164,45 +172,52 @@ class Player extends Phaser.GameObjects.Sprite
    */
   public update(): void
   {
-
-    // update velocity
-    if (this.keyW.isDown && this.keyA.isDown)
+    
+    if (this.currentState === PlayerState.Default)
     {
-      this.getBody().setVelocity(-1, -1);
-      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
+      // update velocity
+      if (this.keyW.isDown && this.keyA.isDown)
+      {
+        this.getBody().setVelocity(-1, -1);
+        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
+      }
+      else if (this.keyS.isDown && this.keyA.isDown)
+      {
+        this.getBody().setVelocity(-1, 1);
+        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
+      }
+      else if (this.keyS.isDown && this.keyD.isDown)
+      {
+        this.getBody().setVelocity(1, 1);
+        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
+      }
+      else if (this.keyW.isDown && this.keyD.isDown)
+      {
+        this.getBody().setVelocity(1, -1);
+        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
+      }
+      else if (this.keyW.isDown)
+      {
+        this.getBody().setVelocity(0, -Player.MOVE_SPEED);
+      }
+      else if (this.keyA.isDown)
+      {
+        this.getBody().setVelocity(-Player.MOVE_SPEED, 0);
+      }
+      else if (this.keyS.isDown)
+      {
+        this.getBody().setVelocity(0, Player.MOVE_SPEED);
+      }
+      else if (this.keyD.isDown)
+      {
+        this.getBody().setVelocity(Player.MOVE_SPEED, 0);
+      }
+      else 
+      {
+        this.getBody().setVelocity(0, 0);
+      }
     }
-    else if (this.keyS.isDown && this.keyA.isDown)
-    {
-      this.getBody().setVelocity(-1, 1);
-      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-    }
-    else if (this.keyS.isDown && this.keyD.isDown)
-    {
-      this.getBody().setVelocity(1, 1);
-      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-    }
-    else if (this.keyW.isDown && this.keyD.isDown)
-    {
-      this.getBody().setVelocity(1, -1);
-      this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-    }
-    else if (this.keyW.isDown)
-    {
-      this.getBody().setVelocity(0, -Player.MOVE_SPEED);
-    }
-    else if (this.keyA.isDown)
-    {
-      this.getBody().setVelocity(-Player.MOVE_SPEED, 0);
-    }
-    else if (this.keyS.isDown)
-    {
-      this.getBody().setVelocity(0, Player.MOVE_SPEED);
-    }
-    else if (this.keyD.isDown)
-    {
-      this.getBody().setVelocity(Player.MOVE_SPEED, 0);
-    }
-    else 
+    else if (this.currentState === PlayerState.Talking)
     {
       this.getBody().setVelocity(0, 0);
     }
@@ -231,20 +246,8 @@ class Player extends Phaser.GameObjects.Sprite
       this.getBody().setImmovable(false);
     }
 
-    // if (this.attackEnabled && this.weapon.active)
-    // {
-    //   this.weapon.update(this);
-    // }
+    this.weapon.update(this, this.attackEnabled);
 
-    if (Phaser.Input.Keyboard.JustDown(this.keyJ))
-    {
-      if (this.closestNPCInRange)
-      {
-        console.log('talk');
-      }
-      
-    }
-    
   }
 
   /**
@@ -254,9 +257,9 @@ class Player extends Phaser.GameObjects.Sprite
    * @see Weapon#update
    * @return {boolean} - whether the player is trying to attack
    */
-  public isActivatingWeapon(): boolean
+  public isActionKeyDown(): boolean
   {
-    return this.attackEnabled && Phaser.Input.Keyboard.JustDown(this.keyJ);
+    return this.keyJ.isDown;
   }
 
   /**
@@ -321,26 +324,24 @@ class Player extends Phaser.GameObjects.Sprite
       this.weapon.setModel(WeaponAssetFactory.create(data.currentWeaponAsset));
       this.weapon.getBody().setEnable(true);
       this.weapon.setVisible(true);
-      this.weapon.setActive(true);
     }
     else
     {
       this.weapon.setVisible(false);
       this.weapon.getBody().setEnable(false);
-      this.weapon.setActive(false);
     }
   }
+
+  public setCurrentState(state: PlayerState)
+  {
+    this.currentState = state;
+  }
+
+  public getCurrentState()
+  {
+    return this.currentState;
+  }
   
-  public setClosestNPCInRange(npc: NonPlayerCharacter | undefined)
-  {
-    this.closestNPCInRange = npc;
-  }
-
-  public getClosestNPCInRange()
-  {
-    return this.closestNPCInRange;
-  }
-
 }
 
 export default Player;

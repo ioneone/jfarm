@@ -1,7 +1,9 @@
+import EventDispatcher from '../events/EventDispatcher';
 import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
-import NonPlayerCharacter from '../objects/NonPlayerCharacter';
+import NonPlayerCharacter, { NonPlayerCharacterState } from '../objects/NonPlayerCharacter';
+import { PlayerState } from '~/objects/Player';
 
 class BasecampScene extends PlayerScene
 {
@@ -13,10 +15,13 @@ class BasecampScene extends PlayerScene
 
   protected npcs: NonPlayerCharacter[];
 
+  private prevClosestNPC: NonPlayerCharacter | null;
+
   constructor()
   {
     super(BasecampScene.KEY);
     this.npcs = [];
+    this.prevClosestNPC = null;
   }
 
   /**
@@ -32,6 +37,7 @@ class BasecampScene extends PlayerScene
   {
     super.init(data);
     this.npcs = [];
+    this.prevClosestNPC = null;
   }
 
   /**
@@ -56,6 +62,8 @@ class BasecampScene extends PlayerScene
   {
     super.create(data);
 
+    this.player?.setAttackEnabled(false);
+
     this.npcGroup = this.add.group();
     this.npcs.push(new NonPlayerCharacter(this, 100, 100, NonPlayerCharacterAsset.TownsfolkMale));
     this.npcs.push(new NonPlayerCharacter(this, 140, 100, NonPlayerCharacterAsset.TownsfolkMale));
@@ -66,6 +74,13 @@ class BasecampScene extends PlayerScene
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.npcGroup!, this.middleLayer!);
     this.physics.add.collider(this.npcGroup!, this.bottomLayer!);
+
+    EventDispatcher.getInstance().on('dialogends', (data) => {
+      this.time.delayedCall(160, () => {
+        this.player?.setCurrentState(PlayerState.Default);
+        (data.npc as NonPlayerCharacter).setCurrentState(NonPlayerCharacterState.Default);
+      });
+    });
     
   }
 
@@ -78,24 +93,30 @@ class BasecampScene extends PlayerScene
   {
     super.update(time, delta);
 
-    const closestNPC = this.physics.closest(this.player, this.npcs) as NonPlayerCharacter;
+    if (this.player?.getCurrentState() === PlayerState.Default)
+    {
+      this.prevClosestNPC?.resetPipeline();
 
-    if (this.player!.getCenter().distance(closestNPC.getCenter()) < 64)
-    {
-      if (this.player?.getClosestNPCInRange() !== closestNPC)
+      const closestNPC = this.physics.closest(this.player, this.npcs) as NonPlayerCharacter;
+
+      if (this.player!.getCenter().distance(closestNPC.getCenter()) < 64)
       {
-        this.player?.getClosestNPCInRange()?.resetPipeline();
         closestNPC.setOutlinePipeline();
-        this.player?.setClosestNPCInRange(closestNPC);
+
+        if (this.player?.isActionKeyDown())
+        {
+          this.player.setCurrentState(PlayerState.Talking);
+          closestNPC.setCurrentState(NonPlayerCharacterState.Talking);
+          EventDispatcher.getInstance().emit('playertalkstonpc', { scene: this, player: this.player!, npc: closestNPC });
+        }
+
       }
-    }
-    else
-    {
-      closestNPC.resetPipeline();
-      this.player?.setClosestNPCInRange(undefined);
+
+      this.prevClosestNPC = closestNPC;
     }
 
     this.player!.depth = this.player!.y + this.player!.height / 2;
+    this.player?.getWeapon().setDepth(this.player?.depth);
 
     this.npcs.forEach(npc => {
       npc.depth = npc.y + npc.height / 2;

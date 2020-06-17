@@ -1,14 +1,17 @@
+import { FontAsset } from './../assets/FontAsset';
+import { Events } from '../events/Events';
+import EventDispatcher from '../events/EventDispatcher';
+import { AudioAsset } from './../assets/AudioAsset';
 import { EnemyAsset } from '../assets/EnemyAsset';
 import { PlayerAsset } from '../assets/PlayerAsset';
-import { AudioAsset } from '../assets/AudioAsset';
 import { FontAsset } from '../assets/FontAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { UIAsset } from '../assets/UIAsset';
 import BaseScene from './BaseScene';
-import GameStartScene from './GameStartScene';
 import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import OutlinePipeline from '../pipelines/OutlinePipeline';
+import SceneManager from '../manager/SceneManager';
 
 /**
  * This scenes preloads all the static assets needed for the game.
@@ -30,6 +33,8 @@ class PreloadScene extends BaseScene
 
   private assetText?: Phaser.GameObjects.Text; 
 
+  private ready: boolean;
+
   /**
    * This is called only once when you start the game. Every time a scene is 
    * created using methods like `scene.start()`, `constructor()` will not be 
@@ -38,6 +43,7 @@ class PreloadScene extends BaseScene
 	constructor()
 	{
     super(PreloadScene.KEY);
+    this.ready = false;
   }
 
   /**
@@ -51,6 +57,16 @@ class PreloadScene extends BaseScene
    */
   public init(data: any): void
   {
+    this.ready = false;
+
+    // register custom pipelines if webGL is enabled
+    if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)
+    {
+      this.game.renderer.addPipeline('Grayscale', new GrayscalePipeline(this.game));
+      this.game.renderer.addPipeline('Outline', new OutlinePipeline(this.game));
+    }
+
+    SceneManager.getInstance().init();
   }
 
   /**
@@ -59,17 +75,25 @@ class PreloadScene extends BaseScene
    */
   public preload()
   {
-
+    // setup loading ui
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
+    const spacingBetweenProgressBarAndBox = 10;
+    const progressBoxWidth = 320;
+    const progressBoxHeight = 50;
 
     this.load.on('progress', (value) => {
       this.progressBar?.clear();
       this.progressBar?.fillStyle(0xffffff, 1);
-      this.progressBar?.fillRect(centerX + 10 - 160, centerY + 10, 300 * value, 30);
-      this.percentText?.setText(parseInt(value) * 100 + '%');
+      this.progressBar?.fillRect(
+        centerX + spacingBetweenProgressBarAndBox - progressBoxWidth / 2, 
+        centerY + spacingBetweenProgressBarAndBox, 
+        (progressBoxWidth - spacingBetweenProgressBarAndBox * 2) * value, 
+        progressBoxHeight - spacingBetweenProgressBarAndBox * 2
+      );
+      this.percentText?.setText(Math.floor(value * 100).toString() + '%');
     });
                 
     this.load.on('fileprogress', (file) => {
@@ -77,46 +101,40 @@ class PreloadScene extends BaseScene
     });
     
     this.load.on('complete', () => {
-      this.scene.start(GameStartScene.KEY);
+      this.ready = true;
     });
 
     this.progressBar = this.add.graphics();
     const progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(centerX - 160, centerY, 320, 50);
-    
-    const loadingText = this.make.text({
-        x: width / 2,
-        y: height / 2 - 50,
-        text: 'Loading...',
-        style: {
-          font: '20px monospace',
-          fill: '#ffffff'
-        }
-    });
-    loadingText.setOrigin(0.5, 0.5);
 
+    // Draw progress box roughly around the center.
+    // Top left corner of the box is located at center vertically.
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(centerX - progressBoxWidth / 2, centerY, 
+      progressBoxWidth, progressBoxHeight);
+    
+    // draw loading text just above progress box
+    const loadingText = this.make.text({
+      x: width / 2,
+      y: 0,
+      text: 'Loading...'
+    }).setOrigin(0.5, 0.5);
+    loadingText.setY(centerY - loadingText.height);
+
+    // draw percent text at the center of the progress box
     this.percentText = this.make.text({
       x: width / 2,
-      y: height / 2 + 25,
-      text: '0%',
-      style: {
-        font: '18px monospace',
-        fill: '#ffffff'
-      }
-    });
-    this.percentText.setOrigin(0.5, 0.5);
+      y: height / 2 + progressBoxHeight / 2,
+      text: '0%'
+    }).setOrigin(0.5, 0.5);
 
+    // draw asset text just below progress box
     this.assetText = this.make.text({
-        x: width / 2,
-        y: height / 2 + 75,
-        text: '',
-        style: {
-          font: '18px monospace',
-          fill: '#ffffff'
-        }
-    });
-    this.assetText.setOrigin(0.5, 0.5);
+      x: width / 2,
+      y: 0,
+      text: ''
+    }).setOrigin(0.5, 0.5);
+    this.assetText.setY(centerY + progressBoxHeight + this.assetText.height);
 
     // load ui asset
     this.load.image(UIAsset.ItemSlotBordered);
@@ -147,9 +165,12 @@ class PreloadScene extends BaseScene
     this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.ThreeFootSteps));
     this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyHit));
     this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyFoundPlayer));
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.FieldsOfIce));
+    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Text));
 
     // load font asset
     this.load.bitmapFont(FontAsset.PressStart2P);
+    // this.game.cache.bitmapFont.get(FontAsset.PressStart2P).font.lineHeight = 10;
   }
 
   /**
@@ -163,12 +184,6 @@ class PreloadScene extends BaseScene
    */
   public create(data: any)
   {
-    // register custom pipelines if webGL is enabled
-    if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)
-    {
-      this.game.renderer.addPipeline('Grayscale', new GrayscalePipeline(this.game));
-      this.game.renderer.addPipeline('Outline', new OutlinePipeline(this.game));
-    }
   }
 
   /**
@@ -178,6 +193,10 @@ class PreloadScene extends BaseScene
    */
   public update(time: number, delta: number)
   {
+    if (this.ready)
+    {
+      EventDispatcher.getInstance().emit(Events.Event.PreloadComplete, { scene: this });
+    }
   }
 
 }

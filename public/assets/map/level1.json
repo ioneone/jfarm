@@ -21,11 +21,6 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"DestinationLevel",
-                         "type":"int",
-                         "value":2
-                        }, 
-                        {
                          "name":"DestinationScene",
                          "type":"string",
                          "value":"LevelScene"
@@ -41,19 +36,14 @@
                          "value":893
                         }, 
                         {
-                         "name":"IsDark",
-                         "type":"bool",
-                         "value":true
+                         "name":"TilemapKey",
+                         "type":"string",
+                         "value":"assets\/map\/level2"
                         }, 
                         {
-                         "name":"TilemapFileNamePrefix",
+                         "name":"TilesetKey",
                          "type":"string",
-                         "value":"level"
-                        }, 
-                        {
-                         "name":"TilesetFileName",
-                         "type":"string",
-                         "value":"tiles"
+                         "value":"assets\/map\/tiles"
                         }],
                  "rotation":0,
                  "type":"",
@@ -81,6 +71,16 @@
                          "name":"DestinationY",
                          "type":"float",
                          "value":451
+                        }, 
+                        {
+                         "name":"TilemapKey",
+                         "type":"string",
+                         "value":"assets\/map\/basecamp"
+                        }, 
+                        {
+                         "name":"TilesetKey",
+                         "type":"string",
+                         "value":"assets\/map\/tiles"
                         }],
                  "rotation":0,
                  "type":"",

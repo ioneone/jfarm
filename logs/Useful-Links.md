@@ -39,3 +39,7 @@ These are some useful links I haven't figured out where to put in the dev logs y
 - https://www.youtube.com/watch?v=oP2aj995Go4&list=PLokUXxE68Y2nQ5ufDEnEi4fqgSqY1mrxX&index=3
 
 - https://gammafp.com/tools/
+
+- https://gamedevacademy.org/create-a-dialog-modal-plugin-in-phaser-3-part-2/
+
+- https://www.youtube.com/watch?v=c9NjhfqxKVQ

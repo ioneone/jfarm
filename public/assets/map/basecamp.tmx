@@ -409,13 +409,11 @@
  <objectgroup id="4" name="TransitionLayer">
   <object id="18" x="208" y="496" width="96" height="16">
    <properties>
-    <property name="DestinationLevel" type="int" value="1"/>
     <property name="DestinationScene" value="LevelScene"/>
     <property name="DestinationX" type="float" value="331"/>
     <property name="DestinationY" type="float" value="249"/>
-    <property name="IsDark" type="bool" value="true"/>
-    <property name="TilemapFleNamePrefix" value="level"/>
-    <property name="TilesetFileName" value="tiles"/>
+    <property name="TilemapKey" value="assets/map/level1"/>
+    <property name="TilesetKey" value="assets/map/tiles"/>
    </properties>
   </object>
  </objectgroup>

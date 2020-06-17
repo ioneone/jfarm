@@ -1,11 +1,8 @@
-import { SceneTransitionData } from './../objects/SceneTransitionObject';
-import { LevelSceneTransitionData } from '../objects/LevelSceneTransitionObject';
+import { Events } from './../events/Events';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
-import LevelScene from './LevelScene';
-import UIScene from './UIScene';
 import BaseScene from './BaseScene';
-import BasecampScene from './BasecampScene';
+import EventDispatcher from '../events/EventDispatcher';
 
 /**
  * The first scene the player sees when they start the game.
@@ -20,12 +17,22 @@ class GameStartScene extends BaseScene
   // the unique id of this scene
   public static readonly KEY = "GameStartScene";
 
+  // how often the helper text `press Enter to start` blinks
+  private static readonly BLINK_INTERVAL_IN_MS = 600;
+
   // reference to the ENTER key for starting the game
   private keyEnter?: Phaser.Input.Keyboard.Key;
+
+  // elapsed time since the helper text's visibility changed
+  private elapsedTime: number;
+
+  // the helper text that prompts the user to press enter to start the game
+  private helperText?: Phaser.GameObjects.BitmapText;
 
   constructor()
   {
     super(GameStartScene.KEY);
+    this.elapsedTime = 0;
   }
 
   /**
@@ -40,6 +47,7 @@ class GameStartScene extends BaseScene
   public init(data: any): void
   {
     super.init(data);
+    this.elapsedTime = 0;
   }
 
   /**
@@ -69,24 +77,18 @@ class GameStartScene extends BaseScene
     const title = "SHINING SOUL J";
     const titleFontSize = 24;
 
-    const helperText = "Press Enter to Start";
+    const helperTextContent = "press ENTER to start";
     const helperTextFontSize = 12;
+
     const spacingBetweenTitleAndHelperText = 24;
 
     // draw texts on the center of the screen
-    const titleBitmapText = this.add.bitmapText(this.cameras.main.centerX, 
+    const titleText = this.add.bitmapText(this.cameras.main.centerX, 
       this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 180, 
-      FontAsset.PressStart2P, helperText, helperTextFontSize).setOrigin(0.5, 0.5)
+    this.helperText = this.add.bitmapText(this.cameras.main.centerX, 
+      this.cameras.main.centerY + titleText.height / 2 + spacingBetweenTitleAndHelperText, 
+      FontAsset.PressStart2P, helperTextContent, helperTextFontSize).setOrigin(0.5, 0);
 
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 100, FontAsset.PressStart2P, "Press W/A/S/D to move", helperTextFontSize).setOrigin(0.5, 0.5);
-    this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY + 120, FontAsset.PressStart2P, "Press J to attack", helperTextFontSize).setOrigin(0.5, 0.5);
-
-      this.add.bitmapText(this.cameras.main.centerX, 
-        this.cameras.main.centerY + 140, FontAsset.PressStart2P, "Press SPACE to change weapon", helperTextFontSize).setOrigin(0.5, 0.5);
   }
 
   /**
@@ -96,26 +98,16 @@ class GameStartScene extends BaseScene
    */
   public update(time: number, delta: number): void
   {
+    this.elapsedTime += delta;
+    if (this.elapsedTime > GameStartScene.BLINK_INTERVAL_IN_MS)
+    {
+      this.elapsedTime %= GameStartScene.BLINK_INTERVAL_IN_MS;
+      this.helperText?.setVisible(!this.helperText.visible);
+    }
+
     if (Phaser.Input.Keyboard.JustDown(this.keyEnter!))
     {
-      const levelSceneTranstionData: LevelSceneTransitionData = {
-        destinationScene: LevelScene.KEY,
-        destinationX: 168,
-        destinationY: 263,
-        destinationLevel: 1,
-        tilemapFileNamePrefix: "level",
-        tilesetFileName: "tiles",
-        isDark: true
-      };
-      const basecampSceneTransitionData: SceneTransitionData = {
-        destinationScene: BasecampScene.KEY,
-        destinationX: 168,
-        destinationY: 263,
-        isDark: false
-      };
-      // this.scene.start(LevelScene.KEY, levelSceneTranstionData);
-      this.scene.start(BasecampScene.KEY, basecampSceneTransitionData);
-      this.scene.start(UIScene.KEY);
+      EventDispatcher.getInstance().emit(Events.Event.StartGame, { scene: this });
     }
   }
 

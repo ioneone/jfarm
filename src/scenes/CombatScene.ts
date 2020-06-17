@@ -16,6 +16,10 @@ import Weapon from '../objects/Weapon';
  */
 abstract class CombatScene extends PlayerScene
 {
+
+  // light enabled objects need at least one light source to exibit ambient color
+  protected sceneLight?: Phaser.GameObjects.Light;
+
   // the group of enemies in the scene
   protected enemies?: Phaser.GameObjects.Group;
 
@@ -110,6 +114,13 @@ abstract class CombatScene extends PlayerScene
       return weapon.getBody().angularVelocity !== 0 && enemy.getUpdateState() !== EnemyUpdateState.KnockBack;
     });
 
+    // enable lights
+    this.bottomLayer!.setPipeline('Light2D');
+    this.middleLayer!.setPipeline('Light2D');
+    this.topLayer!.setPipeline('Light2D');
+    this.sceneLight = this.lights.addLight();
+    this.lights.enable().setAmbientColor(0x404040);
+
   }
 
   /**
@@ -132,22 +143,26 @@ abstract class CombatScene extends PlayerScene
   {
     super.toggleDebugMode();
 
-    if (this.isDark)
+    if (this.physics.world.debugGraphic.visible)
     {
-      if (this.physics.world.debugGraphic.visible)
-      {
-        this.enemies?.getChildren().forEach(child => {
-          (child as Enemy).resetPipeline();
-        });
-      }
-      else
-      {
-        this.enemies?.getChildren().forEach(child => {
-          (child as Enemy).setPipeline('Light2D');
-        });
-      }
+      this.bottomLayer?.resetPipeline();
+      this.middleLayer?.resetPipeline();
+      this.topLayer?.resetPipeline();
+
+      this.enemies?.getChildren().forEach(child => {
+        (child as Enemy).resetPipeline();
+      });
     }
-    
+    else
+    {
+      this.bottomLayer?.setPipeline('Light2D');
+      this.middleLayer?.setPipeline('Light2D');
+      this.topLayer?.setPipeline('Light2D');
+
+      this.enemies?.getChildren().forEach(child => {
+        (child as Enemy).setPipeline('Light2D');
+      });
+    }    
   }
 
 }

@@ -3,6 +3,12 @@ import { NonPlayerCharacterAsset } from '~/assets/NonPlayerCharacterAsset';
 import Phaser from 'phaser';
 import Player from './Player';
 
+export enum NonPlayerCharacterState
+{
+  Default,
+  Talking
+}
+
 /**
  * Non controllable character (NPC)
  * @class
@@ -17,6 +23,8 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
   private static readonly MOVE_SPEED = 64;
 
   private asset: NonPlayerCharacterAsset;
+
+  public currentState = NonPlayerCharacterState.Default;
 
   constructor(scene: Phaser.Scene, x: number, y: number, asset: NonPlayerCharacterAsset)
   {
@@ -55,36 +63,44 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
 
   public update()
   {
-    const probablity = 0.01;
-    const shouldTakeAction = Math.random() < probablity;
 
-    if (shouldTakeAction)
+    if (this.currentState === NonPlayerCharacterState.Default)
     {
-      if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
+      const probablity = 0.01;
+      const shouldTakeAction = Math.random() < probablity;
+  
+      if (shouldTakeAction)
       {
-        const choice = Math.random();
-
-        if (choice < 0.25)
+        if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
         {
-          this.getBody().setVelocity(0, NonPlayerCharacter.MOVE_SPEED);
-        }
-        else if (choice < 0.5)
-        {
-          this.getBody().setVelocity(0, -NonPlayerCharacter.MOVE_SPEED);
-        }
-        else if (choice < 0.75)
-        {
-          this.getBody().setVelocity(NonPlayerCharacter.MOVE_SPEED, 0);
+          const choice = Math.random();
+  
+          if (choice < 0.25)
+          {
+            this.getBody().setVelocity(0, NonPlayerCharacter.MOVE_SPEED);
+          }
+          else if (choice < 0.5)
+          {
+            this.getBody().setVelocity(0, -NonPlayerCharacter.MOVE_SPEED);
+          }
+          else if (choice < 0.75)
+          {
+            this.getBody().setVelocity(NonPlayerCharacter.MOVE_SPEED, 0);
+          }
+          else
+          {
+            this.getBody().setVelocity(-NonPlayerCharacter.MOVE_SPEED, 0);
+          }
         }
         else
         {
-          this.getBody().setVelocity(-NonPlayerCharacter.MOVE_SPEED, 0);
+          this.getBody().setVelocity(0, 0);
         }
       }
-      else
-      {
-        this.getBody().setVelocity(0, 0);
-      }
+    }
+    else if (this.currentState === NonPlayerCharacterState.Talking)
+    {
+      this.getBody().setVelocity(0, 0);
     }
 
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
@@ -137,6 +153,11 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
   public getBody(): Phaser.Physics.Arcade.Body
   {
     return this.body as Phaser.Physics.Arcade.Body;
+  }
+
+  public setCurrentState(state: NonPlayerCharacterState)
+  {
+    this.currentState = state;
   }
 
 }

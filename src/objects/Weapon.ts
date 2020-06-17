@@ -58,7 +58,7 @@ class Weapon extends Phaser.GameObjects.Sprite
    * This should be called every frame. The weapon follows the player.
    * @param {Player} player 
    */
-  public update(player: Player)
+  public update(player: Player, attackEnabled: boolean)
   {
 
     this.flipX = player.flipX;
@@ -67,7 +67,7 @@ class Weapon extends Phaser.GameObjects.Sprite
     {
       this.angle = 0;
 
-      if (player.isActivatingWeapon())
+      if (attackEnabled && this.getBody().enable && player.isActionKeyDown())
       {
         this.scene.sound.play(AudioAsset.Swing);
         if (this.flipX)

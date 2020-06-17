@@ -20,11 +20,6 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"DestinationLevel",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
                          "name":"DestinationScene",
                          "type":"string",
                          "value":"LevelScene"
@@ -40,19 +35,14 @@
                          "value":249
                         }, 
                         {
-                         "name":"IsDark",
-                         "type":"bool",
-                         "value":true
+                         "name":"TilemapKey",
+                         "type":"string",
+                         "value":"assets\/map\/level1"
                         }, 
                         {
-                         "name":"TilemapFileNamePrefix",
+                         "name":"TilesetKey",
                          "type":"string",
-                         "value":"level"
-                        }, 
-                        {
-                         "name":"TilesetFileName",
-                         "type":"string",
-                         "value":"tiles"
+                         "value":"assets\/map\/tiles"
                         }],
                  "rotation":0,
                  "type":"",

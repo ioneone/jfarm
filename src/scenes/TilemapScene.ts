@@ -1,8 +1,7 @@
-import { SceneTransitionData } from '../objects/SceneTransitionObject';
+import SceneTransitionObject, { SceneTransitionData } from '../objects/SceneTransitionObject';
 import Phaser from 'phaser';
 import AnimatedTile, { TilesetTileData } from '../objects/AnimatedTile';
 import BaseScene from './BaseScene';
-import SceneTransitionObjectFactory from '../factory/SceneTransitionObjectFactory';
 
 /**
  * The name of tile layers of the tilemap exported from Tiled program.
@@ -49,17 +48,12 @@ export interface TiledTransitionObject
  * - MiddleLayer (collidable)
  * - BottomLayer (collidable)
  * - TransitionLayer
- * The lower layer will be rendered first. Use default name for tileset name. 
- * (e.g. `path/to/file/foo.png` => `foo`)
  * 
- * The tile map and tile set files should follow a convention. If the key of the 
- * map is `foo`, then your tile map file must be located at `foo.json`, 
- * the tile set file at `foo.png`, and the tile set normal map file at 
- * `foo_n.png`.
- * 
- * The depths of the layers are 0 by default except the TopLayer whose depth is 
- * set to 1 so it appears on top of every game object with depth 0 even if they 
- * are added later.
+ * The lower layer will be rendered first. Use default name for tileset name 
+ * (e.g. `path/to/file/foo.png` => `foo`). This scene expects to receive data 
+ * with key `tilemapKey` and `tilesetKey`. The depths of the layers are 0 by 
+ * default except the TopLayer whose depth is set to `Infinity` so it appears 
+ * on top of every game object with any depth.
  */
 abstract class TilemapScene extends BaseScene
 {
@@ -98,16 +92,11 @@ abstract class TilemapScene extends BaseScene
   // referene to animatable tiles
   protected animatedTiles: AnimatedTile[];
 
-  // light enabled objects need at least one light source to exibit ambient color
-  protected sceneLight?: Phaser.GameObjects.Light;
-
   // temporary storage for tile map key extracted from init() method
   protected tilemapKey?: string;
 
   // temporary storage for tile set key extracted from init() method
   protected tilesetKey?: string;
-
-  protected isDark?: boolean;
 
   // press 'I' key to toggle debug mode
   protected keyI?: Phaser.Input.Keyboard.Key;
@@ -138,9 +127,8 @@ abstract class TilemapScene extends BaseScene
   {
     super.init(data);
     this.animatedTiles = [];
-    this.tilemapKey = this.getTilemapKey(data);
-    this.tilesetKey = this.getTilesetKey(data);
-    this.isDark = data.isDark;
+    this.tilemapKey = data.tilemapKey;
+    this.tilesetKey = data.tilesetKey;
   }
   
   /**
@@ -180,7 +168,7 @@ abstract class TilemapScene extends BaseScene
     this.transitionObjectGroup = this.physics.add.staticGroup();
     const tiledTransitionObjects = this.tilemap.getObjectLayer(TileLayer.Transition).objects as TiledTransitionObject[];
     tiledTransitionObjects.forEach(tiledTransitionObject => {
-      this.transitionObjectGroup?.add(SceneTransitionObjectFactory.create(this, tiledTransitionObject));
+      this.transitionObjectGroup?.add(new SceneTransitionObject(this, tiledTransitionObject));
     });
 
     // create bottom layer
@@ -197,24 +185,27 @@ abstract class TilemapScene extends BaseScene
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
     // in the order it was added to the scene.
-    this.topLayer.setDepth(999999);
+    // Set the depth high enough so that TopLayer is on top of any game objects
+    // whose depth might be higher than 0 due to depth sorting.
+    this.topLayer.setDepth(Infinity);
 
     // create animated tiles
     // loop through every tile and check if its id is animated tile's id
-    for (let key in this.tileset.tileData as TilesetTileData)
+    const tileData = this.tileset.tileData as TilesetTileData;
+    for (let tileid in tileData)
     {
       this.tilemap.layers.forEach(layer => {
-        if (layer.tilemapLayer.type === "DynamicTilemapLayer") 
-        {
-          layer.data.forEach(tileRow => {
-            tileRow.forEach(tile => {
-              if ((tile.index - this.tileset!.firstgid) === parseInt(key)) 
-              {
-                this.animatedTiles.push(new AnimatedTile(tile, (this.tileset!.tileData as TilesetTileData)[key].animation!, this.tileset!.firstgid));
-              }
-            });
+        if (layer.tilemapLayer.type === "StaticTilemapLayer") return;
+        layer.data.forEach(tileRow => {
+          tileRow.forEach(tile => {
+            // Typically `firstgid` is 1, which means tileid starts from 1.
+            // Tiled's tileid starts from 0.
+            if ((tile.index - this.tileset!.firstgid) === parseInt(tileid)) 
+            {
+              this.animatedTiles.push(new AnimatedTile(tile, tileData[tileid].animation!, this.tileset!.firstgid));
+            }
           });
-        }
+        });
       })
     }
 
@@ -234,19 +225,8 @@ abstract class TilemapScene extends BaseScene
     this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
     this.cameras.main.setZoom(2);
 
-    // configure lights
-    if (this.isDark)
-    {
-      this.bottomLayer.setPipeline('Light2D');
-      this.middleLayer.setPipeline('Light2D');
-      this.topLayer.setPipeline('Light2D');
-      this.sceneLight = this.lights.addLight();
-      this.lights.enable().setAmbientColor(0x404040);
-    }
-
     // by default don't show built-in debug graphics
     this.physics.world.debugGraphic.setVisible(false);
-    
   }
   
   /**
@@ -268,25 +248,6 @@ abstract class TilemapScene extends BaseScene
   }
 
   /**
-   * Get the unique key of the tile map. The `key` of a tile map is just its 
-   * file path excluding the extension. If your tile map is located at 
-   * `path/to/tile/map/foo.json`, then the key should be `path/to/tile/map/foo`.
-   * @param {any} data - the data the scene received for initialization
-   * @return {string} - the tile map key
-   */
-  public abstract getTilemapKey(data: any): string;
-
-  /**
-   * Get the unique key of the tile set. The `key` of a tile set is just its 
-   * file path excluding the extension. If your tile set is located at 
-   * `path/to/tile/set/foo.png`, then the key should be `path/to/tile/set/foo`.
-   * The tile set normal map must be located at `path/to/tile/set/foo_n.png`.
-   * @param {any} data - the data the scene received for initialization
-   * @return {string} - the tile set key
-   */
-  public abstract getTilesetKey(data: any): string;
-
-  /**
    * The graphics shows useful information for debugging when the debug mode 
    * is turned on. In `update()`, it checks whether a debug key (assigned in 
    * {@link BaseScene}) is pressed, and if it is, call this function.
@@ -299,23 +260,6 @@ abstract class TilemapScene extends BaseScene
 
     // toggle custom debug display
     this.debugGraphics!.setVisible(this.physics.world.debugGraphic.visible);
-
-    // toggle lights
-    if (this.isDark)
-    {
-      if (this.physics.world.debugGraphic.visible)
-      {
-        this.bottomLayer?.resetPipeline();
-        this.middleLayer?.resetPipeline();
-        this.topLayer?.resetPipeline();
-      }
-      else
-      {
-        this.bottomLayer?.setPipeline('Light2D');
-        this.middleLayer?.setPipeline('Light2D');
-        this.topLayer?.setPipeline('Light2D');
-      }
-    }
   }
 
   /**

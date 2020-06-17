@@ -13,5 +13,7 @@ export enum AudioAsset
   Swing            = "assets/audio/swing",
   EnemyFoundPlayer = "assets/audio/enemy_found_player",
   ThreeFootSteps   = "assets/audio/three_foot_steps",
-  EnemyHit         = "assets/audio/enemy_hit"
+  EnemyHit         = "assets/audio/enemy_hit",
+  FieldsOfIce      = "assets/audio/fields_of_ice",
+  Text             = "assets/audio/text"
 }

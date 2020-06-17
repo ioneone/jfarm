@@ -29,7 +29,7 @@ class EventDispatcher extends Phaser.Events.EventEmitter
    * Get the singleton event dispatcher.
    * @return {EventDispatcher} - the singeleton event dispatcher
    */
-  static getInstance(): EventDispatcher
+  public static getInstance(): EventDispatcher
   {
     if (!EventDispatcher.singelton)
     {

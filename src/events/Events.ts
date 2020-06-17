@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import { WeaponAsset } from '../assets/WeaponAsset';
 
 export namespace Events
@@ -19,7 +20,13 @@ export namespace Events
     // enemy sees player in its vision range
     EnemyFoundPlayer = "EnemyFoundPlayer",
     // the selected item solot has changed
-    ItemSlotChange = "itemslotchange"
+    ItemSlotChange = "itemslotchange",
+    // when the player wants to start the game
+    StartGame = "startgame",
+    // when preload scene preloaded all the assets
+    PreloadComplete = "preloadcomplete",
+    // when the player's hp is 0
+    PlayerDies = "playerdies"
   }
 
   /**
@@ -76,6 +83,33 @@ export namespace Events
     export interface ItemSlotChange
     {
       currentWeaponAsset?: WeaponAsset
+    }
+
+    /**
+     * Data type to be sent when {@link Event#StartGame} is fired.
+     * @interface
+     */
+    export interface StartGame
+    {
+      scene: Phaser.Scene
+    }
+
+    /**
+     * Data type to be sent when {@link Event#PreloadComplete} is fired.
+     * @interface
+     */
+    export interface PreloadComplete
+    {
+      scene: Phaser.Scene
+    }
+
+    /**
+     * Data type to be sent when {@link Event#PlayerDies} is fired.
+     * @interface
+     */
+    export interface PlayerDies
+    {
+      scene: Phaser.Scene
     }
 
   }
