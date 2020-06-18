@@ -3,107 +3,14 @@
  <editorsettings>
   <export target="." format="json"/>
  </editorsettings>
- <tileset firstgid="1" name="townsfolk_m" tilewidth="32" tileheight="32" tilecount="8" columns="4">
-  <image source="../npcs/townsfolk_m/townsfolk_m.png" width="128" height="64"/>
- </tileset>
- <tileset firstgid="9" name="basecamp" tilewidth="16" tileheight="16" tilecount="72" columns="9">
-  <image source="basecamp.png" width="144" height="128"/>
+ <tileset firstgid="1" name="basecamp" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="basecamp.png" width="256" height="256"/>
   <tile id="1">
    <properties>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </tile>
-  <tile id="39">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="40">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="42">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="43">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="44">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="48">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="49">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="51">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="52">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="53">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="55">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="56">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="57">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="58">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="59">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="61">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="62">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="64">
-   <properties>
-    <property name="collision" type="bool" value="true"/>
-   </properties>
-  </tile>
-  <tile id="65">
+  <tile id="67">
    <properties>
     <property name="collision" type="bool" value="true"/>
    </properties>
@@ -113,39 +20,120 @@
     <property name="collision" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="70">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="71">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="72">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="83">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="84">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="86">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="87">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="88">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="97">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="98">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="99">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="100">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="101">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="103">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="104">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="113">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="114">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="117">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
- <tileset firstgid="81" name="torch_anim_f0" tilewidth="16" tileheight="16" tilecount="1" columns="1">
-  <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_anim_f0.png" width="16" height="16"/>
- </tileset>
- <tileset firstgid="82" name="torch_anim_f1" tilewidth="16" tileheight="16" tilecount="1" columns="1">
-  <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_anim_f1.png" width="16" height="16"/>
- </tileset>
- <tileset firstgid="83" name="torch_anim_f2" tilewidth="16" tileheight="16" tilecount="1" columns="1">
-  <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_anim_f2.png" width="16" height="16"/>
- </tileset>
- <tileset firstgid="84" name="torch_anim_f3" tilewidth="16" tileheight="16" tilecount="1" columns="1">
-  <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_anim_f3.png" width="16" height="16"/>
- </tileset>
- <tileset firstgid="85" name="torch_anim_f4" tilewidth="16" tileheight="16" tilecount="1" columns="1">
-  <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_anim_f4.png" width="16" height="16"/>
- </tileset>
- <tileset firstgid="86" name="torch_spritesheet" tilewidth="16" tileheight="16" tilecount="6" columns="6">
+ <tileset firstgid="257" name="torch_spritesheet" tilewidth="16" tileheight="16" tilecount="6" columns="6">
   <image source="../../../../../Downloads/v1.1 dungeon crawler 16x16 pixel pack/props_itens/torch_spritesheet.png" width="96" height="16"/>
+ </tileset>
+ <tileset firstgid="263" name="tables" tilewidth="16" tileheight="16" tilecount="9" columns="3">
+  <image source="../Minifantasy_Dungeon_v1.1/Decoration Items/tables.png" width="48" height="48"/>
+ </tileset>
+ <tileset firstgid="272" name="alchemist" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="../npcs/alchemist/alchemist.png" width="128" height="64"/>
  </tileset>
  <layer id="3" name="TopLayer" width="16" height="16">
   <data encoding="csv">
-9,10,11,12,13,14,15,16,17,0,0,0,0,0,0,0,
-18,19,20,21,22,23,24,25,26,0,0,0,0,0,0,0,
-27,28,29,30,31,32,33,34,35,0,0,0,0,0,0,0,
-36,37,38,39,40,41,42,43,44,0,0,0,0,0,0,0,
-45,46,47,48,49,50,51,52,53,0,0,0,0,0,0,0,
-54,55,56,57,58,59,60,61,62,0,0,0,0,0,0,0,
-63,64,65,66,67,68,69,70,71,0,0,0,0,0,0,0,
-72,73,74,75,76,77,78,79,80,0,0,0,0,0,0,0,
-86,87,88,89,90,91,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+1,2,3,4,5,6,7,8,9,0,0,0,0,0,0,0,
+17,18,19,20,21,22,23,24,25,0,0,0,0,0,0,0,
+33,34,35,36,37,38,39,40,41,0,0,0,0,0,0,0,
+49,50,51,52,53,54,55,56,57,0,0,0,0,0,0,0,
+65,66,67,68,69,70,71,72,73,0,0,0,0,0,0,0,
+81,82,83,84,85,86,87,88,89,0,0,0,0,0,0,0,
+97,98,99,100,101,102,103,104,105,0,0,0,0,0,0,0,
+113,114,115,116,117,118,119,120,121,0,0,0,0,0,0,0,
+257,258,259,260,261,262,0,0,0,0,0,0,0,0,0,0,
+263,264,265,0,0,0,0,0,0,0,0,0,0,0,0,0,
+266,267,268,0,0,0,0,0,0,0,0,0,0,0,0,0,
+269,270,271,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="23">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="25">
  <editorsettings>
   <export target="." format="json"/>
  </editorsettings>
@@ -123,6 +123,57 @@
     <frame tileid="133" duration="100"/>
    </animation>
   </tile>
+  <tile id="144">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="145">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="146">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="160">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="161">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="162">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="176">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="177">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="178">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="265" name="alchemist" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="../npcs/alchemist/alchemist.png" width="128" height="64"/>
+ </tileset>
+ <tileset firstgid="273" name="blacksmith" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="../npcs/blacksmith/blacksmith.png" width="128" height="64"/>
  </tileset>
  <objectgroup id="4" name="TransitionLayer">
   <object id="18" x="176" y="496" width="160" height="16">
@@ -190,13 +241,13 @@
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
+93,0,0,0,0,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,153,0,0,0,0,0,0,92,
+93,0,0,0,0,169,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,169,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
-93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
-93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
-93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
-93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
+93,0,0,0,0,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,153,0,0,0,0,0,0,92,
+93,0,0,0,0,169,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,169,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
 93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,
@@ -208,24 +259,26 @@
 </data>
  </layer>
  <objectgroup id="5" name="ObjectLayer">
-  <object id="20" name="TownsfolkMale" gid="1" x="60.4635" y="363.756" width="32" height="32">
+  <object id="20" name="TownsfolkMale" gid="1" x="231.269" y="332.88" width="32" height="32">
    <properties>
     <property name="Paragraph1" value="How's going? I don't know why everyone looks just the same..."/>
     <property name="Paragraph2" value="Anyways, you can walk down and enter the dungeon."/>
    </properties>
   </object>
-  <object id="21" name="TownsfolkMale" gid="1" x="382.811" y="394.681" width="32" height="32">
+  <object id="21" name="TownsfolkMale" gid="1" x="200.838" y="414.389" width="32" height="32">
    <properties>
     <property name="Paragraph1" value="You can't attack in this area. You can attack in the dungeon though."/>
     <property name="Paragraph2" value="Press J to attack, SPACE to change item slot, and WASD to move."/>
     <property name="Paragraph3" value="Good luck!"/>
    </properties>
   </object>
-  <object id="22" name="TownsfolkMale" gid="1" x="126.45" y="286.563" width="32" height="32">
+  <object id="22" name="TownsfolkMale" gid="1" x="186.232" y="260.942" width="32" height="32">
    <properties>
     <property name="Paragraph1" value="Hey there! I don't talk much..."/>
    </properties>
   </object>
+  <object id="23" name="Alchemist" gid="265" x="53.7477" y="293.974" width="32" height="32"/>
+  <object id="24" name="Blacksmith" gid="2147483921" x="394.987" y="296.156" width="32" height="32"/>
  </objectgroup>
  <layer id="3" name="TopLayer" width="32" height="32">
   <data encoding="csv">
