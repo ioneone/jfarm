@@ -101,7 +101,7 @@ abstract class CombatScene extends PlayerScene
       enemy.knockBack(knockBackVelocity);
       enemy.receiveDamage(weapon.getModel().power);
       this.sound.play(AudioAsset.EnemyHit);
-      this.cameras.main.shake(100, 0.001);
+      this.cameras.main.shake(100, 0.002);
     }, (object1, object2) => {
       const weapon = object1 as Weapon;
       const enemy = object2 as Enemy;

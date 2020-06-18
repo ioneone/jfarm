@@ -1,3 +1,4 @@
+import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import { Events } from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
 import { AudioAsset } from './../assets/AudioAsset';
@@ -7,7 +8,6 @@ import { FontAsset } from '../assets/FontAsset';
 import { WeaponAsset } from '../assets/WeaponAsset';
 import { UIAsset } from '../assets/UIAsset';
 import BaseScene from './BaseScene';
-import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import OutlinePipeline from '../pipelines/OutlinePipeline';
 import SceneTransitionManager from '../manager/SceneTransitionManager';
@@ -87,6 +87,7 @@ class PreloadScene extends BaseScene
     this.load.image(UIAsset.HeartEmpty);
     this.load.image(UIAsset.HeartFull);
     this.load.image(UIAsset.HeartHalf);
+    this.load.atlas(UIAsset.Coin);
     
     // load player asset
     this.load.atlas(PlayerAsset.ElfFemale);
@@ -94,6 +95,8 @@ class PreloadScene extends BaseScene
 
     // load npc asset
     this.load.atlas(NonPlayerCharacterAsset.TownsfolkMale);
+    this.load.atlas(NonPlayerCharacterAsset.Alchemist);
+    this.load.atlas(NonPlayerCharacterAsset.Blacksmith);
 
     // load weapon asset
     this.load.image(WeaponAsset.RegularSword);

@@ -28,7 +28,7 @@ export enum NonPlayerCharacterState
 class NonPlayerCharacter extends Phaser.GameObjects.Sprite
 {
 
-  private static readonly MOVE_SPEED = 64;
+  protected static readonly MOVE_SPEED = 64;
 
   private config: NonPlayerCharacterConfig;
 
@@ -134,7 +134,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
   /**
    * Get the key for idle animation.
    */
-  private getIdleAnimationKey(): string
+  protected getIdleAnimationKey(): string
   {
     return `${this.config.asset}:${NonPlayerCharacterAssetData.IdleAnimationPrefix}`;
   }
@@ -142,7 +142,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
   /**
    * Get the key for running animation.
    */
-  private getRunAnimationKey(): string
+  protected getRunAnimationKey(): string
   {
     return `${this.config.asset}:${NonPlayerCharacterAssetData.RunAnimationPrefix}`;
   }

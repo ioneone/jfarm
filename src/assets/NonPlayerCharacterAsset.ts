@@ -9,7 +9,9 @@
  */
 export enum NonPlayerCharacterAsset
 {
-  TownsfolkMale = "assets/npcs/townsfolk_m/townsfolk_m"
+  TownsfolkMale = "assets/npcs/townsfolk_m/townsfolk_m",
+  Alchemist     = "assets/npcs/alchemist/alchemist",
+  Blacksmith    = "assets/npcs/blacksmith/blacksmith"
 }
 
 /**

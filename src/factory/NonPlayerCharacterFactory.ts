@@ -1,6 +1,8 @@
 import { NonPlayerCharacterAsset } from '~/assets/NonPlayerCharacterAsset';
 import { NonPlayerCharacterConfig } from './../objects/NonPlayerCharacter';
 import NonPlayerCharacter from '../objects/NonPlayerCharacter';
+import Alchemist from '~/objects/Alchemist';
+import Blacksmith from '~/objects/Blacksmith';
 
 /**
  * A factory for {@link NonPlayerCharacter}.
@@ -17,6 +19,10 @@ class NonPlayerCharacterFactory
    */
   public static create(scene: Phaser.Scene, tiledObject: Phaser.Types.Tilemaps.TiledObject): NonPlayerCharacter
   {
+
+    tiledObject.x += tiledObject.width / 2;
+    tiledObject.y -= tiledObject.height / 2;
+
     if (tiledObject.name === "TownsfolkMale")
     {
 
@@ -45,6 +51,14 @@ class NonPlayerCharacterFactory
         paragraph2: paragraph2,
         paragraph3: paragraph3
       });
+    }
+    else if (tiledObject.name === 'Alchemist')
+    {
+      return new Alchemist(scene, tiledObject.x!, tiledObject.y!);
+    }
+    else if (tiledObject.name === 'Blacksmith')
+    {
+      return new Blacksmith(scene, tiledObject.x!, tiledObject.y!).setFlipX(tiledObject.flippedHorizontal!);
     }
     
     throw new Error(`Failed to create npc from tiled object ${tiledObject}`)

@@ -1,3 +1,5 @@
+import { PlayerAsset } from './../assets/PlayerAsset';
+import { UIAsset } from './../assets/UIAsset';
 import { AudioAsset } from '../assets/AudioAsset';
 import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
@@ -6,6 +8,7 @@ import HitPointsBar from '../ui/HitPointsBar';
 import Inventory from '../ui/Inventory';
 import BaseScene from './BaseScene';
 import { Events } from '../events/Events';
+import Coin from '~/ui/Coin';
 
 /**
  * The user interface scene.
@@ -43,6 +46,8 @@ class UIScene extends BaseScene
 
   // the ui of the player's inventory
   private inventory?: Inventory;
+
+  private coin?: Coin;
 
   constructor()
   {
@@ -97,6 +102,9 @@ class UIScene extends BaseScene
       this.inventory.y - inventoryBounds.height - UIScene.INVENTORY_BOTTOM_SPACING
     );
 
+    // create coin ui
+    this.coin = new Coin(this, this.hitPointsBar.x, 48);
+
     // listen for custom events
     EventDispatcher.getInstance().on(Events.Event.Damage, this.handleDamageEvent, this);
     EventDispatcher.getInstance().on(Events.Event.EnemyFoundPlayer, this.handleEnemyFoundPlayer, this);
@@ -117,6 +125,7 @@ class UIScene extends BaseScene
   {
     super.update(time, delta);
     this.inventory?.update();
+    this.coin?.update();
   }
 
   /**

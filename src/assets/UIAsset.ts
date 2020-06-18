@@ -12,5 +12,6 @@ export enum UIAsset
   ItemSlotBordered = "assets/ui/item_slot_bordered",
   HeartEmpty       = "assets/ui/heart_empty",
   HeartHalf        = "assets/ui/heart_half",
-  HeartFull        = "assets/ui/heart_full"
+  HeartFull        = "assets/ui/heart_full",
+  Coin             = "assets/ui/coin/coin"
 }
