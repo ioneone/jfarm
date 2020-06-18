@@ -119,11 +119,11 @@ class BasecampScene extends PlayerScene
     });
 
     EventDispatcher.getInstance().on(Events.Event.PlayerTalksToNPC, () => {
-      this.cameras.main.zoomTo(2.2, 600, 'Sine.easeInOut');
+      this.cameras.main.zoomTo(2.2, 340, 'Sine.easeInOut');
     });
 
     EventDispatcher.getInstance().on(Events.Event.DialogEnds, () => {
-      this.cameras.main.zoomTo(2, 600, 'Sine.easeInOut');
+      this.cameras.main.zoomTo(2, 340, 'Sine.easeInOut');
     });
 
   }
