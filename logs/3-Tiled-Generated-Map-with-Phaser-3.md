@@ -12,11 +12,10 @@ Let's start by creating a simple map in Tiled. To learn how to use Tiled, you ca
 
 First, Create a map with size 32x32 tiles. To import the tileset, go to the panel on the bottom right corner and clock `New Tileset`.
 
-Now go to the panel on the top right corner and create these 4 layers (the order matters!):
+Now go to the panel on the top right corner and create these 3 layers (the order matters!):
 - TopLayer (TileLayer)
 - MiddleLayer (TileLayer)
 - BottomLayer (TileLayer)
-- TransitionLayer (ObjectLayer)
 
 What is a layer? Well, a tile map can consist of multiple layers and they are rendered in the order from bottom to top. This is useful when you want to place a tile on top of another tile. You won't be able to do this if you only have one layer.
 
@@ -26,9 +25,7 @@ What is a layer? Well, a tile map can consist of multiple layers and they are re
 
 `BottomLayer`: Same as `MiddleLayer` except this layer is rendered first.
 
-`TransitionLayer`: This is different from all the layers above. Place any invisible object you want to detect the collision/overlap with the game objects. For example, you can place a rectangle such that when the player overlaps with it, it loads a new map.
-
-Now, fill out the layer with the tiles and try to make is look like the picture above. Note the lava tile is animated. You can check [this tutorial](https://youtu.be/ZwaomOYGuYo?t=921) to find out how to animate a tile. Also don't forget to go to the bottom right corner and click `Edit Tileset`, in which you can set custom property for the tiles. Add `collision: true` for the wall tiles. When we export the map later, this information will also be stored in the file. Finally, remember to add a transition object on the stairs.
+Now, fill out the layer with the tiles and try to make is look like the picture above.
 
 Once you are done with creating the map, export it as JSON file by clicking `File > Save As`.
 
@@ -43,27 +40,7 @@ export enum TileLayer
 {
   Top = "TopLayer",
   Middle = "MiddleLayer",
-  Bottom = "BottomLayer",
-  Transition = "TransitionLayer"
-}
-```
-
-Also, the transition objects in Tiled are converted to a JSON object as follows:
-
-```typescript
-export interface TiledTransitionObject
-{
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  name: string;
-  properties: Array<{
-    name: string,
-    type: string,
-    value: string | number
-  }>;
+  Bottom = "BottomLayer"
 }
 ```
 
@@ -104,21 +81,19 @@ The first thing we should do is to preload the tile map JSON file and the tile s
 ```typescript
 public preload(): void
 {
-  const tilemapFilePath = "assets/map/map.json";
-  const tilesetFilePath = "assets/map/tiles.png";
-  this.load.image(tilesetFilePath, tilesetFilePath);
-  this.load.tilemapTiledJSON(tilesetFilePath, tilesetFilePath);
+  this.load.image("assets/map/map");
+  this.load.tilemapTiledJSON("assets/map/tiles");
 }
 ```
 
-The first argument is an id for the resource and the second argument is the file path for the resource. Since the file path is already unique, we can just use it for the key.
+The first argument is an id for the resource and the second argument is the file path for the resource. If the second argument is not provided, the default is `<key>.png`. So `this.load.image("assets/map/map")` is same as `this.load.image("assets/map/map", "assets/map/map.png");`.
 
 Once the resources are loaded, we need to parse them into Phaser's tile objects.
 
 ```typescript
 public create(data: SceneTransitionData): void
 {
-  this.tilemap = this.make.tilemap({ key: "assets/map/map.json" });
+  this.tilemap = this.make.tilemap({ key: "assets/map/map" });
   this.tileset = this.tilemap.addTilesetImage("tiles", "assets/map/tiles.png");
 }
 ```
@@ -129,56 +104,23 @@ In Tiled, we created layers as follows:
 - TopLayer
 - MiddleLayer
 - BottomLayer
-- TransitionLayer
 
-`TopLayers` draws on top of `MiddleLayer`, `MiddleLayer` draws on top of `BottomLayer`, and so on. So we need to instantiate the layers bottom up.
-
-```typescript
-// create transition layer
-...
-
-// create bottom layer
-...
-
-// create middle layer
-...   
-
-// create top layer
-...
-```
-
-Let's start with transition layer.
-
-```typescript
-const transitionObjectGroup = this.physics.add.staticGroup();
-const tiledTransitionObjects = 
-  this.tilemap.getObjectLayer(TileLayer.Transition).objects 
-    as TiledTransitionObject[];
-tiledTransitionObjects.forEach(tiledTransitionObject => {
-  // transitionObjectGroup?.add(
-  //   new SceneTransitionObject(this, tiledTransitionObject)
-  // );
-});
-```
-
-You can use `transitionObjectGroup` to check the overlap between player and transition objects using `this.physics.add.overlap(player, transitionObjectGroup)`. `SceneTransitionObject` is just a custom class for parsing `tiledTransitionObject.properties`. Don't worry about this for now. I will publish tutorial about this later.
-
-The other layers are pretty straightforward.
+`TopLayers` draws on top of `MiddleLayer`, `MiddleLayer` draws on top of `BottomLayer`. So we need to instantiate the layers bottom up.
 
 ```typescript
 // create bottom layer
 const bottomLayer = this.tilemap.createDynamicLayer(
-  TileLayer.Bottom, this.tileset, 0, 0);
+  TileLayer.Bottom, this.tileset);
 bottomLayer.setCollisionByProperty({ collision: true });   
 
 // create middle layer
 const middleLayer = this.tilemap.createDynamicLayer(
-  TileLayer.Middle, this.tileset, 0, 0);
+  TileLayer.Middle, this.tileset);
 middleLayer.setCollisionByProperty({ collision: true });     
 
 // create top layer
 const topLayer = this.tilemap.createDynamicLayer(
-  TileLayer.Top, this.tileset, 0, 0);
+  TileLayer.Top, this.tileset);
 ```
 
 Note the key `collision` in `setCollisionByProperty({ collision: true })` must match how you named your custom tile property in Tiled. `setCollisionByProperty({ collision: true })` registers the tiles with `collision: true` as collidable objects. You can do something like `this.physics.add.collider(player, middleLayer)` to prevent the player from passing through the walls.
@@ -214,15 +156,17 @@ public update(time: number, delta: number)
 }
 ```
 
-Hopefully you see something like this (ignore the game objects like player):
+Hopefully you see something like this:
 
 ![phaser-tilemap](./images/3-2.png)
 
-You probably have noticed that lava tile is not animating! Unfortunately, Phaser 3 doesn't support tile animation, so you have to implement it yourself. The good news is, somebody already did it. You can find the plugin [here](https://github.com/nkholski/phaser-animated-tiles). Or you can implement it yourself, which is what we will do. If you look at `tileset.tileData`, it has something like this:
+## Animating the Tile
+
+If you look at the tileset, you probably have noticed that there are 3 frames for the lava animation. Watch [the tutorial](https://www.youtube.com/watch?v=ZwaomOYGuYo) I mentioned earlier if you don't know how to create animated tile. Now that you have placed the animated lava tile, you can refresh the page and check if the tile is animating... Well, you probably have noticed that lava tile is not animating! Unfortunately, Phaser 3 doesn't support tile animation, so you have to implement it yourself. The good news is, somebody already did it. You can find the plugin [here](https://github.com/nkholski/phaser-animated-tiles). Or you can implement it yourself, which is what we will do in this tutorial. If you look at `tileset.tileData`, it has something like this:
 
 ![tiledata](./images/3-3.png)
 
-The key is the tile id and the value has animation data for that tile. Define `TilesetTileData` and `TileAnimationData` as follows:
+The `key` is the tile id and the `value` has animation data for that tile. Define `TilesetTileData` and `TileAnimationData` as follows:
 
 ```typescript
 type TilesetTileData = 
@@ -235,6 +179,15 @@ type TileAnimationData =
 So after creating the top layer, find which tiles should be animated. Then create a wrapper class `AnimatedTile` (which we will define later) to take care of the animation.
 
 ```typescript
+// create bottom layer
+... 
+
+// create middle layer
+...    
+
+// create top layer
+...
+
 const animatedTiles = []
 
 for (let key in tileset.tileData as TilesetTileData)
@@ -333,7 +286,7 @@ class AnimatedTile
 }
 ```
 
-I've added comments so it should be clear to understand what is going on. One thing to note though, is that I assumed the duration of every tile frame is the same, which is not true all the time. But this is enough for now. We will relax this restriction when we need to.
+I've added comments so it should be clear to understand what is going on. One thing to note though, is that I assumed the duration of every tile frame is the same (for simplicity), which is not true all the time. But this is good enough for now. We can relax this restriction when we need to.
 
 Now refresh the page and you will see the animating lava.
 

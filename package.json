@@ -1,12 +1,12 @@
 {
-	"name": "shining-soul-j",
+	"name": "platformer",
 	"version": "1.0.0",
 	"private": true,
-	"homepage": "https://ioneone.github.io/shining-soul-j",
+	"homepage": "https://ioneone.github.io/platformer",
 	"description": "",
 	"scripts": {
 		"start": "parcel src/index.html -p 8000",
-		"build": "parcel build src/index.html --out-dir dist --public-url /shining-soul-j/",
+		"build": "parcel build src/index.html --out-dir dist --public-url /platformer/",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -b master -d dist"
 	},

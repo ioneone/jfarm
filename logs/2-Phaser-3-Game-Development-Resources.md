@@ -1,6 +1,6 @@
 # Phaser 3 Game Development Resources
 
-In this tutorial, you will learn some of the important concepts and tools for game development.
+In this tutorial, you will learn some of the important things to know to develop a Phaser 3 game.
 
 ## Phaser Documentation and Community
 
@@ -12,7 +12,7 @@ If you are still stuck, there is a [Phaser discord channel](https://phaser.io/co
 
 You can find game assets at places like [itch.io](https://itch.io/) or [opengameart.org](https://opengameart.org/). But if you are a poor student like myself, you probably don't want to spend any dimes on them for a simple game. In that case, I recommend checking out Liberated Pixel Cup (LPC) from OpenGameArt. LPC assets are free high quality sprites with many contributers. The nice thing about LPC assets is that all of them follow an universal style guide, so LPC assets from two different sources will still look natural when they are put together.
 
-You can find full list of LPC assets at OpenGameArt website. There are also some github repositories for LPC assets.
+You can find full list of LPC assets at OpenGameArt website. There are also some github repositories for extra LPC assets.
 
 - [jrconway3/Universal-LPC-spritesheet](https://github.com/jrconway3/Universal-LPC-spritesheet)
 - [makrohn/Universal-LPC-spritesheet](https://github.com/makrohn/Universal-LPC-spritesheet)
