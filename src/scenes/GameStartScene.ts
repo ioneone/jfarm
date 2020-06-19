@@ -1,8 +1,8 @@
-import { Events } from './../events/Events';
-import { FontAsset } from '../assets/FontAsset';
+import Events from '../events/Events';
 import Phaser from 'phaser';
 import BaseScene from './BaseScene';
 import EventDispatcher from '../events/EventDispatcher';
+import Assets from '../assets/Assets';
 
 /**
  * The scene that shows game title.
@@ -84,10 +84,10 @@ class GameStartScene extends BaseScene
 
     // draw texts on the center of the screen
     const titleText = this.add.bitmapText(this.cameras.main.centerX, 
-      this.cameras.main.centerY, FontAsset.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
+      this.cameras.main.centerY, Assets.Asset.Font.PressStart2P, title, titleFontSize).setOrigin(0.5, 0.5);
     this.helperText = this.add.bitmapText(this.cameras.main.centerX, 
       this.cameras.main.centerY + titleText.height / 2 + spacingBetweenTitleAndHelperText, 
-      FontAsset.PressStart2P, helperTextContent, helperTextFontSize).setOrigin(0.5, 0);
+      Assets.Asset.Font.PressStart2P, helperTextContent, helperTextFontSize).setOrigin(0.5, 0);
 
   }
 

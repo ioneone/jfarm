@@ -1,5 +1,5 @@
 import WeaponModel from "./WeaponModel";
-import { WeaponAsset } from '../assets/WeaponAsset';
+import Assets from '../assets/Assets';
 
 /**
  * A weapon model for {@link WeaponAsset#RegularSword}.
@@ -11,7 +11,7 @@ class RegularSword extends WeaponModel
 {
   constructor()
   {
-    super(WeaponAsset.RegularSword, 10);
+    super(Assets.Asset.Weapon.RegularSword, 10);
   }
 }
 

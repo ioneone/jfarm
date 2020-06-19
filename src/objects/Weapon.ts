@@ -1,7 +1,7 @@
-import { AudioAsset } from '../assets/AudioAsset';
 import Phaser from 'phaser';
 import Player from "./Player";
 import WeaponModel from '../models/WeaponModel';
+import Assets from '../assets/Assets';
 
 /**
  * The weapon the player holds.
@@ -69,7 +69,7 @@ class Weapon extends Phaser.GameObjects.Sprite
 
       if (attackEnabled && this.getBody().enable && player.isActionKeyDown())
       {
-        this.scene.sound.play(AudioAsset.Swing);
+        this.scene.sound.play(Assets.Asset.Audio.Swing);
         if (this.flipX)
         {
           this.getBody().setAngularVelocity(-Weapon.ANGULAR_VELOCITY);

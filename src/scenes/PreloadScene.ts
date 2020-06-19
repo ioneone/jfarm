@@ -1,16 +1,10 @@
-import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
-import { Events } from '../events/Events';
+import Events from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
-import { AudioAsset } from './../assets/AudioAsset';
-import { EnemyAsset } from '../assets/EnemyAsset';
-import { PlayerAsset } from '../assets/PlayerAsset';
-import { FontAsset } from '../assets/FontAsset';
-import { WeaponAsset } from '../assets/WeaponAsset';
-import { UIAsset } from '../assets/UIAsset';
 import BaseScene from './BaseScene';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
 import OutlinePipeline from '../pipelines/OutlinePipeline';
 import SceneTransitionManager from '../manager/SceneTransitionManager';
+import Assets from '../assets/Assets';
 
 /**
  * This scenes preloads all the static assets needed for the game.
@@ -82,43 +76,14 @@ class PreloadScene extends BaseScene
     // setup asset loading progress bar
     this.setUpProgressUI();
 
-    // load ui asset
-    this.load.image(UIAsset.ItemSlotBordered);
-    this.load.image(UIAsset.HeartEmpty);
-    this.load.image(UIAsset.HeartFull);
-    this.load.image(UIAsset.HeartHalf);
-    this.load.atlas(UIAsset.Coin);
-    
-    // load player asset
-    this.load.atlas(PlayerAsset.ElfFemale);
-    this.load.atlas(PlayerAsset.ElfMale);
-
-    // load npc asset
-    this.load.atlas(NonPlayerCharacterAsset.TownsfolkMale);
-    this.load.atlas(NonPlayerCharacterAsset.Alchemist);
-    this.load.atlas(NonPlayerCharacterAsset.Blacksmith);
-
-    // load weapon asset
-    this.load.image(WeaponAsset.RegularSword);
-    this.load.image(WeaponAsset.Axe);
-    this.load.image(WeaponAsset.Hammer);
-
-    // load enemy asset
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.OrcWarrior));
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.IceZombie));
-    this.load.atlas(this.createDefaultAtlasJSONFileConfig(EnemyAsset.Chort));
-
-    // load audio asset
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.DamagePlayer));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Swing));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.ThreeFootSteps));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyHit));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.EnemyFoundPlayer));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.FieldsOfIce));
-    this.load.audio(this.createDefaultAudioFileConfig(AudioAsset.Text));
-
-    // load font asset
-    this.load.bitmapFont(FontAsset.PressStart2P);
+    // load the assets
+    Object.values(Assets.Asset.UI).forEach(asset => this.load.image(asset));
+    Object.values(Assets.Asset.Player).forEach(asset => this.load.atlas(asset));
+    Object.values(Assets.Asset.NonPlayerCharacter).forEach(asset => this.load.atlas(asset));
+    Object.values(Assets.Asset.Weapon).forEach(asset => this.load.image(asset));
+    Object.values(Assets.Asset.Enemy).forEach(asset => this.load.atlas(this.createDefaultAtlasJSONFileConfig(asset)));
+    Object.values(Assets.Asset.Audio).forEach(asset => this.load.audio(this.createDefaultAudioFileConfig(asset)));
+    Object.values(Assets.Asset.Font).forEach(asset => this.load.bitmapFont(asset));
   }
 
   /**

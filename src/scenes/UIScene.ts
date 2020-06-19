@@ -1,14 +1,11 @@
-import { PlayerAsset } from './../assets/PlayerAsset';
-import { UIAsset } from './../assets/UIAsset';
-import { AudioAsset } from '../assets/AudioAsset';
-import { FontAsset } from '../assets/FontAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import HitPointsBar from '../ui/HitPointsBar';
 import Inventory from '../ui/Inventory';
 import BaseScene from './BaseScene';
-import { Events } from '../events/Events';
-import Coin from '~/ui/Coin';
+import Events from '../events/Events';
+import Coin from '../ui/Coin';
+import Assets from '../assets/Assets';
 
 /**
  * The user interface scene.
@@ -134,7 +131,7 @@ class UIScene extends BaseScene
    */
   private handleDamageEvent(data: Events.Data.Damage): void
   {
-    const damageText = this.add.bitmapText(data.x, data.y, FontAsset.PressStart2P, data.damage.toString(), UIScene.DAMAGE_FONT_SIZE);
+    const damageText = this.add.bitmapText(data.x, data.y, Assets.Asset.Font.PressStart2P, data.damage.toString(), UIScene.DAMAGE_FONT_SIZE);
     
     if (data.color)
     {
@@ -169,7 +166,7 @@ class UIScene extends BaseScene
   private handleEnemyFoundPlayer(data: Events.Data.EnemyFoundPlayer)
   {
     const notificationText = this.add.bitmapText(data.x, data.y - data.height, 
-      FontAsset.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);
+      Assets.Asset.Font.PressStart2P, "!", UIScene.DAMAGE_FONT_SIZE);
     notificationText.setTint(0xfccba3);
     this.tweens.add({
       targets: notificationText,
@@ -180,7 +177,7 @@ class UIScene extends BaseScene
       }
     });
 
-    this.sound.play(AudioAsset.EnemyFoundPlayer, { volume: 0.5 });
+    this.sound.play(Assets.Asset.Audio.EnemyFoundPlayer, { volume: 0.5 });
   }
 }
 

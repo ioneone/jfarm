@@ -1,7 +1,7 @@
-import { Events } from '../events/Events';
+import Events from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
-import { AudioAsset } from '../assets/AudioAsset';
 import BaseScene from "./BaseScene";
+import Assets from '~/assets/Assets';
 
 /**
  * A scene that takes care of playing audio files for the game.
@@ -60,8 +60,8 @@ class AudioScene extends BaseScene
    */
   public create(data: any)
   {
-    const music = this.sound.add(AudioAsset.FieldsOfIce, { volume: 0.4, loop: true });
-    const textAudio = this.sound.add(AudioAsset.Text, { volume: 0.2 });
+    const music = this.sound.add(Assets.Asset.Audio.FieldsOfIce, { volume: 0.4, loop: true });
+    const textAudio = this.sound.add(Assets.Asset.Audio.Text, { volume: 0.2 });
     
     EventDispatcher.getInstance().on(Events.Event.StartGame, () => {
       music.play();

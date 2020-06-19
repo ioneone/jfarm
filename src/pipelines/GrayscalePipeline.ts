@@ -12,6 +12,7 @@ import Phaser from 'phaser';
 class GrayscalePipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
 {
 
+  // the unique id of this pipeline
   public static readonly KEY = 'Grayscale';
 
   /**

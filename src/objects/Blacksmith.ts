@@ -1,7 +1,7 @@
-import { NonPlayerCharacterAsset } from '../assets/NonPlayerCharacterAsset';
 import NonPlayerCharacter, { NonPlayerCharacterState } from "./NonPlayerCharacter";
 
 import Phaser from 'phaser';
+import Assets from '~/assets/Assets';
 
 class Blacksmith extends NonPlayerCharacter
 {
@@ -9,7 +9,7 @@ class Blacksmith extends NonPlayerCharacter
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
     super(scene, x, y, {
-      asset: NonPlayerCharacterAsset.Blacksmith,
+      asset: Assets.Asset.NonPlayerCharacter.Blacksmith,
       paragraph1: "I'm the Blacksmith. I haven't been implemented yet."
     });
   }

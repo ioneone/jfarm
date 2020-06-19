@@ -1,4 +1,4 @@
-import { WeaponAsset } from '../assets/WeaponAsset';
+import Assets from '../assets/Assets';
 
 /**
  * A data structure that represents all the information about a weapon.
@@ -13,7 +13,7 @@ class WeaponModel
 {
 
   // the texture id for this weapon model
-  public readonly asset: WeaponAsset;
+  public readonly asset: Assets.Asset.Weapon;
 
   // the damage it deals with enemy
   public readonly power: number;
@@ -22,7 +22,7 @@ class WeaponModel
    * @param {WeaponAsset} asset - the texture id for this weapon model
    * @param {number} power - the damage it deals with enemy 
    */
-  constructor(asset: WeaponAsset, power: number)
+  constructor(asset: Assets.Asset.Weapon, power: number)
   {
     this.asset = asset;
     this.power = power;

@@ -1,34 +1,32 @@
-import { FontAsset } from './../assets/FontAsset';
-import { UIAsset } from './../assets/UIAsset';
 import Phaser from 'phaser';
+import Assets from '../assets/Assets';
 
-class Coin extends Phaser.GameObjects.Sprite
+/**
+ * The coin UI to display on top left corner of screen to show how much coins 
+ * the player has.
+ */
+class Coin extends Phaser.GameObjects.Container
 {
 
-  private bitmapText: Phaser.GameObjects.BitmapText;
+  // how much coins the player currently has
+  private countText: Phaser.GameObjects.BitmapText;
 
+  /**
+   * @param {Phaesr.Scene} scene - the scene this object belongs to
+   * @param {number} x - the x canvas coordinate origined at top left corner
+   * @param {number} y - the y canvas coordinate origined at top left corner
+   */
   constructor(scene: Phaser.Scene, x: number, y: number)
   {
-    super(scene, x, y, UIAsset.Coin);
+    super(scene, x, y);
     this.scene.add.existing(this);
 
-    this.setOrigin(0, 0);
-    this.setScale(2)
+    this.countText = new Phaser.GameObjects.BitmapText(this.scene, 16, 0, Assets.Asset.Font.PressStart2P, "0", 8);
 
-    // this.scene.anims.create({
-    //   key: UIAsset.Coin, 
-    //   frames: this.scene.anims.generateFrameNames(UIAsset.Coin, 
-    //     {
-    //       prefix: 'coin_anim_f',
-    //       end: 3,
-    //     }
-    //   ),
-    //   frameRate: 8,
-    //   repeat: -1
-    // });
+    this.add(new Phaser.GameObjects.Sprite(this.scene, 0, 0, Assets.Asset.UI.Coin).setOrigin(0, 0));
+    this.add(this.countText);
 
-    this.bitmapText = this.scene.add.bitmapText(x + 24, y + 2, FontAsset.PressStart2P, "0", 12);
-
+    this.setScale(2);
   }
 
 }

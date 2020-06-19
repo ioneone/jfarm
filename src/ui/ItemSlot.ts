@@ -1,9 +1,8 @@
-import { WeaponAsset } from '../assets/WeaponAsset';
-import { UIAsset } from '../assets/UIAsset';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
-import { Events } from '../events/Events';
+import Events from '../events/Events';
 import GrayscalePipeline from '../pipelines/GrayscalePipeline';
+import Assets from '../assets/Assets';
 
 /**
  * UI for an item slot.
@@ -18,7 +17,7 @@ class ItemSlot extends Phaser.GameObjects.Container
   private slot: Phaser.GameObjects.Sprite;
 
   // the item the slot is holding
-  private weaponAsset?: WeaponAsset;
+  private weaponAsset?: Assets.Asset.Weapon;
 
   // whether this slot is currently selected or not
   private selected: boolean;
@@ -27,9 +26,9 @@ class ItemSlot extends Phaser.GameObjects.Container
    * @param {Phaser.Scene} scene - the scene this object belongs to
    * @param {number} x - the x canvas coordinate in pixels
    * @param {number} y - the y canvas coordinate in pixels
-   * @param {WeaponAsset} weaponAsset - the weapon asset this slot is holding
+   * @param {Assets.Asset.Weapon} weaponAsset - the weapon asset this slot is holding
    */
-  constructor(scene: Phaser.Scene, x: number, y: number, weaponAsset?: WeaponAsset)
+  constructor(scene: Phaser.Scene, x: number, y: number, weaponAsset?: Assets.Asset.Weapon)
   {
     super(scene, x, y);
 
@@ -39,7 +38,7 @@ class ItemSlot extends Phaser.GameObjects.Container
     // initilaize memeber variables
     this.weaponAsset = weaponAsset;
     this.selected = false;
-    this.slot = new Phaser.GameObjects.Sprite(this.scene, 0, 0, UIAsset.ItemSlotBordered);
+    this.slot = new Phaser.GameObjects.Sprite(this.scene, 0, 0, Assets.Asset.UI.ItemSlotBordered);
 
     this.add(this.slot);
     

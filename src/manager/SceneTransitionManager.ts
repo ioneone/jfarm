@@ -1,6 +1,6 @@
 import { DialogSceneData } from './../scenes/DialogScene';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import { Events } from '../events/Events';
+import Events from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
 import BasecampScene from '../scenes/BasecampScene';
 import AudioScene from '../scenes/AudioScene';
@@ -8,7 +8,7 @@ import UIScene from '../scenes/UIScene';
 import GameStartScene from '../scenes/GameStartScene';
 import GameOverScene from '../scenes/GameOverScene';
 import DialogScene from '../scenes/DialogScene';
-import CombatScene from '~/scenes/CombatScene';
+import CombatScene from '../scenes/CombatScene';
 
 /**
  * Takes care of transitioning from one scene to another.
@@ -82,15 +82,6 @@ class SceneTransitionManager
   private handleStartGame(data: Events.Data.StartGame): void
   {
     const scene = data.scene;
-    
-    const combatSceneTranstionData: SceneTransitionData = {
-      destinationScene: CombatScene.KEY,
-      destinationX: 168,
-      destinationY: 263,
-      tilemapKey: "assets/map/level1",
-      tilesetKey: "assets/map/tiles"
-    };
-
     const basecampSceneTransitionData: SceneTransitionData = {
       destinationScene: BasecampScene.KEY,
       destinationX: 168,
@@ -99,7 +90,6 @@ class SceneTransitionManager
       tilesetKey: "assets/map/basecamp"
     };
 
-    // this.scene.start(LevelScene.KEY, levelSceneTranstionData);
     scene.scene.start(BasecampScene.KEY, basecampSceneTransitionData);
     scene.scene.start(UIScene.KEY);
   }

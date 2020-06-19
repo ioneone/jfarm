@@ -1,11 +1,10 @@
-import { NonPlayerCharacterAssetData } from './../assets/NonPlayerCharacterAsset';
-import { NonPlayerCharacterAsset } from '~/assets/NonPlayerCharacterAsset';
 import Phaser from 'phaser';
-import OutlinePipeline from '~/pipelines/OutlinePipeline';
+import OutlinePipeline from '../pipelines/OutlinePipeline';
+import Assets from '../assets/Assets';
 
 export interface NonPlayerCharacterConfig
 {
-  asset: NonPlayerCharacterAsset;
+  asset: Assets.Asset.NonPlayerCharacter;
   paragraph1: string;
   paragraph2?: string;
   paragraph3?: string;
@@ -49,8 +48,8 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
       key: this.getIdleAnimationKey(), 
       frames: this.scene.anims.generateFrameNames(this.config.asset, 
         {
-          prefix: NonPlayerCharacterAssetData.IdleAnimationPrefix as string,
-          end: NonPlayerCharacterAssetData.IdleAnimationFrameEnd as number,
+          prefix: Assets.Data.NonPlayerCharacter.IdleAnimationPrefix as string,
+          end: Assets.Data.NonPlayerCharacter.IdleAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -60,8 +59,8 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
       key: this.getRunAnimationKey(),
       frames: this.scene.anims.generateFrameNames(this.config.asset, 
         { 
-          prefix: NonPlayerCharacterAssetData.RunAnimationPrefix as string,
-          end: NonPlayerCharacterAssetData.RunAnimationFrameEnd as number,
+          prefix: Assets.Data.NonPlayerCharacter.RunAnimationPrefix as string,
+          end: Assets.Data.NonPlayerCharacter.RunAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -136,7 +135,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
    */
   protected getIdleAnimationKey(): string
   {
-    return `${this.config.asset}:${NonPlayerCharacterAssetData.IdleAnimationPrefix}`;
+    return `${this.config.asset}:${Assets.Data.NonPlayerCharacter.IdleAnimationPrefix}`;
   }
 
   /**
@@ -144,7 +143,7 @@ class NonPlayerCharacter extends Phaser.GameObjects.Sprite
    */
   protected getRunAnimationKey(): string
   {
-    return `${this.config.asset}:${NonPlayerCharacterAssetData.RunAnimationPrefix}`;
+    return `${this.config.asset}:${Assets.Data.NonPlayerCharacter.RunAnimationPrefix}`;
   }
 
   public setOutlinePipeline(): void

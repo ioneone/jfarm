@@ -1,8 +1,8 @@
-import { WeaponAsset } from '../assets/WeaponAsset';
 import WeaponModel from '../models/WeaponModel';
 import RegularSword from '../models/RegularSword';
 import Hammer from '../models/Hammer';
 import Axe from '../models/Axe';
+import Assets from '../assets/Assets';
 
 /**
  * A factory for {@link WeaponModel}.
@@ -16,26 +16,27 @@ class WeaponModelFactory
 {
   /**
    * Constructs a data structure that represents a weapon.
-   * @param {WeaponAsset} asset - the asset to create the model from
+   * @param {Assets.Asset.Weapon} asset - the asset to create the model from
    */
-  public static create(asset: WeaponAsset): WeaponModel
+  public static create(asset: Assets.Asset.Weapon): WeaponModel
   {
-    if (asset === WeaponAsset.RegularSword)
+    if (asset === Assets.Asset.Weapon.RegularSword)
     {
       return new RegularSword();
     }
-    else if (asset === WeaponAsset.Hammer)
+    
+    if (asset === Assets.Asset.Weapon.Hammer)
     {
       return new Hammer();
     }
-    else if (asset === WeaponAsset.Axe)
+     
+    if (asset === Assets.Asset.Weapon.Axe)
     {
       return new Axe();
     }
-    else
-    {
-      throw new Error(`Failed to create weapon model from asset ${asset}`);
-    }
+
+    throw new Error(`Failed to create weapon model from asset ${asset}`);
+
   }
 }
 

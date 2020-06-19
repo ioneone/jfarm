@@ -1,10 +1,9 @@
-import { Events } from '../events/Events';
-import { FontAsset } from './../assets/FontAsset';
+import Events from '../events/Events';
 import BaseScene from "./BaseScene";
-import { AudioAsset } from '../assets/AudioAsset';
 import EventDispatcher from '../events/EventDispatcher';
 import Player, { PlayerState } from '../objects/Player';
 import NonPlayerCharacter, { NonPlayerCharacterState } from '../objects/NonPlayerCharacter';
+import Assets from '~/assets/Assets';
 
 /**
  * The data this scene receives for initialization.
@@ -123,7 +122,7 @@ class DialogScene extends BaseScene
     ).setStrokeStyle(1, 0xffffff)
      .setOrigin(0, 0);
 
-    this.currentBitmapText = this.add.bitmapText(0, 0, FontAsset.PressStart2P, this.currentText, 18)
+    this.currentBitmapText = this.add.bitmapText(0, 0, Assets.Asset.Font.PressStart2P, this.currentText, 18)
       .setMaxWidth(dialogBox.width - 32)
       .setPosition(dialogBox.x + textBoxSpacing, dialogBox.y + textBoxSpacing);
 

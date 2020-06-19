@@ -1,11 +1,9 @@
-import { Events } from './../events/Events';
-import { WeaponAsset } from './../assets/WeaponAsset';
-import { AudioAsset } from '../assets/AudioAsset';
-import { PlayerAsset, PlayerAssetData } from '../assets/PlayerAsset';
+import Events from '../events/Events';
 import Phaser from 'phaser';
 import EventDispatcher from '../events/EventDispatcher';
 import Weapon from './Weapon';
 import WeaponAssetFactory from '../factory/WeaponModelFactory';
+import Assets from '../assets/Assets';
 
 export enum PlayerState
 {
@@ -16,7 +14,7 @@ export enum PlayerState
 
 export interface PlayerConfig
 {
-  asset: PlayerAsset;
+  asset: Assets.Asset.Player;
   bodyWidth: number;
   bodyHeight: number;
   bodyOffsetX: number;
@@ -79,7 +77,7 @@ class Player extends Phaser.GameObjects.Sprite
     // initialize memeber variables
     this.asset = config.asset;
     this.hitPoints = Player.MAX_HIT_POINTS;
-    this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(WeaponAsset.RegularSword));
+    this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(Assets.Asset.Weapon.RegularSword));
     this.attackEnabled = true;
     this.currentState = PlayerState.Default;
     this.elapsedTime = 0;
@@ -101,8 +99,8 @@ class Player extends Phaser.GameObjects.Sprite
       key: this.getIdleAnimationKey(), 
       frames: this.scene.anims.generateFrameNames(this.asset, 
         {
-          prefix: PlayerAssetData.IdleAnimationPrefix as string,
-          end: PlayerAssetData.IdleAnimationFrameEnd as number,
+          prefix: Assets.Data.Player.IdleAnimationPrefix as string,
+          end: Assets.Data.Player.IdleAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -112,8 +110,8 @@ class Player extends Phaser.GameObjects.Sprite
       key: this.getRunAnimationKey(),
       frames: this.scene.anims.generateFrameNames(this.asset, 
         { 
-          prefix: PlayerAssetData.RunAnimationPrefix as string,
-          end: PlayerAssetData.RunAnimationFrameEnd as number,
+          prefix: Assets.Data.Player.RunAnimationPrefix as string,
+          end: Assets.Data.Player.RunAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -312,7 +310,7 @@ class Player extends Phaser.GameObjects.Sprite
    */
   private getIdleAnimationKey(): string
   {
-    return `${this.asset}:${PlayerAssetData.IdleAnimationPrefix}`;
+    return `${this.asset}:${Assets.Data.Player.IdleAnimationPrefix}`;
   }
 
   /**
@@ -320,7 +318,7 @@ class Player extends Phaser.GameObjects.Sprite
    */
   private getRunAnimationKey(): string
   {
-    return `${this.asset}:${PlayerAssetData.RunAnimationPrefix}`;
+    return `${this.asset}:${Assets.Data.Player.RunAnimationPrefix}`;
   }
 
   /**

@@ -1,6 +1,6 @@
-import { WeaponAsset } from '../assets/WeaponAsset';
 import Phaser from 'phaser';
 import ItemSlot from './ItemSlot';
+import Assets from '../assets/Assets';
 
 /**
  * UI for the player's inventory displayed at the bottom of {@link UIScene}.
@@ -40,10 +40,10 @@ class Inventory extends Phaser.GameObjects.Container
 
     // create item slots
     this.itemSlots.push(new ItemSlot(this.scene, 
-      0, 0, WeaponAsset.RegularSword));
+      0, 0, Assets.Asset.Weapon.RegularSword));
     this.itemSlots.push(new ItemSlot(this.scene, 
-      this.itemSlots[0].x + this.itemSlots[0].getBounds().width, 0, WeaponAsset.Hammer));
-    this.itemSlots.push(new ItemSlot(this.scene, this.itemSlots[1].x + this.itemSlots[1].getBounds().width, 0, WeaponAsset.Axe));
+      this.itemSlots[0].x + this.itemSlots[0].getBounds().width, 0, Assets.Asset.Weapon.Hammer));
+    this.itemSlots.push(new ItemSlot(this.scene, this.itemSlots[1].x + this.itemSlots[1].getBounds().width, 0, Assets.Asset.Weapon.Axe));
     this.itemSlots.push(new ItemSlot(this.scene, this.itemSlots[2].x + this.itemSlots[2].getBounds().width, 0));
     this.itemSlots.push(new ItemSlot(this.scene, this.itemSlots[3].x + this.itemSlots[3].getBounds().width, 0));
     this.itemSlots.push(new ItemSlot(this.scene, this.itemSlots[4].x + this.itemSlots[4].getBounds().width, 0));

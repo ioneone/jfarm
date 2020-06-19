@@ -1,10 +1,10 @@
-import { AudioAsset } from '../assets/AudioAsset';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from "./PlayerScene";
 import { TileLayer } from './TilemapScene';
 import EnemyFactory from '../factory/EnemyFactory';
 import Enemy, { EnemyState } from '../objects/Enemy';
 import Weapon from '../objects/Weapon';
+import Assets from '../assets/Assets';
 
 /**
  * A scene with enemies in it.
@@ -100,7 +100,7 @@ abstract class CombatScene extends PlayerScene
       const knockBackVelocity = enemy.getCenter().subtract(weapon.getCenter()).normalize().scale(200);
       enemy.knockBack(knockBackVelocity);
       enemy.receiveDamage(weapon.getModel().power);
-      this.sound.play(AudioAsset.EnemyHit);
+      this.sound.play(Assets.Asset.Audio.EnemyHit);
       this.cameras.main.shake(100, 0.002);
     }, (object1, object2) => {
       const weapon = object1 as Weapon;

@@ -1,9 +1,8 @@
+import Assets from '../assets/Assets';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import { AudioAsset } from '../assets/AudioAsset';
 import TilemapScene from './TilemapScene';
 import Player from '../objects/Player';
 import PlayerFactory from '../factory/PlayerFactory';
-import { PlayerAsset } from '../assets/PlayerAsset';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
 
 /**
@@ -74,7 +73,7 @@ abstract class PlayerScene extends TilemapScene
 	{
     super.create(data);
 
-    this.player = PlayerFactory.create(this, data.destinationX!, data.destinationY!, PlayerAsset.ElfMale);
+    this.player = PlayerFactory.create(this, data.destinationX!, data.destinationY!, Assets.Asset.Player.ElfMale);
 
     // add collision detection between player and collidable layer
     this.physics.add.collider(this.player!, this.middleLayer!);
@@ -85,7 +84,7 @@ abstract class PlayerScene extends TilemapScene
       const player = object1 as Player;
       player.getBody().setEnable(false);
       const sceneTranstionData = (object2 as SceneTransitionObject).getSceneTransitionData();
-      this.sound.play(AudioAsset.ThreeFootSteps);
+      this.sound.play(Assets.Asset.Audio.ThreeFootSteps);
       this.cameras.main.fadeOut(200, 0, 0, 0, (_, progress) => {
         if (progress === 1)
         {

@@ -1,9 +1,8 @@
 import NonPlayerCharacter from '../objects/NonPlayerCharacter';
 import Phaser from 'phaser';
-import { WeaponAsset } from '../assets/WeaponAsset';
 import Player from '../objects/Player';
 
-export namespace Events
+namespace Events
 {
   
   /**
@@ -146,5 +145,4 @@ export namespace Events
 
 }
 
-
-
+export default Events;

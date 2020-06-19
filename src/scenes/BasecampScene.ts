@@ -1,11 +1,11 @@
-import { Events } from '../events/Events';
+import Events from '../events/Events';
 import EventDispatcher from '../events/EventDispatcher';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
 import PlayerScene from './PlayerScene';
 import NonPlayerCharacter, { NonPlayerCharacterState } from '../objects/NonPlayerCharacter';
-import { PlayerState } from '~/objects/Player';
+import { PlayerState } from '../objects/Player';
 import { TileLayer } from './TilemapScene';
-import NonPlayerCharacterFactory from '~/factory/NonPlayerCharacterFactory';
+import NonPlayerCharacterFactory from '../factory/NonPlayerCharacterFactory';
 
 class BasecampScene extends PlayerScene
 {

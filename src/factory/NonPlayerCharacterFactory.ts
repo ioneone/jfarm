@@ -1,8 +1,7 @@
-import { NonPlayerCharacterAsset } from '~/assets/NonPlayerCharacterAsset';
-import { NonPlayerCharacterConfig } from './../objects/NonPlayerCharacter';
 import NonPlayerCharacter from '../objects/NonPlayerCharacter';
-import Alchemist from '~/objects/Alchemist';
-import Blacksmith from '~/objects/Blacksmith';
+import Alchemist from '../objects/Alchemist';
+import Blacksmith from '../objects/Blacksmith';
+import Assets from '../assets/Assets';
 
 /**
  * A factory for {@link NonPlayerCharacter}.
@@ -46,7 +45,7 @@ class NonPlayerCharacterFactory
       });
 
       return new NonPlayerCharacter(scene, tiledObject.x!, tiledObject.y!, {
-        asset: NonPlayerCharacterAsset.TownsfolkMale,
+        asset: Assets.Asset.NonPlayerCharacter.TownsfolkMale,
         paragraph1: paragraph1,
         paragraph2: paragraph2,
         paragraph3: paragraph3
@@ -54,11 +53,13 @@ class NonPlayerCharacterFactory
     }
     else if (tiledObject.name === 'Alchemist')
     {
-      return new Alchemist(scene, tiledObject.x!, tiledObject.y!);
+      return new Alchemist(scene, tiledObject.x!, tiledObject.y!)
+        .setFlipX(tiledObject.flippedHorizontal!);
     }
     else if (tiledObject.name === 'Blacksmith')
     {
-      return new Blacksmith(scene, tiledObject.x!, tiledObject.y!).setFlipX(tiledObject.flippedHorizontal!);
+      return new Blacksmith(scene, tiledObject.x!, tiledObject.y!)
+        .setFlipX(tiledObject.flippedHorizontal!);
     }
     
     throw new Error(`Failed to create npc from tiled object ${tiledObject}`)

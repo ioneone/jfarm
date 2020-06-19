@@ -1,9 +1,8 @@
-import { EnemyAssetData } from '../assets/EnemyAsset';
 import Phaser from 'phaser';
 import Player from './Player';
-import { EnemyAsset } from '../assets/EnemyAsset';
 import EventDispatcher from '../events/EventDispatcher';
-import { Events } from '../events/Events';
+import Events from '../events/Events';
+import Assets from '~/assets/Assets';
 
 export interface EnemyConfig
 {
@@ -82,8 +81,8 @@ class Enemy extends Phaser.GameObjects.Sprite
       key: this.getIdleAnimationKey(), 
       frames: this.scene.anims.generateFrameNames(this.config.asset, 
         {
-          prefix: EnemyAssetData.IdleAnimationPrefix as string,
-          end: EnemyAssetData.IdleAnimationFrameEnd as number,
+          prefix: Assets.Data.Enemy.IdleAnimationPrefix as string,
+          end: Assets.Data.Enemy.IdleAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -93,8 +92,8 @@ class Enemy extends Phaser.GameObjects.Sprite
       key: this.getRunAnimationKey(),
       frames: this.scene.anims.generateFrameNames(this.config.asset, 
         { 
-          prefix: EnemyAssetData.RunAnimationPrefix as string,
-          end: EnemyAssetData.RunAnimationFrameEnd as number,
+          prefix: Assets.Data.Enemy.RunAnimationPrefix as string,
+          end: Assets.Data.Enemy.RunAnimationFrameEnd as number,
         }
       ),
       frameRate: 8
@@ -381,7 +380,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   private getIdleAnimationKey(): string
   {
-    return `${this.config.asset}:${EnemyAssetData.IdleAnimationPrefix}`;
+    return `${this.config.asset}:${Assets.Data.Enemy.IdleAnimationPrefix}`;
   }
 
   /**
@@ -389,7 +388,7 @@ class Enemy extends Phaser.GameObjects.Sprite
    */
   private getRunAnimationKey(): string
   {
-    return `${this.config.asset}:${EnemyAssetData.RunAnimationPrefix}`;
+    return `${this.config.asset}:${Assets.Data.Enemy.RunAnimationPrefix}`;
   }
 
 }
