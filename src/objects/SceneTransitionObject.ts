@@ -48,28 +48,12 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
 
     // Parse Tiled transition object.
     // Make sure the names match the properties in Tiled.
-    tiledTransitionObject.properties.forEach(property => {
-      if (property.name === "DestinationScene")
-      {
-        this.sceneTransitionData.destinationScene = property.value as string;
-      }
-      else if (property.name === "DestinationX")
-      {
-        this.sceneTransitionData.destinationX = property.value as number;
-      }
-      else if (property.name === "DestinationY")
-      {
-        this.sceneTransitionData.destinationY = property.value as number;
-      }
-      else if (property.name === "TilemapKey")
-      {
-        this.sceneTransitionData.tilemapKey = property.value as string;
-      }
-      else if (property.name === "TilesetKey")
-      {
-        this.sceneTransitionData.tilesetKey = property.value as string;
-      }
-    });
+    const tiledTransitionObjectPropertiesDictionary = this.convertTiledTransitionObjectPropertiesToDictionary(tiledTransitionObject.properties);
+    this.sceneTransitionData.destinationScene = tiledTransitionObjectPropertiesDictionary["DestinationScene"] as string;
+    this.sceneTransitionData.destinationX = tiledTransitionObjectPropertiesDictionary["DestinationX"] as number;
+    this.sceneTransitionData.destinationY = tiledTransitionObjectPropertiesDictionary["DestinationY"] as number;
+    this.sceneTransitionData.tilemapKey = tiledTransitionObjectPropertiesDictionary["TilemapKey"] as string;
+    this.sceneTransitionData.tilesetKey = tiledTransitionObjectPropertiesDictionary["TilesetKey"] as string;
   }
 
   /**
@@ -80,6 +64,19 @@ class SceneTransitionObject extends Phaser.GameObjects.Rectangle
   public getSceneTransitionData(): SceneTransitionData
   {
     return this.sceneTransitionData;
+  }
+
+  private convertTiledTransitionObjectPropertiesToDictionary(properties: Array<{
+    name: string,
+    type: string,
+    value: string | number
+  }>): {[key: string]: (string | number)}
+  {
+    let dictionary = {};
+    properties.forEach(property => {
+      dictionary[property.name] = property.value;
+    });
+    return dictionary;
   }
   
 }

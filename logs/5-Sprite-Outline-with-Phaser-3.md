@@ -1,3 +1,16 @@
+# Sprite Outline with Phaser 3
+
+Here's a pipeline for outlining your sprite. All you need to do is to register this pipeline and call
+
+```typescript
+sprite.setPipeline(OutlinePipeline.KEY);
+sprite.pipeline.setFloat2('uTextureSize', sprite.texture.getSourceImage().width, sprite.texture.getSourceImage().height);
+```
+
+![screenshot](images/5-1.png)
+
+Here's the source code for `OutlinePipeline`.
+
 ```typescript
 import Phaser from 'phaser';
 
