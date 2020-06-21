@@ -37,9 +37,9 @@ class PlayerFactory
     {
       return new Player(scene, x, y, {
         asset: asset,
-        bodyWidth: 16,
+        bodyWidth: 12,
         bodyHeight: 18,
-        bodyOffsetX: 0,
+        bodyOffsetX: 2,
         bodyOffsetY: 10
       });
     }

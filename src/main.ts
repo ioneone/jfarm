@@ -7,6 +7,7 @@ import BasecampScene from './scenes/BasecampScene';
 import PreloadScene from './scenes/PreloadScene';
 import AudioScene from './scenes/AudioScene';
 import CombatScene from './scenes/CombatScene';
+import PlatformerScene from './scenes/PlatformerScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
@@ -27,12 +28,16 @@ const config: Phaser.Types.Core.GameConfig = {
   },
 	physics: {
     default: 'arcade',
+    
     arcade: {
+      gravity: {
+        y: 1600
+      },
       debug: true
     }
   },
   // `PreloadScene` is the scene the player sees when the game starts
-	scene: [PreloadScene, GameStartScene, GameOverScene, BasecampScene, CombatScene, AudioScene, UIScene, DialogScene]
+	scene: [PreloadScene, GameStartScene, PlatformerScene, AudioScene, UIScene]
 }
 
 export default new Phaser.Game(config);

@@ -74,7 +74,7 @@ class GameStartScene extends BaseScene
 
     this.keyEnter = this.input.keyboard.addKey('ENTER');
 
-    const title = "SHINING SOUL J";
+    const title = "Platformer";
     const titleFontSize = 24;
 
     const helperTextContent = "press ENTER to start";

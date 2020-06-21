@@ -32,7 +32,7 @@ class Player extends Phaser.GameObjects.Sprite
   private static readonly MAX_HIT_POINTS = 8;
 
   // how fast the player moves
-  private static readonly MOVE_SPEED = 64;
+  private static readonly MOVE_SPEED = 160;
 
   // the offsets from origin to player's hands
   public static readonly HANDS_OFFSET_X = 8;
@@ -70,6 +70,19 @@ class Player extends Phaser.GameObjects.Sprite
   // the time elapsed since current state has been set
   private elapsedTime: number;
 
+  private isJumping: boolean;
+  private jumpTimeCounter: number;
+
+  private wasOnFloor: boolean;
+
+  private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
+  private trailElapsedTime = 0;
+
+  private trailEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
+  private walkElapsedTime = 0;
+
   constructor(scene: Phaser.Scene, x: number, y: number, config: PlayerConfig)
   {
     super(scene, x, y, config.asset);
@@ -77,10 +90,11 @@ class Player extends Phaser.GameObjects.Sprite
     // initialize memeber variables
     this.asset = config.asset;
     this.hitPoints = Player.MAX_HIT_POINTS;
-    this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(Assets.Asset.Weapon.RegularSword));
+    // this.weapon = new Weapon(this.scene, WeaponAssetFactory.create(Assets.Asset.Weapon.RegularSword));
     this.attackEnabled = true;
     this.currentState = PlayerState.Default;
     this.elapsedTime = 0;
+    this.wasOnFloor = false;
     
     // add player to the scene
     this.scene.add.existing(this);
@@ -129,6 +143,32 @@ class Player extends Phaser.GameObjects.Sprite
       EventDispatcher.getInstance().off(Events.Event.ItemSlotChange, this.handleItemSlotChange, this);
     });
 
+    this.setScale(2);
+
+    this.emitter = this.scene.add.particles('assets/particles/smoke-puff').createEmitter({
+      name: 'emitter',
+      alpha: { start: 1, end: 0 },
+      tint: 0x222222,
+      gravityY: 64,
+      speed: 32,
+      blendMode: 'ADD',
+      scale: { start: 0.2, end: 0.1 },
+      lifespan: 600,
+      on: false
+    });
+
+    this.trailEmitter = this.scene.add.particles('assets/particles/smoke-puff').createEmitter({
+      name: 'emitter',
+      alpha: { start: 1, end: 0 },
+      tint: 0x222222,
+      gravityY: -128,
+      speed: 32,
+      blendMode: 'ADD',
+      scale: { start: 0.2, end: 0.1 },
+      lifespan: 600,
+      on: false
+    });
+    
   }
 
   /**
@@ -175,46 +215,51 @@ class Player extends Phaser.GameObjects.Sprite
     if (this.currentState === PlayerState.Default)
     {
       // update velocity
-      if (this.keyW.isDown && this.keyA.isDown)
+      if (this.keyA.isDown)
       {
-        this.getBody().setVelocity(-1, -1);
-        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-      }
-      else if (this.keyS.isDown && this.keyA.isDown)
-      {
-        this.getBody().setVelocity(-1, 1);
-        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-      }
-      else if (this.keyS.isDown && this.keyD.isDown)
-      {
-        this.getBody().setVelocity(1, 1);
-        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-      }
-      else if (this.keyW.isDown && this.keyD.isDown)
-      {
-        this.getBody().setVelocity(1, -1);
-        this.getBody().velocity.normalize().scale(Player.MOVE_SPEED);
-      }
-      else if (this.keyW.isDown)
-      {
-        this.getBody().setVelocity(0, -Player.MOVE_SPEED);
-      }
-      else if (this.keyA.isDown)
-      {
-        this.getBody().setVelocity(-Player.MOVE_SPEED, 0);
-      }
-      else if (this.keyS.isDown)
-      {
-        this.getBody().setVelocity(0, Player.MOVE_SPEED);
+        this.getBody().setVelocityX(-Player.MOVE_SPEED);
       }
       else if (this.keyD.isDown)
       {
-        this.getBody().setVelocity(Player.MOVE_SPEED, 0);
+        this.getBody().setVelocityX(Player.MOVE_SPEED);
       }
       else 
       {
-        this.getBody().setVelocity(0, 0);
+        this.getBody().setVelocityX(0);
       }
+
+      if (this.keyW.isDown)
+      {
+        if (this.getBody().onFloor())
+        {
+          this.scene.sound.play(Assets.Asset.Audio.Jump, { volume: 0.4 });
+          this.emitter.emitParticle(8, this.x, this.y + this.height);
+          this.isJumping = true;
+          this.jumpTimeCounter = 200;
+          this.getBody().setVelocityY(-400);
+        }
+
+        if (this.isJumping)
+        {
+
+          if (this.jumpTimeCounter > 0)
+          {
+            this.getBody().setVelocityY(-400);
+            this.jumpTimeCounter -= delta;
+          }
+          else
+          {
+            this.isJumping = false;
+          }
+
+        }
+      }
+
+      if (this.keyW.isUp)
+      {
+        this.isJumping = false;
+      }
+
     }
     else if (this.currentState === PlayerState.Talking)
     {
@@ -232,29 +277,74 @@ class Player extends Phaser.GameObjects.Sprite
     if (this.getBody().velocity.x > 0)
     {
       this.setFlipX(false);
-      this.weapon.setFlipX(false);
+      // this.weapon.setFlipX(false);
     }
     else if (this.getBody().velocity.x < 0)
     {
       this.setFlipX(true);
-      this.weapon.setFlipX(true);
+      // this.weapon.setFlipX(true);
     }
 
     // update frame and physics body
     if (this.getBody().velocity.x === 0 && this.getBody().velocity.y === 0)
     {
       this.anims.play(this.getIdleAnimationKey(), true);
-      this.getBody().setImmovable(true);
+      // this.getBody().setImmovable(true);
+      this.walkElapsedTime = 0;
     }
     else
     {
       this.anims.play(this.getRunAnimationKey(), true);
-      this.getBody().setImmovable(false);
+      // this.getBody().setImmovable(false);
+      // EventDispatcher.getInstance().emit('playerwalks');
+
+      if (this.getBody().onFloor())
+      {
+        if (this.walkElapsedTime > 500)
+        {
+          EventDispatcher.getInstance().emit('playerwalks');
+          this.walkElapsedTime = 0;
+        }
+        else
+        {
+          this.walkElapsedTime += delta;
+        }
+      }
+      else
+      {
+        this.walkElapsedTime = 0;
+      }
     }
 
-    this.weapon.update(this, this.attackEnabled);
+    // this.weapon.update(this, this.attackEnabled);
 
-    this.elapsedTime += delta;
+    // this.elapsedTime += delta;
+
+    // meet floor
+    if (!this.wasOnFloor && this.getBody().onFloor())
+    {
+      this.emitter.emitParticle(8, this.x, this.y + this.height);
+      this.scene.sound.play(Assets.Asset.Audio.LandingJump, { volume: 0.8 });
+    }
+
+    this.wasOnFloor = this.getBody().onFloor();
+
+    if (this.getBody().onFloor() && this.getBody().velocity.x !== 0)
+    {
+      if (this.trailElapsedTime > 120)
+      {
+        this.trailElapsedTime = 0;
+        this.trailEmitter.emitParticle(4, this.x + (this.flipX ? 16 : -16), this.y + this.height);
+      }
+      else
+      {
+        this.trailElapsedTime += delta;
+      }
+    }
+    else
+    {
+      this.trailElapsedTime = 0;
+    }
 
   }
 

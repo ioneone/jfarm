@@ -9,6 +9,7 @@ import GameStartScene from '../scenes/GameStartScene';
 import GameOverScene from '../scenes/GameOverScene';
 import DialogScene from '../scenes/DialogScene';
 import CombatScene from '../scenes/CombatScene';
+import PlatformerScene from '~/scenes/PlatformerScene';
 
 /**
  * Takes care of transitioning from one scene to another.
@@ -82,16 +83,24 @@ class SceneTransitionManager
   private handleStartGame(data: Events.Data.StartGame): void
   {
     const scene = data.scene;
-    const basecampSceneTransitionData: SceneTransitionData = {
-      destinationScene: BasecampScene.KEY,
+    // const basecampSceneTransitionData: SceneTransitionData = {
+    //   destinationScene: BasecampScene.KEY,
+    //   destinationX: 168,
+    //   destinationY: 263,
+    //   tilemapKey: "assets/map/basecamp",
+    //   tilesetKey: "assets/map/basecamp"
+    // };
+
+    // scene.scene.start(BasecampScene.KEY, basecampSceneTransitionData);
+    scene.scene.start(UIScene.KEY);
+    const platformerSceneTransitionData: SceneTransitionData = {
+      destinationScene: PlatformerScene.KEY,
       destinationX: 168,
       destinationY: 263,
-      tilemapKey: "assets/map/basecamp",
-      tilesetKey: "assets/map/basecamp"
+      tilemapKey: "assets/map/platform",
+      tilesetKey: "assets/map/tileset"
     };
-
-    scene.scene.start(BasecampScene.KEY, basecampSceneTransitionData);
-    scene.scene.start(UIScene.KEY);
+    scene.scene.start(PlatformerScene.KEY, platformerSceneTransitionData);
   }
 
   /**

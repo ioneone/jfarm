@@ -55,7 +55,7 @@ export interface TiledTransitionObject
  * default except the TopLayer whose depth is set to `Infinity` so it appears 
  * on top of every game object with any depth.
  */
-abstract class TilemapScene extends BaseScene
+class TilemapScene extends BaseScene
 {
 
   // the style config for debug mode
@@ -101,6 +101,8 @@ abstract class TilemapScene extends BaseScene
   // press 'I' key to toggle debug mode
   protected keyI?: Phaser.Input.Keyboard.Key;
 
+  protected backgroundLayers?: Phaser.GameObjects.TileSprite[];
+
   /**
    * This is called only once when you start the game. Every time a scene is 
    * created using methods like `scene.start()`, `constructor()` will not be 
@@ -127,6 +129,7 @@ abstract class TilemapScene extends BaseScene
   {
     super.init(data);
     this.animatedTiles = [];
+    this.backgroundLayers = [];
     this.tilemapKey = data.tilemapKey;
     this.tilesetKey = data.tilesetKey;
   }
@@ -141,6 +144,11 @@ abstract class TilemapScene extends BaseScene
     super.preload();
     this.load.image(this.createDefaultImageFileConfig(this.tilesetKey!));
     this.load.tilemapTiledJSON(this.tilemapKey!);
+
+    for (let i = 0; i <= 10; i++)
+    {
+      this.load.image(this.createDefaultImageFileConfig('assets/backgrounds/Layer_00' + i.toString().padStart(2, '0')));
+    }
 	}
 
   /**
@@ -172,15 +180,30 @@ abstract class TilemapScene extends BaseScene
     });
 
     // create bottom layer
-    this.bottomLayer = this.tilemap.createDynamicLayer(TileLayer.Bottom, this.tileset, 0, 0);
+    this.bottomLayer = this.tilemap.createStaticLayer(TileLayer.Bottom, this.tileset, 0, 0);
     this.bottomLayer.setCollisionByProperty({ collision: true });   
 
+    for (let i = 10; i >= 0; i--)
+    {
+      const asset = 'assets/backgrounds/Layer_00' + i.toString().padStart(2, '0');
+      this.backgroundLayers.push(
+        this.add.tileSprite(0, -25, this.game.config.width, this.game.config.height + 25, asset)
+          .setOrigin(0, 0)
+          .setScrollFactor(0)
+      );
+    }
+
     // create middle layer
-    this.middleLayer = this.tilemap.createDynamicLayer(TileLayer.Middle, this.tileset, 0, 0);
-    this.middleLayer.setCollisionByProperty({ collision: true });     
+    this.middleLayer = this.tilemap.createStaticLayer(TileLayer.Middle, this.tileset, 0, 0);
+    this.middleLayer.setCollisionByProperty({ collision: true });
+    this.middleLayer?.layer.data.forEach(row => {
+      row.forEach(tile => {
+        if (tile.collides) tile.setCollision(false, false, true, false);
+      })
+    }) 
     
     // create top layer
-    this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0);
+    this.topLayer = this.tilemap.createStaticLayer(TileLayer.Top, this.tileset, 0, 0);
 
     // Bring top layer to the front.
     // Depth is 0 (unsorted) by default, which perform the rendering 
@@ -223,10 +246,10 @@ abstract class TilemapScene extends BaseScene
 
     // configure camera
     this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
-    this.cameras.main.setZoom(2);
 
     // by default don't show built-in debug graphics
     this.physics.world.debugGraphic.setVisible(false);
+
   }
   
   /**
@@ -245,6 +268,12 @@ abstract class TilemapScene extends BaseScene
     }
 
     this.animatedTiles.forEach(tile => tile.update(delta));
+
+    for (let i = 10; i >= 0; i--)
+    {
+      this.backgroundLayers[i].tilePositionX = this.cameras.main.scrollX * (i / 10);
+    }
+
   }
 
   /**

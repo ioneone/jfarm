@@ -84,6 +84,9 @@ class PreloadScene extends BaseScene
     Object.values(Assets.Asset.Enemy).forEach(asset => this.load.atlas(this.createDefaultAtlasJSONFileConfig(asset)));
     Object.values(Assets.Asset.Audio).forEach(asset => this.load.audio(this.createDefaultAudioFileConfig(asset)));
     Object.values(Assets.Asset.Font).forEach(asset => this.load.bitmapFont(asset));
+
+    this.load.image('assets/particles/smoke-puff');
+    this.load.image('assets/particles/smoke0');
   }
 
   /**
