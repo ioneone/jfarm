@@ -92,12 +92,12 @@ class UIScene extends BaseScene
       UIScene.HIT_POINTS_BAR_OFFSET_X, UIScene.HIT_POINTS_BAR_OFFSET_Y);
 
     // create inventoey ui
-    this.inventory = new Inventory(this, this.cameras.main.centerX, this.cameras.main.height);
-    const inventoryBounds = this.inventory.getBounds();
-    this.inventory.setPosition(
-      this.inventory.x - inventoryBounds.width / 2,
-      this.inventory.y - inventoryBounds.height - UIScene.INVENTORY_BOTTOM_SPACING
-    );
+    // this.inventory = new Inventory(this, this.cameras.main.centerX, 32);
+    // const inventoryBounds = this.inventory.getBounds();
+    // this.inventory.setPosition(
+    //   this.inventory.x - inventoryBounds.width / 2,
+    //   this.inventory.y - inventoryBounds.height - UIScene.INVENTORY_BOTTOM_SPACING
+    // );
 
     // create coin ui
     this.coin = new Coin(this, this.hitPointsBar.x, 48);

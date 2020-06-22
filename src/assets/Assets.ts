@@ -25,7 +25,11 @@ namespace Assets
       ThreeFootSteps   = "assets/audio/three_foot_steps",
       EnemyHit         = "assets/audio/enemy_hit",
       FieldsOfIce      = "assets/audio/fields_of_ice",
-      Text             = "assets/audio/text"
+      Text             = "assets/audio/text",
+      FootSteps        = "assets/audio/foot_steps",
+      Jump             = "assets/audio/jump",
+      LandingJump      = "assets/audio/landing_jump",
+      Grass            = "assets/audio/grass"
     }
 
     /** 

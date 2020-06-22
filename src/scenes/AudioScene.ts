@@ -62,25 +62,42 @@ class AudioScene extends BaseScene
   {
     const music = this.sound.add(Assets.Asset.Audio.FieldsOfIce, { volume: 0.4, loop: true });
     const textAudio = this.sound.add(Assets.Asset.Audio.Text, { volume: 0.2 });
-    
-    EventDispatcher.getInstance().on(Events.Event.StartGame, () => {
-      music.play();
-    });
 
-    EventDispatcher.getInstance().on(Events.Event.PlayerDies, () => {
-      music.stop();
-    });
+    const grass = this.sound.add(Assets.Asset.Audio.Grass, { volume: 0.2 });
+    const step = this.sound.add(Assets.Asset.Audio.FootSteps, { volume: 0.3 });
     
-    EventDispatcher.getInstance().on(Events.Event.NPCTalking, () => {
-      if (!textAudio.isPlaying)
+    // EventDispatcher.getInstance().on(Events.Event.StartGame, () => {
+    //   music.play();
+    // });
+
+    // EventDispatcher.getInstance().on(Events.Event.PlayerDies, () => {
+    //   music.stop();
+    // });
+    
+    // EventDispatcher.getInstance().on(Events.Event.NPCTalking, () => {
+    //   if (!textAudio.isPlaying)
+    //   {
+    //     textAudio.play();
+    //   }
+    // });
+
+    // EventDispatcher.getInstance().on(Events.Event.NPCStopsTalking, () => {
+    //   textAudio.stop();
+    // });
+
+    EventDispatcher.getInstance().on('playerwalks', () => {
+      if (!step.isPlaying)
       {
-        textAudio.play();
+        step.play();
       }
-    });
+    })
 
-    EventDispatcher.getInstance().on(Events.Event.NPCStopsTalking, () => {
-      textAudio.stop();
-    });
+    EventDispatcher.getInstance().on('grass', () => {
+      if (!grass.isPlaying)
+      {
+        grass.play();
+      }
+    })
 
   }
 

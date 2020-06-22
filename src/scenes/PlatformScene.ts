@@ -2,10 +2,11 @@ import SceneTransitionObject, { SceneTransitionData } from '../objects/SceneTran
 import Phaser from 'phaser';
 import AnimatedTile, { TilesetTileData } from '../objects/AnimatedTile';
 import BaseScene from './BaseScene';
+import ParallaxScene from './ParallaxScene';
 
 /**
  * The name of tile layers of the tilemap exported from Tiled program.
- * @see TilemapScene
+ * @see PlatformScene
  * @readonly
  * @enum {string}
  */
@@ -39,9 +40,11 @@ export interface TiledTransitionObject
 }
 
 /**
- * Responsible for reading tiledmap and rendering the world.
+ * Responsible for parsing and rendering of a tilemap.  
  * @class
  * @classdesc
+ * Base class for {@link PlayerScene}.
+ * 
  * The tilemap must have the structure as follows:
  * - TopLayer (non-collidable)
  * - ObjectLayer
@@ -54,8 +57,15 @@ export interface TiledTransitionObject
  * with key `tilemapKey` and `tilesetKey`. The depths of the layers are 0 by 
  * default except the TopLayer whose depth is set to `Infinity` so it appears 
  * on top of every game object with any depth.
+ * 
+ * BottomLayer should have ground tiles to prevent the player from falling the 
+ * world. By default, BottomLayer is not visible.
+ * 
+ * MiddleLayer should have platform tiles that player can jump on. By default, 
+ * platform tiles are collidable from top only, which means the player can jump 
+ * through those tiles from bottom, but can't fall from top.
  */
-abstract class TilemapScene extends BaseScene
+class PlatformScene extends ParallaxScene
 {
 
   // the style config for debug mode
@@ -139,6 +149,7 @@ abstract class TilemapScene extends BaseScene
 	public preload(): void
 	{
     super.preload();
+
     this.load.image(this.createDefaultImageFileConfig(this.tilesetKey!));
     this.load.tilemapTiledJSON(this.tilemapKey!);
 	}
@@ -173,11 +184,21 @@ abstract class TilemapScene extends BaseScene
 
     // create bottom layer
     this.bottomLayer = this.tilemap.createDynamicLayer(TileLayer.Bottom, this.tileset, 0, 0);
-    this.bottomLayer.setCollisionByProperty({ collision: true });   
+    this.bottomLayer.setCollisionByProperty({ collision: true });
+
+    // bottom layer is not visible by default
+    this.bottomLayer.setVisible(false);
 
     // create middle layer
     this.middleLayer = this.tilemap.createDynamicLayer(TileLayer.Middle, this.tileset, 0, 0);
-    this.middleLayer.setCollisionByProperty({ collision: true });     
+    this.middleLayer.setCollisionByProperty({ collision: true });
+
+    // tiles in middle layer only detects top collision
+    this.middleLayer?.layer.data.forEach(row => {
+      row.forEach(tile => {
+        if (tile.collides) tile.setCollision(false, false, true, false);
+      })
+    }) 
     
     // create top layer
     this.topLayer = this.tilemap.createDynamicLayer(TileLayer.Top, this.tileset, 0, 0);
@@ -191,31 +212,31 @@ abstract class TilemapScene extends BaseScene
 
     // create animated tiles
     // loop through every tile and check if its id is animated tile's id
-    const tileData = this.tileset.tileData as TilesetTileData;
-    for (let tileid in tileData)
-    {
-      this.tilemap.layers.forEach(layer => {
-        if (layer.tilemapLayer.type === "StaticTilemapLayer") return;
-        layer.data.forEach(tileRow => {
-          tileRow.forEach(tile => {
-            // Typically `firstgid` is 1, which means tileid starts from 1.
-            // Tiled's tileid starts from 0.
-            if ((tile.index - this.tileset!.firstgid) === parseInt(tileid)) 
-            {
-              this.animatedTiles.push(new AnimatedTile(tile, tileData[tileid].animation!, this.tileset!.firstgid));
-            }
-          });
-        });
-      })
-    }
+    // const tileData = this.tileset.tileData as TilesetTileData;
+    // for (let tileid in tileData)
+    // {
+    //   this.tilemap.layers.forEach(layer => {
+    //     if (layer.tilemapLayer.type === "StaticTilemapLayer") return;
+    //     layer.data.forEach(tileRow => {
+    //       tileRow.forEach(tile => {
+    //         // Typically `firstgid` is 1, which means tileid starts from 1.
+    //         // Tiled's tileid starts from 0.
+    //         if ((tile.index - this.tileset!.firstgid) === parseInt(tileid)) 
+    //         {
+    //           this.animatedTiles.push(new AnimatedTile(tile, tileData[tileid].animation!, this.tileset!.firstgid));
+    //         }
+    //       });
+    //     });
+    //   })
+    // }
 
     // get reference to the keyboard key
     this.keyI = this.input.keyboard.addKey('I');
 
     // setup debug mode
     this.debugGraphics = this.add.graphics().setAlpha(0.5).setVisible(false);
-    this.bottomLayer.renderDebug(this.debugGraphics!, TilemapScene.RENDER_DEBUG_CONFIG);
-    this.middleLayer.renderDebug(this.debugGraphics!, TilemapScene.RENDER_DEBUG_CONFIG);
+    this.bottomLayer.renderDebug(this.debugGraphics!, PlatformScene.RENDER_DEBUG_CONFIG);
+    this.middleLayer.renderDebug(this.debugGraphics!, PlatformScene.RENDER_DEBUG_CONFIG);
 
     // set world bounds
     this.physics.world.bounds.width = this.tilemap.widthInPixels;
@@ -223,9 +244,8 @@ abstract class TilemapScene extends BaseScene
 
     // configure camera
     this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
-    this.cameras.main.setZoom(2);
 
-    // by default don't show built-in debug graphics
+    // don't show built-in debug graphics by default 
     this.physics.world.debugGraphic.setVisible(false);
   }
   
@@ -244,7 +264,7 @@ abstract class TilemapScene extends BaseScene
       this.toggleDebugMode(); 
     }
 
-    this.animatedTiles.forEach(tile => tile.update(delta));
+    // this.animatedTiles.forEach(tile => tile.update(delta));
   }
 
   /**
@@ -279,4 +299,4 @@ abstract class TilemapScene extends BaseScene
 
 }
 
-export default TilemapScene;
+export default PlatformScene;
