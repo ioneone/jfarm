@@ -8,11 +8,12 @@ import PreloadScene from './scenes/PreloadScene';
 import AudioScene from './scenes/AudioScene';
 import CombatScene from './scenes/CombatScene';
 import PlatformerScene from './scenes/PlatformerScene';
+import ForestScene from './scenes/ForestScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
-	width: 1024,
-  height: 768,
+	width: 960,
+  height: 640,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
@@ -37,7 +38,7 @@ const config: Phaser.Types.Core.GameConfig = {
     }
   },
   // `PreloadScene` is the scene the player sees when the game starts
-	scene: [PreloadScene, GameStartScene, PlatformerScene, AudioScene, UIScene]
+	scene: [PreloadScene, GameStartScene, ForestScene, AudioScene, UIScene]
 }
 
 export default new Phaser.Game(config);

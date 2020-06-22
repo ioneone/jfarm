@@ -1,9 +1,9 @@
 import Assets from '../assets/Assets';
 import { SceneTransitionData } from '../objects/SceneTransitionObject';
-import TilemapScene from './TilemapScene';
 import Player from '../objects/Player';
 import PlayerFactory from '../factory/PlayerFactory';
 import SceneTransitionObject from '../objects/SceneTransitionObject';
+import PlatformScene from './PlatformScene';
 
 /**
  * The scene with player in it.
@@ -17,7 +17,7 @@ import SceneTransitionObject from '../objects/SceneTransitionObject';
  * collision with the world. It also hanldes scene transition logics when the 
  * player overlaps with {@link SceneTransitionObject}.
  */
-abstract class PlayerScene extends TilemapScene
+abstract class PlayerScene extends PlatformScene
 {
   
   // the player to control

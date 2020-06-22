@@ -63,6 +63,7 @@ class AudioScene extends BaseScene
     const music = this.sound.add(Assets.Asset.Audio.FieldsOfIce, { volume: 0.4, loop: true });
     const textAudio = this.sound.add(Assets.Asset.Audio.Text, { volume: 0.2 });
 
+    const grass = this.sound.add(Assets.Asset.Audio.Grass, { volume: 0.2 });
     const step = this.sound.add(Assets.Asset.Audio.FootSteps, { volume: 0.3 });
     
     // EventDispatcher.getInstance().on(Events.Event.StartGame, () => {
@@ -88,6 +89,13 @@ class AudioScene extends BaseScene
       if (!step.isPlaying)
       {
         step.play();
+      }
+    })
+
+    EventDispatcher.getInstance().on('grass', () => {
+      if (!grass.isPlaying)
+      {
+        grass.play();
       }
     })
 

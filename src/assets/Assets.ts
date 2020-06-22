@@ -28,7 +28,8 @@ namespace Assets
       Text             = "assets/audio/text",
       FootSteps        = "assets/audio/foot_steps",
       Jump             = "assets/audio/jump",
-      LandingJump      = "assets/audio/landing_jump"
+      LandingJump      = "assets/audio/landing_jump",
+      Grass            = "assets/audio/grass"
     }
 
     /** 
