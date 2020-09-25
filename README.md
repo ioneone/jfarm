@@ -23,7 +23,3 @@ npm install && npm start
 ## Development Logs
 
 Dev logs are available [here](https://github.com/ioneone/shining-soul-j/tree/develop/logs). The logs also serve as the documentation of the code base as well as references for people who want to develop games with Phaser 3 as there are not enough tutorials avaialble online. 
-
-## Contribution
-
-I'm open to suggestions! If you find any mistake in the development logs, please kindly let me know (by making a issue or pull request).
